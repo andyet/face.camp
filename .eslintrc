@@ -1,0 +1,14 @@
+{
+  "extends": [
+    "eslint:recommended",
+    "react-app",
+    "plugin:import/recommended",
+    "plugin:jsx-a11y/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "settings": {
+    "react": {
+      "pragma": "h"
+    }
+  }
+}
