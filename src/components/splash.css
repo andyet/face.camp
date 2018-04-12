@@ -1,3 +1,38 @@
 .container {
-  border: 1px solid black;
+  width: 100%;
+  padding: 60px 40px 40px;
+  border-radius: 3px;
+  border: 1px solid #12abee;
+  text-align: center;
+}
+
+.logo {
+  margin-bottom: 60px;
+  text-align: center;
+}
+
+.logo img {
+  width: 100px;
+  display: inline-block;
+}
+
+p {
+  margin-bottom: 20px;
+}
+
+.btnSlackAuth {
+  margin-top: 40px;
+  padding: 20px;
+  display: block;
+  background: url('/assets/images/logo-slack-full.svg') no-repeat center center;
+  background-size: auto 70px;
+  border-radius: 5px;
+  border: 1px solid #12abee;
+  box-shadow: 2px 2px 0 #12abee;
+  text-indent: -9999em;
+}
+
+.btnSlackAuth:hover {
+  box-shadow: none;
+  transform: translate(2px,2px);
 }

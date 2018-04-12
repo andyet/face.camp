@@ -1,0 +1,19 @@
+.inputMessage {
+  width: 100%;
+  margin: 20px 0;
+  padding: 15px;
+  overflow: hidden;
+  background-repeat: no-repeat;
+  border: 1px solid #12abee;
+  border-radius: 3px;
+  font-size: 18px;
+  color: #12abee;
+}
+
+.inputMessage::placeholder {
+  color: #12abee;
+}
+
+.inputMessage:focus {
+  outline: none;
+}
