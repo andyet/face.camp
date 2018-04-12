@@ -20,7 +20,7 @@ export default class Index extends Component {
     this.setState({ auth: null })
   }
 
-  render({}, { auth }) {
+  render(props, { auth }) {
     return (
       <div id="app">
         {auth ? <App {...auth} logout={this.logout} /> : <Splash />}
