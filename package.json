@@ -2,6 +2,8 @@
   "name": "facecamp",
   "version": "0.0.0",
   "dependencies": {
+    "getusermedia": "^2.0.1",
+    "gif.js": "^0.2.0",
     "preact": "^8.2.6",
     "preact-compat": "^3.17.0",
     "preact-router": "^2.5.7"
@@ -21,12 +23,11 @@
     "preact-cli": "^2.1.0",
     "prettier": "^1.11.1"
   },
-
   "eslintIgnore": ["build/*"],
   "license": "MIT",
   "private": true,
   "scripts": {
-    "build": "preact build",
+    "build": "preact build --no-prerender",
     "dev": "preact watch",
     "eslint": "eslint --fix .",
     "lint": "npm run prettier && npm run eslint",

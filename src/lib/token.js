@@ -1,5 +1,12 @@
 const LS_KEY = 'facecamp-data'
 
+const removeToken = () => {
+  localStorage.removeItem(LS_KEY)
+  return null
+}
+
+window.removeToken = removeToken
+
 export default () => {
   const { hash } = window.location
 
@@ -7,18 +14,16 @@ export default () => {
     try {
       const parsedData = JSON.parse(decodeURI(hash.slice(1)))
       localStorage.setItem(LS_KEY, JSON.stringify(parsedData))
-      window.location.replace(window.location.href.split('#')[0])
-      return true
+      window.location.hash = ''
+      return parsedData
     } catch (e) {
-      return null
+      return removeToken()
     }
   } else {
-    let initData = null
     try {
       return JSON.parse(localStorage.getItem(LS_KEY))
     } catch (e) {
-      localStorage.removeItem(LS_KEY)
-      return null
+      return removeToken()
     }
   }
 }
