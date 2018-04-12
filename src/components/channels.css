@@ -1,0 +1,31 @@
+.selectChannel {
+  width: 100%;
+  margin: 10px 0 20px;
+  overflow: hidden;
+  background-repeat: no-repeat;
+  background-image: url('/assets/images/caret.svg');
+  background-size: 22px 12px;
+  background-position: 97% 55%;
+  border: 1px solid #12abee;
+  border-radius: 3px;
+  box-shadow: 2px 2px 0 #12abee;
+  cursor: pointer;
+}
+
+.selectChannel select {
+  width: 103%;
+  margin: 0;
+  height: 60px;
+  padding-left: 50px;
+  background: url('/assets/images/logo-slack.svg') no-repeat 15px 50%;
+  background-size: 30px auto;
+  border: none;
+  font-size: 18px;
+  text-indent: 55px;
+  color: #12abee;
+  cursor: pointer;
+}
+
+.selectChannel select:focus {
+  outline: none;
+}
