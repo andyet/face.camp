@@ -3,7 +3,7 @@ import Capture from '../components/capture'
 import Channels from '../components/channels'
 import Message from '../components/message'
 
-export default class Home extends Component {
+export default class App extends Component {
   state = {
     image: null,
     channel: null,
@@ -11,15 +11,29 @@ export default class Home extends Component {
   }
 
   handlePost = () => {
-    console.log(this.state)
+    const { access_token: token } = this.props
+    const { image, channel, message = "It's my mug on Facecamp!" } = this.state
+
+    fetch('https://slack.com/api/chat.postMessage', {
+      data: JSON.stringify({
+        as_user: true,
+        channel: channel.id
+      }),
+      method: 'POST',
+      headers: new Headers({
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      })
+    })
   }
 
   render(
-    { access_token: token, team_name: team },
+    { access_token: token, team_name: team, logout },
     { image, channel, message }
   ) {
     return (
       <div>
+        <button onClick={logout}>logout</button>
         <p>Posting to {team}</p>
         <Channels
           onChange={(channel) => this.setState({ channel })}

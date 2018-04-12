@@ -1,33 +1,29 @@
 import './style/index.css'
 
 import { h, Component } from 'preact'
-import { Router } from 'preact-router'
 
-import getToken from './lib/token'
-import Home from './routes/home'
+import auth from './lib/auth'
+import App from './components/app'
 import Splash from './components/splash'
-
-const token = getToken()
 
 if (module.hot) {
   require('preact/debug')
 }
 
-export default class App extends Component {
-  handleRoute = (e) => {
-    this.currentUrl = e.url
+export default class Index extends Component {
+  state = {
+    auth: auth.get()
   }
 
-  render() {
-    if (!token) {
-      return <Splash />
-    }
+  logout = () => {
+    auth.delete()
+    this.setState({ auth: null })
+  }
 
+  render({}, { auth }) {
     return (
       <div id="app">
-        <Router onChange={this.handleRoute}>
-          <Home path="/" {...token} />
-        </Router>
+        {auth ? <App {...auth} logout={this.logout} /> : <Splash />}
       </div>
     )
   }

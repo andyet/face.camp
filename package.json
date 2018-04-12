@@ -4,9 +4,7 @@
   "dependencies": {
     "getusermedia": "^2.0.1",
     "gif.js": "^0.2.0",
-    "preact": "^8.2.6",
-    "preact-compat": "^3.17.0",
-    "preact-router": "^2.5.7"
+    "preact": "^8.2.6"
   },
   "devDependencies": {
     "babel-eslint": "^7.2.3",
@@ -23,7 +21,9 @@
     "preact-cli": "^2.1.0",
     "prettier": "^1.11.1"
   },
-  "eslintIgnore": ["build/*"],
+  "eslintIgnore": [
+    "build/*"
+  ],
   "license": "MIT",
   "private": true,
   "scripts": {
