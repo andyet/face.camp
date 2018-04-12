@@ -14,10 +14,13 @@ export default class App extends Component {
     const { access_token: token } = this.props
     const { image, channel, message = "It's my mug on Facecamp!" } = this.state
 
+    return console.log('this doesnt work yet', this.state)
+
     fetch('https://slack.com/api/chat.postMessage', {
       data: JSON.stringify({
         as_user: true,
-        channel: channel.id
+        channel: channel.id,
+        text: message
       }),
       method: 'POST',
       headers: new Headers({
