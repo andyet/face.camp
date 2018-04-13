@@ -4,7 +4,6 @@ pipeline:
     commands:
       - npm install
       - NODE_ENV=production npm run build
-      - npm run fingerprint
   now_prod:
     image: lucap/drone-now:latest
     pull: true
