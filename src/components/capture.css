@@ -1,0 +1,62 @@
+.container {
+  position: relative;
+  min-height: 120px;
+}
+
+.mediaContainer {
+  position: relative;
+}
+
+.video {
+  width: 100%;
+}
+
+.image {
+  width: 100%;
+}
+
+.initial {
+  color: #12abee;
+  text-align: center;
+  font-size: 36px;
+}
+
+.error {
+  color: #e90090;
+  text-align: center;
+  font-size: 36px;
+}
+
+.captureProgress {
+  background: #e90090;
+  height: 5px;
+  position: absolute;
+  bottom: 0;
+}
+
+.renderProgress {
+  background: #ccc;
+  width: 100%;
+  font-size: 24px;
+  color: #e90090;
+  text-align: center;
+  padding-top: 50px;
+}
+
+.btnCapture {
+  outline: none;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+  border-radius: 5px;
+  border: 1px solid #12abee;
+  box-shadow: 2px 2px 0 #12abee;
+  color: #12abee;
+  padding: 10px;
+  font-size: 24px;
+  margin-top: 10px;
+}
+
+.btnCapture:disabled {
+  opacity: 0.5;
+}

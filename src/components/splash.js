@@ -7,7 +7,7 @@ export default class Splash extends Component {
       <div class={styles.container}>
         <div>
           <div class={styles.logoFacecamp}>
-            <img src={'/assets/images/logo-facecamp.svg'} />
+            <img src={'/assets/images/logo-facecamp.svg'} alt="Facecamp logo" />
           </div>
           <h1>Chat your mug</h1>
           <p> Sign in with:</p>
@@ -16,7 +16,12 @@ export default class Splash extends Component {
               Login with Slack
             </a>
           </p>
-          <p class={styles.byline}>from your friends at <a class={styles.logoAndyet} href="https://andyet.com">&yet</a></p>
+          <p class={styles.byline}>
+            from your friends at{' '}
+            <a class={styles.logoAndyet} href="https://andyet.com">
+              &yet
+            </a>
+          </p>
         </div>
       </div>
     )

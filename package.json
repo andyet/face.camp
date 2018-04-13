@@ -2,7 +2,7 @@
   "name": "facecamp",
   "version": "0.0.0",
   "dependencies": {
-    "dateformat": "^3.0.3",
+    "classnames": "^2.2.5",
     "getusermedia": "^2.0.1",
     "gif.js": "^0.2.0",
     "preact": "^8.2.6"

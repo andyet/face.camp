@@ -67,9 +67,9 @@ p {
   text-indent: -9999em;
   background: url('/assets/images/logo-andyet.svg') no-repeat center center;
   background-size: contain;
-  transition: opacity .2s;
+  transition: opacity 0.2s;
 }
 
 .logoAndyet:hover {
-  opacity: .7;
+  opacity: 0.7;
 }

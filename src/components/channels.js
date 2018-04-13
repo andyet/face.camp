@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/no-onchange */
 
 import { h, Component } from 'preact'
+import cx from 'classnames'
 import url from '../lib/url-qs'
 import styles from './channels.css'
 
@@ -16,7 +17,7 @@ export default class Channels extends Component {
   }
 
   fetchChannels = () => {
-    const { onChange } = this.props
+    const { onChange, token } = this.props
 
     this.setState({ fetching: true })
 
@@ -24,7 +25,7 @@ export default class Channels extends Component {
       url('https://slack.com/api/channels.list', {
         exclude_members: true,
         exclude_archived: true,
-        token: this.props.token
+        token
       })
     )
       .then((res) => res.json())
@@ -51,30 +52,31 @@ export default class Channels extends Component {
   }
 
   render({ onChange }, { fetching, error, channels }) {
-    if (error) {
-      return <div>{error}</div>
-    }
-
-    if (fetching) {
-      return <div>Loading channels</div>
-    }
-
-    if (!channels.length) {
-      return <div>No channels</div>
-    }
-
     return (
       <div class={styles.selectChannel}>
         <select
+          class={cx(styles.select, {
+            [styles.error]: !!error,
+            [styles.loading]: fetching,
+            [styles.empty]: !channels.length
+          })}
           onChange={(e) =>
             onChange(channels.find((c) => c.id === e.target.value))
           }
         >
-          {channels.map((c) => (
-            <option key={c.id} value={c.id}>
-              #{c.name}
-            </option>
-          ))}
+          {error ? (
+            <option>Error: {error}</option>
+          ) : fetching ? (
+            <option>Loading channels</option>
+          ) : !channels.length ? (
+            <option>No channels</option>
+          ) : (
+            channels.map((c) => (
+              <option key={c.id} value={c.id}>
+                #{c.name}
+              </option>
+            ))
+          )}
         </select>
       </div>
     )
