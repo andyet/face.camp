@@ -61,7 +61,7 @@ export default class App extends Component {
   // TODO: reset button when erroring
   // TODO: responsive canvas and video
   render(
-    { access_token: token, team_name: team, logout },
+    { access_token: token, team_name: team, logout, message },
     { image, channel, uploading, success, error }
   ) {
     return (
@@ -75,7 +75,10 @@ export default class App extends Component {
           token={token}
         />
         <Capture onChange={(image) => this.setState({ image })} />
-        <Message onChange={(message) => this.setState({ message })} />
+        <Message
+          onChange={(message) => this.setState({ message })}
+          placholder={message}
+        />
         {image &&
           channel &&
           !uploading &&

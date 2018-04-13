@@ -2,11 +2,11 @@ import { h, Component } from 'preact'
 import styles from './message.css'
 
 export default class Message extends Component {
-  render({ onChange }) {
+  render({ onChange, placeholder }) {
     return (
       <input
         class={styles.inputMessage}
-        placeholder="Add a message"
+        placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
       />
     )
