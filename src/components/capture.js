@@ -3,22 +3,17 @@
 import { h, Component } from 'preact'
 import getUserMedia from 'getusermedia'
 import gif from '../lib/gif'
-
-const STATES = {
-  CAPTURING: 'capturing',
-  RENDERING: 'rendering',
-  RENDERED: 'rendered'
-}
+import styles from './capture.css'
 
 const ms = (fps) => 1000 / fps
 
 export default class Home extends Component {
   state = {
     error: null,
-    currentState: null,
+    stream: null,
     captureStart: 0,
     captureCurrent: 0,
-    progress: 0
+    renderProgress: 0
   }
 
   static defaultProps = {
@@ -34,29 +29,51 @@ export default class Home extends Component {
   }
 
   componentDidMount() {
-    getUserMedia(
-      {
-        video: true,
-        audio: false
-      },
-      (err, stream) => {
-        if (err) {
-          this.setState({ error: err })
-          return
-        }
+    getUserMedia({ video: true, audio: false }, (err, stream) => {
+      if (err) {
+        this.setState({ error: `Video ${err.message.toLowerCase()}` })
+        return
+      }
 
+      this.setState({ stream: URL.createObjectURL(stream) })
+
+      // This allows for ref callbacks to be called first so they are available
+      setTimeout(() => {
         const { _video: video, _canvas: canvas } = this
-        const { canvasFps, width, height } = this.props
+        const { canvasFps } = this.props
         const context = canvas.getContext('2d')
-        video.src = URL.createObjectURL(stream)
 
-        // Thanks, Phil!
+        // // Thanks, Phil!
         this._canvasInterval = setInterval(function() {
-          context.drawImage(video, 0, 0, width, height)
+          canvas.width = video.videoWidth
+          canvas.height = video.videoHeight
+
+          this._height = video.clientHeight
+
+          context.drawImage(video, 0, 0, canvas.width, canvas.height)
           video.play()
         }, ms(canvasFps))
-      }
-    )
+      }, 0)
+    })
+  }
+
+  componentWillUnmount() {
+    clearInterval(this._canvasInterval)
+    clearInterval(this._captureInterval)
+    clearTimeout(this._minTimeout)
+  }
+
+  componentDidUpdate() {
+    const { clientHeight } = this._video || {}
+    if (clientHeight) {
+      this._videoHeight = clientHeight
+    }
+  }
+
+  setImage = (image) => {
+    const { onChange } = this.props
+    this.setState({ captureStart: 0, captureCurrent: 0, renderProgress: 0 })
+    onChange({ image })
   }
 
   startCapture = (e) => {
@@ -67,45 +84,45 @@ export default class Home extends Component {
     const {
       maxLength,
       gifFps,
+      canvasFps,
       height,
       width,
       gifQuality,
       onChange
     } = this.props
 
-    onChange(null)
-
     this._gif = gif({
-      height,
-      width,
+      height: this._canvas.height,
+      width: this._canvas.width,
       quality: gifQuality
     })
-    this._gif.on('progress', (progress) => this.setState({ progress }))
-    this._gif.on('finished', onChange)
-    this.setState({ currentState: STATES.CAPTURING, captureStart: Date.now() })
+
+    this._gif.on('progress', (renderProgress) =>
+      this.setState({ renderProgress })
+    )
+    this._gif.on('finished', this.setImage)
+
+    onChange({ image: null })
+    const now = Date.now()
+    this.setState({ renderProgress: 0, captureStart: now, captureCurrent: now })
 
     this._captureInterval = setInterval(() => {
-      const current = Date.now()
+      const now = Date.now()
+
       const { captureStart: start } = this.state
 
-      if (start && current - start > maxLength) return this.stopCapture()
+      if (start && now - start > maxLength) {
+        return this.stopCapture()
+      }
 
-      this.setState({ captureCurrent: current })
+      this.setState({ captureCurrent: now })
       this._gif.addFrame(this._canvas, { copy: true, delay: ms(gifFps) })
     }, ms(gifFps))
   }
 
   stopCapture = () => {
     const { minLength } = this.props
-    const {
-      currentState,
-      captureStart: start,
-      captureCurrent: current
-    } = this.state
-
-    if (currentState !== STATES.CAPTURING) {
-      return
-    }
+    const { captureStart: start, captureCurrent: current } = this.state
 
     // Re-call stopCapture in the event of a quick tap after the minimum length
     // has passed
@@ -119,67 +136,87 @@ export default class Home extends Component {
 
     clearInterval(this._captureInterval)
 
-    this.setState({ currentState: STATES.RENDERING })
-
     this._gif.running = false
     this._gif.render()
   }
 
-  componentWillUnmount() {
-    clearInterval(this._canvasInterval)
-    clearInterval(this._captureInterval)
-    clearTimeout(this._minTimeout)
-  }
-
   render(
-    { height, width, image },
-    { error, currentState, progress, captureStart }
+    { image, maxLength },
+    { error, stream, renderProgress, captureStart, captureCurrent }
   ) {
-    if (error) {
-      return <div>{error.message}</div>
-    }
-
     return (
-      <div style={{ position: 'relative' }}>
-        <video
-          height={height}
-          width={width}
-          ref={(c) => (this._video = c)}
-          style={{ display: 'none' }}
-        />
-        <canvas
-          width={width}
-          height={height}
-          style={{
-            display:
-              !image || currentState === STATES.CAPTURING ? 'block' : 'none'
-          }}
-          ref={(c) => (this._canvas = c)}
-        />
-        {image && <img alt="Your mug!" src={URL.createObjectURL(image)} />}
-        <div
-          style={{
-            position: 'absolute',
-            top: 0,
-            display: currentState === STATES.CAPTURING ? 'block' : 'none',
-            height: 20,
-            background: 'blue',
-            width: width * ((Date.now() - captureStart) / this.props.maxLength)
-          }}
-        />
-        <button onMouseDown={this.startCapture} onMouseUp={this.stopCapture}>
-          capture
-        </button>
-        <div
-          style={{
-            width,
-            height,
-            background: '#ccc',
-            display: currentState === STATES.RENDERING ? 'block' : 'none'
-          }}
-        >
-          {(progress * 100).toFixed(0)}%
-        </div>
+      <div class={styles.container}>
+        {!stream && !error ? (
+          <div class={styles.initial}>Grant camera access</div>
+        ) : error ? (
+          <div class={styles.error}>{error}</div>
+        ) : (
+          <div>
+            <canvas
+              ref={(c) => (this._canvas = c)}
+              style={{ display: 'none' }}
+            />
+            <div class={styles.mediaContainer}>
+              <video
+                class={styles.video}
+                style={{ display: image || renderProgress ? 'none' : 'block' }}
+                ref={(c) => (this._video = c)}
+              >
+                <source src={stream} />
+              </video>
+              {!image &&
+                renderProgress !== 0 && (
+                  <div
+                    class={styles.renderProgress}
+                    style={{ height: this._videoHeight }}
+                  >
+                    {(renderProgress * 100).toFixed(0)}%
+                  </div>
+                )}
+              {image && (
+                <img
+                  class={styles.image}
+                  alt="Your mug!"
+                  src={URL.createObjectURL(image)}
+                />
+              )}
+              {!image &&
+                !renderProgress && (
+                  <div
+                    class={styles.captureProgress}
+                    style={{
+                      width: `${100 *
+                        ((captureCurrent - captureStart) / maxLength)}%`
+                    }}
+                  />
+                )}
+            </div>
+            {!image &&
+              renderProgress === 0 && (
+                <button
+                  class={styles.btnCapture}
+                  onMouseDown={this.startCapture}
+                  onMouseUp={this.stopCapture}
+                >
+                  {captureStart ? 'Recording' : 'Hold to record'}
+                </button>
+              )}
+            {!image &&
+              renderProgress !== 0 && (
+                <button class={styles.btnCapture} disabled>
+                  Rendering
+                </button>
+              )}
+            {image && (
+              <button
+                class={styles.btnCapture}
+                onClick={() => this.setImage(null)}
+              >
+                Reset
+              </button>
+            )}
+          </div>
+        )}
       </div>
     )
   }

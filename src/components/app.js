@@ -1,6 +1,6 @@
 import { h, Component } from 'preact'
 import dateformat from 'dateformat'
-import Capture from '../components/capture2'
+import Capture from '../components/capture'
 import Channels from '../components/channels'
 import Message from '../components/message'
 import fetchForm from '../lib/fetch-formdata'
