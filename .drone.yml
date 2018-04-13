@@ -13,7 +13,7 @@ pipeline:
     team: andyet
     alias: face.camp
     cleanup: true
-    directory: public
+    directory: build
     when:
       event: deployment
     secrets: [ now_token ]
