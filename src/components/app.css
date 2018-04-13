@@ -26,11 +26,11 @@
   font-size: 20px;
   color: #e90090;
   cursor: pointer;
-  transition: background-color .2s;
+  transition: background-color 0.2s;
 }
 
 .btnPost:hover {
-  background-color: rgba(234,0,145,.08);
+  background-color: rgba(234, 0, 145, 0.08);
 }
 
 .btnPost:active {
@@ -40,4 +40,10 @@
 
 .btnPost:disabled {
   opacity: 0.5;
+}
+
+.btnPost:disabled:hover {
+  cursor: default;
+  color: #e90090;
+  background: white;
 }
