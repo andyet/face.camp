@@ -12,7 +12,7 @@ export default class Splash extends Component {
           <h1>Chat your mug.</h1>
           <p> Sign in with:</p>
           <p>
-            <a class={styles.btnSlackAuth} href="http://localhost:3000">
+            <a class={styles.btnSlackAuth} href="https://auth.face.camp">
               Login with Slack
             </a>
           </p>
