@@ -1,6 +1,6 @@
 import { h, Component } from 'preact'
 import dateformat from 'dateformat'
-import Capture from '../components/capture'
+import Capture from '../components/capture2'
 import Channels from '../components/channels'
 import Message from '../components/message'
 import fetchForm from '../lib/fetch-formdata'
@@ -37,18 +37,6 @@ export default class App extends Component {
         file: image
       }
     })
-      // TODO: if removing this then remove chat scope from auth server
-      // .then((upload) =>
-      //   fetchForm('https://slack.com/api/chat.postMessage', {
-      //     method: 'POST',
-      //     data: {
-      //       token,
-      //       as_user: true,
-      //       channel: channel.id,
-      //       text: `*${message || defaultMessage}*\n${upload.file.url_private}`
-      //     }
-      //   })
-      // )
       .then((success) => {
         this.setState({ uploading: false, success, error: null })
       })
@@ -74,10 +62,10 @@ export default class App extends Component {
           onChange={(channel) => this.setState({ channel })}
           token={token}
         />
-        <Capture onChange={(image) => this.setState({ image })} />
+        <Capture image={image} onChange={(image) => this.setState({ image })} />
         <Message
           onChange={(message) => this.setState({ message })}
-          placholder={message}
+          placeholder={message}
         />
         {image &&
           channel &&

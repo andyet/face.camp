@@ -5,7 +5,6 @@ import getUserMedia from 'getusermedia'
 import gif from '../lib/gif'
 
 const STATES = {
-  PREVIEW: 'preview',
   CAPTURING: 'capturing',
   RENDERING: 'rendering',
   RENDERED: 'rendered'
@@ -16,16 +15,16 @@ const ms = (fps) => 1000 / fps
 export default class Home extends Component {
   state = {
     error: null,
-    currentState: STATES.PREVIEW,
+    currentState: null,
     captureStart: 0,
     captureCurrent: 0,
-    image: null,
     progress: 0
   }
 
   static defaultProps = {
+    image: null,
     maxLength: 3000,
-    minLength: 500,
+    minLength: 1000,
     width: 640,
     height: 480,
     canvasFps: 60,
@@ -46,8 +45,6 @@ export default class Home extends Component {
           return
         }
 
-        this.resetGif()
-
         const { _video: video, _canvas: canvas } = this
         const { canvasFps, width, height } = this.props
         const context = canvas.getContext('2d')
@@ -62,31 +59,29 @@ export default class Home extends Component {
     )
   }
 
-  resetGif = () => {
-    const { height, width, gifQuality, onChange } = this.props
-
-    this.setState({ currentState: STATES.PREVIEW, image: null })
-
-    this._gif = gif({ height, width, quality: gifQuality })
-    onChange(null)
-
-    this._gif.on('progress', (progress) => this.setState({ progress }))
-    this._gif.on('finished', (blob) => {
-      this.setState({
-        currentState: STATES.RENDERED,
-        image: URL.createObjectURL(blob)
-      })
-      onChange(blob)
-    })
-  }
-
   startCapture = (e) => {
     if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey || e.button !== 0) {
       return
     }
 
-    const { maxLength, gifFps } = this.props
+    const {
+      maxLength,
+      gifFps,
+      height,
+      width,
+      gifQuality,
+      onChange
+    } = this.props
 
+    onChange(null)
+
+    this._gif = gif({
+      height,
+      width,
+      quality: gifQuality
+    })
+    this._gif.on('progress', (progress) => this.setState({ progress }))
+    this._gif.on('finished', onChange)
     this.setState({ currentState: STATES.CAPTURING, captureStart: Date.now() })
 
     this._captureInterval = setInterval(() => {
@@ -137,14 +132,15 @@ export default class Home extends Component {
   }
 
   render(
-    { height, width },
-    { error, currentState, progress, captureStart, image }
+    { height, width, image },
+    { error, currentState, progress, captureStart }
   ) {
     if (error) {
       return <div>{error.message}</div>
     }
+
     return (
-      <div>
+      <div style={{ position: 'relative' }}>
         <video
           height={height}
           width={width}
@@ -155,25 +151,15 @@ export default class Home extends Component {
           width={width}
           height={height}
           style={{
-            display:
-              currentState === STATES.PREVIEW ||
-              currentState === STATES.CAPTURING
-                ? 'block'
-                : 'none'
+            display: currentState === STATES.CAPTURING ? 'block' : 'none'
           }}
           ref={(c) => (this._canvas = c)}
-          onMouseDown={this.startCapture}
-          onMouseUp={this.stopCapture}
         />
-        <img
-          style={{
-            display: currentState === STATES.RENDERED ? 'block' : 'none'
-          }}
-          alt={image ? 'Your mug!' : ''}
-          src={image ? image : ''}
-        />
+        {image && <img alt="Your mug!" src={URL.createObjectURL(image)} />}
         <div
           style={{
+            position: 'absolute',
+            top: 0,
             display: currentState === STATES.CAPTURING ? 'block' : 'none',
             height: 20,
             background: 'blue',
@@ -185,14 +171,15 @@ export default class Home extends Component {
             width,
             height,
             background: '#ccc',
-            display: currentState === STATES.RENDERING ? 'block' : 'none'
+            display:
+              currentState === STATES.RENDERING && !image ? 'block' : 'none'
           }}
         >
           {(progress * 100).toFixed(0)}%
         </div>
-        {currentState === STATES.RENDERED && (
-          <button onClick={this.resetGif}>Reset</button>
-        )}
+        <button onMouseDown={this.startCapture} onMouseUp={this.stopCapture}>
+          capture{' '}
+        </button>
       </div>
     )
   }
