@@ -1,5 +1,5 @@
 .btnLogout {
-  margin-bottom: 5px;
+  margin: -7px 0 5px 10px;
   padding: 5px 10px;
   background: white;
   border: 1px solid #e90090;
@@ -15,14 +15,27 @@
 }
 
 .btnPost {
-  padding: 10px;
+  width: 100%;
+  margin-bottom: 30px;
+  padding: 15px;
+  display: block;
   background: white;
   border: 1px solid #e90090;
-  border-radius: 3px;
+  border-radius: 5px;
+  box-shadow: 2px 2px 0 #e90090;
+  font-size: 20px;
   color: #e90090;
   cursor: pointer;
-  display: block;
-  width: 100%;
+  transition: background-color .2s;
+}
+
+.btnPost:hover {
+  background-color: rgba(234,0,145,.08);
+}
+
+.btnPost:active {
+  box-shadow: none;
+  transform: translate(2px, 2px);
 }
 
 .btnPost:disabled {

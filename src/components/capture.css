@@ -7,6 +7,12 @@
   position: relative;
 }
 
+.video,
+.image {
+  border: 1px solid #12abee;
+  border-radius: 3px;
+}
+
 .video {
   width: 100%;
 }
@@ -35,10 +41,12 @@
 }
 
 .renderProgress {
-  background: #ccc;
+  background: #ddd;
   width: 100%;
   font-size: 24px;
   color: #e90090;
+  border: 1px solid #12abee;
+  border-radius: 3px;
   text-align: center;
   padding-top: 50px;
 }
@@ -52,9 +60,18 @@
   border: 1px solid #12abee;
   box-shadow: 2px 2px 0 #12abee;
   color: #12abee;
-  padding: 10px;
-  font-size: 24px;
+  padding: 15px;
+  font-size: 20px;
   margin-top: 10px;
+}
+
+.btnCapture:hover {
+  background-color: rgba(18,172,239,.08);
+}
+
+.btnCapture:active {
+  box-shadow: none;
+  transform: translate(2px, 2px);
 }
 
 .btnCapture:disabled {
