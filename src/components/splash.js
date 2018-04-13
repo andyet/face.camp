@@ -9,7 +9,7 @@ export default class Splash extends Component {
           <div class={styles.logoFacecamp}>
             <img src={'/assets/images/logo-facecamp.svg'} />
           </div>
-          <h1>Chat your mug.</h1>
+          <h1>Chat your mug</h1>
           <p> Sign in with:</p>
           <p>
             <a class={styles.btnSlackAuth} href="https://auth.face.camp">
