@@ -65,7 +65,9 @@ export default class App extends Component {
   ) {
     return (
       <div>
-        <button class={styles.btnLogout} onClick={logout}>logout</button>
+        <button class={styles.btnLogout} onClick={logout}>
+          logout
+        </button>
         <p>Posting to {team}</p>
         <Channels
           onChange={(channel) => this.setState({ channel })}
@@ -73,7 +75,9 @@ export default class App extends Component {
         />
         <Capture onChange={(image) => this.setState({ image })} />
         <Message onChange={(message) => this.setState({ message })} />
-        {image && channel && <button onClick={this.handlePost}>Post</button>}
+        {image &&
+          channel &&
+          !uploading && <button onClick={this.handlePost}>Post</button>}
         {uploading && <div>Uploading...</div>}
         {success && <div>Success!</div>}
         {error && <div>{error}</div>}
