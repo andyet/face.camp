@@ -11,7 +11,9 @@ export default class Splash extends Component {
         <p>what is this? we know, but we also dont...or just cant tell you</p>
         <p>Click it, you know you want to</p>
         <p>
-          <a class={styles.btnSlackAuth} href="http://localhost:3000">Login with Slack</a>
+          <a class={styles.btnSlackAuth} href="http://localhost:3000">
+            Login with Slack
+          </a>
         </p>
       </div>
     )

@@ -30,27 +30,25 @@ export default class App extends Component {
       method: 'POST',
       data: {
         token,
-        title: `facecamp upload ${dateformat(
-          new Date(),
-          'yyyy-mm-dd HH:MM:ss'
-        )}`,
+        title: message || defaultMessage,
         channels: channel.id,
         filetype: 'gif',
         filename: 'facecamp.gif',
         file: image
       }
     })
-      .then((upload) =>
-        fetchForm('https://slack.com/api/chat.postMessage', {
-          method: 'POST',
-          data: {
-            token,
-            as_user: true,
-            channel: channel.id,
-            text: `*${message || defaultMessage}*\n${upload.file.url_private}`
-          }
-        })
-      )
+      // TODO: if removing this then remove chat scope from auth server
+      // .then((upload) =>
+      //   fetchForm('https://slack.com/api/chat.postMessage', {
+      //     method: 'POST',
+      //     data: {
+      //       token,
+      //       as_user: true,
+      //       channel: channel.id,
+      //       text: `*${message || defaultMessage}*\n${upload.file.url_private}`
+      //     }
+      //   })
+      // )
       .then((success) => {
         this.setState({ uploading: false, success, error: null })
       })
@@ -59,6 +57,9 @@ export default class App extends Component {
       )
   }
 
+  // TODO: reset message and image when posting another
+  // TODO: reset button when erroring
+  // TODO: responsive canvas and video
   render(
     { access_token: token, team_name: team, logout },
     { image, channel, uploading, success, error }
@@ -77,9 +78,17 @@ export default class App extends Component {
         <Message onChange={(message) => this.setState({ message })} />
         {image &&
           channel &&
-          !uploading && <button onClick={this.handlePost}>Post</button>}
+          !uploading &&
+          !success && <button onClick={this.handlePost}>Post</button>}
         {uploading && <div>Uploading...</div>}
-        {success && <div>Success!</div>}
+        {success && (
+          <div>
+            Success!{' '}
+            <button onClick={() => this.setState({ success: null })}>
+              Post another
+            </button>
+          </div>
+        )}
         {error && <div>{error}</div>}
       </div>
     )

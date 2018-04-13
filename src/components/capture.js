@@ -24,7 +24,7 @@ export default class Home extends Component {
   }
 
   static defaultProps = {
-    maxLength: 5000,
+    maxLength: 3000,
     minLength: 500,
     width: 640,
     height: 480,
