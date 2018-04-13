@@ -2,6 +2,7 @@
 
 import { h, Component } from 'preact'
 import getUserMedia from 'getusermedia'
+import cx from 'classnames'
 import gif from '../lib/gif'
 import styles from './capture.css'
 
@@ -182,7 +183,9 @@ export default class Home extends Component {
             {!image &&
               renderProgress === 0 && (
                 <button
-                  class={styles.btnCapture}
+                  class={cx(styles.btnCapture, {
+                    [styles.btnRecording]: !!captureStart
+                  })}
                   onMouseDown={this.startCapture}
                   onMouseUp={this.stopCapture}
                 >
@@ -191,7 +194,10 @@ export default class Home extends Component {
               )}
             {!image &&
               renderProgress !== 0 && (
-                <button class={styles.btnCapture} disabled>
+                <button
+                  class={cx(styles.btnCapture, styles.btnRendering)}
+                  disabled
+                >
                   Rendering
                 </button>
               )}
