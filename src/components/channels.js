@@ -2,6 +2,7 @@
 
 import { h, Component } from 'preact'
 import url from '../lib/url-qs'
+import styles from './channels.css'
 
 export default class Channels extends Component {
   state = {
@@ -63,17 +64,19 @@ export default class Channels extends Component {
     }
 
     return (
-      <select
-        onChange={(e) =>
-          onChange(channels.find((c) => c.id === e.target.value))
-        }
-      >
-        {channels.map((c) => (
-          <option key={c.id} value={c.id}>
-            {c.name}
-          </option>
-        ))}
-      </select>
+      <div class={styles.selectChannel}>
+        <select
+          onChange={(e) =>
+            onChange(channels.find((c) => c.id === e.target.value))
+          }
+        >
+          {channels.map((c) => (
+            <option key={c.id} value={c.id}>
+              #{c.name}
+            </option>
+          ))}
+        </select>
+      </div>
     )
   }
 }

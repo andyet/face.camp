@@ -1,0 +1,15 @@
+.btnLogout {
+  margin-bottom: 5px;
+  padding: 5px 10px;
+  background: white;
+  border: 1px solid #e90090;
+  border-radius: 3px;
+  color: #e90090;
+  float: right;
+  cursor: pointer;
+}
+
+.btnLogout:hover {
+  background-color: #e90090;
+  color: #fff;
+}

@@ -4,6 +4,7 @@ import Capture from '../components/capture'
 import Channels from '../components/channels'
 import Message from '../components/message'
 import fetchForm from '../lib/fetch-formdata'
+import styles from './app.css'
 
 export default class App extends Component {
   state = {
@@ -64,7 +65,7 @@ export default class App extends Component {
   ) {
     return (
       <div>
-        <button onClick={logout}>logout</button>
+        <button class={styles.btnLogout} onClick={logout}>logout</button>
         <p>Posting to {team}</p>
         <Channels
           onChange={(channel) => this.setState({ channel })}
