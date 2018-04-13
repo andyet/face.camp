@@ -1,4 +1,4 @@
-import './style/index.css'
+import './index.css'
 
 import { h, Component } from 'preact'
 
