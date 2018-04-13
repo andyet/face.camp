@@ -19,6 +19,7 @@ export default class Home extends Component {
     currentState: STATES.PREVIEW,
     captureStart: 0,
     captureCurrent: 0,
+    image: null,
     progress: 0
   }
 
@@ -64,15 +65,18 @@ export default class Home extends Component {
   resetGif = () => {
     const { height, width, gifQuality, onChange } = this.props
 
-    this.setState({ currentState: STATES.PREVIEW })
+    this.setState({ currentState: STATES.PREVIEW, image: null })
 
     this._gif = gif({ height, width, quality: gifQuality })
     onChange(null)
 
     this._gif.on('progress', (progress) => this.setState({ progress }))
-    this._gif.on('finished', (imageBlob) => {
-      this.setState({ currentState: STATES.RENDERED, imageBlob })
-      onChange(imageBlob)
+    this._gif.on('finished', (blob) => {
+      this.setState({
+        currentState: STATES.RENDERED,
+        image: URL.createObjectURL(blob)
+      })
+      onChange(blob)
     })
   }
 
@@ -134,7 +138,7 @@ export default class Home extends Component {
 
   render(
     { height, width },
-    { error, currentState, progress, captureStart, imageBlob }
+    { error, currentState, progress, captureStart, image }
   ) {
     if (error) {
       return <div>{error.message}</div>
@@ -165,8 +169,8 @@ export default class Home extends Component {
           style={{
             display: currentState === STATES.RENDERED ? 'block' : 'none'
           }}
-          alt={imageBlob ? 'Your mug!' : ''}
-          src={imageBlob ? URL.createObjectURL(imageBlob) : ''}
+          alt={image ? 'Your mug!' : ''}
+          src={image ? image : ''}
         />
         <div
           style={{
