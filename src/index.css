@@ -36,3 +36,7 @@ p {
   margin: 0;
   clear: both;
 }
+
+h1, h2, h3 {
+  font-weight: 400;
+}

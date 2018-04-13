@@ -1,19 +1,32 @@
 .container {
   width: 100%;
-  padding: 60px 40px 40px;
-  border-radius: 3px;
-  border: 1px solid #12abee;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /*background: red;*/
   text-align: center;
 }
 
-.logo {
-  margin-bottom: 60px;
+.container > div {
+  width: 100%;
+}
+
+.logoFacecamp {
+  margin-bottom: 30px;
+  margin-right: -20px;
   text-align: center;
 }
 
-.logo img {
-  width: 100px;
+.logoFacecamp img {
+  width: 150px;
   display: inline-block;
+}
+
+h1 {
+  margin-bottom: 40px;
+  font-size: 40px;
+  color: #12abee;
 }
 
 p {
@@ -21,7 +34,7 @@ p {
 }
 
 .btnSlackAuth {
-  margin-top: 40px;
+  width: 100%;
   padding: 20px;
   display: block;
   background: url('/assets/images/logo-slack-full.svg') no-repeat center center;
@@ -35,4 +48,23 @@ p {
 .btnSlackAuth:hover {
   box-shadow: none;
   transform: translate(2px, 2px);
+}
+
+.byline {
+  margin-top: 80px;
+}
+
+.logoAndyet {
+  width: 50px;
+  height: 40px;
+  display: inline-block;
+  vertical-align: middle;
+  text-indent: -9999em;
+  background: url('/assets/images/logo-andyet.svg') no-repeat center center;
+  background-size: contain;
+  transition: opacity .2s;
+}
+
+.logoAndyet:hover {
+  opacity: .7;
 }
