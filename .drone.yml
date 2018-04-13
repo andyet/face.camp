@@ -6,7 +6,7 @@ pipeline:
       - NODE_ENV=production npm run build
       - npm run fingerprint
   now_prod:
-    image: andyet/drone-now:latest
+    image: lucap/drone-now:latest
     pull: true
     deploy_name: face.camp
     type: static
