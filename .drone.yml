@@ -1,0 +1,25 @@
+pipeline:
+  build:
+    image: andyet/node:6
+    commands:
+      - npm install
+      - NODE_ENV=production npm run build
+      - npm run fingerprint
+  now_prod:
+    image: andyet/drone-now:latest
+    pull: true
+    deploy_name: face.camp
+    type: static
+    team: andyet
+    alias: face.camp
+    cleanup: true
+    directory: public
+    when:
+      event: deployment
+    secrets: [ now_token ]
+  slack:
+    image: plugins/slack
+    secrets: [ slack_webhook ]
+    username: drone
+    channel: alerts
+branches: master
