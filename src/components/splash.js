@@ -5,16 +5,19 @@ export default class Splash extends Component {
   render() {
     return (
       <div class={styles.container}>
-        <div class={styles.logo}>
-          <img src={'/assets/images/logo-facecamp.svg'} />
+        <div>
+          <div class={styles.logoFacecamp}>
+            <img src={'/assets/images/logo-facecamp.svg'} />
+          </div>
+          <h1>Chat your mug.</h1>
+          <p> Sign in with:</p>
+          <p>
+            <a class={styles.btnSlackAuth} href="http://localhost:3000">
+              Login with Slack
+            </a>
+          </p>
+          <p class={styles.byline}>from your friends at <a class={styles.logoAndyet} href="https://andyet.com">&yet</a></p>
         </div>
-        <p>what is this? we know, but we also dont...or just cant tell you</p>
-        <p>Click it, you know you want to</p>
-        <p>
-          <a class={styles.btnSlackAuth} href="http://localhost:3000">
-            Login with Slack
-          </a>
-        </p>
       </div>
     )
   }
