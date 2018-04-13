@@ -20,9 +20,6 @@ export default class Home extends Component {
     image: null,
     maxLength: 3000,
     minLength: 1000,
-    width: 640,
-    height: 480,
-    canvasFps: 60,
     gifQuality: 10, // lower is better
     gifFps: 10,
     onChange: () => {}
@@ -40,7 +37,6 @@ export default class Home extends Component {
       // This allows for ref callbacks to be called first so they are available
       setTimeout(() => {
         const { _video: video, _canvas: canvas } = this
-        const { canvasFps } = this.props
         const context = canvas.getContext('2d')
 
         // // Thanks, Phil!
@@ -52,7 +48,7 @@ export default class Home extends Component {
 
           context.drawImage(video, 0, 0, canvas.width, canvas.height)
           video.play()
-        }, ms(canvasFps))
+        }, ms(60))
       }, 0)
     })
   }
@@ -81,15 +77,7 @@ export default class Home extends Component {
       return
     }
 
-    const {
-      maxLength,
-      gifFps,
-      canvasFps,
-      height,
-      width,
-      gifQuality,
-      onChange
-    } = this.props
+    const { maxLength, gifFps, gifQuality, onChange } = this.props
 
     this._gif = gif({
       height: this._canvas.height,

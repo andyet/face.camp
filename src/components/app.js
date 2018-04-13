@@ -1,5 +1,4 @@
 import { h, Component } from 'preact'
-import dateformat from 'dateformat'
 import Capture from '../components/capture'
 import Channels from '../components/channels'
 import Message from '../components/message'
@@ -58,8 +57,6 @@ export default class App extends Component {
     { access_token: token, team_name: team, logout, message },
     { image, channel, uploading, success, error }
   ) {
-    const canPost = image && channel
-
     return (
       <div>
         <button class={styles.btnLogout} onClick={logout}>
