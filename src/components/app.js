@@ -16,7 +16,7 @@ export default class App extends Component {
   }
 
   static defaultProps = {
-    message: 'Its my mug on facecamp'
+    message: 'It’s my mug on facecamp'
   }
 
   handlePost = (e) => {
