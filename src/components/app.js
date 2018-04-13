@@ -20,9 +20,13 @@ export default class App extends Component {
     message: 'Its my mug on facecamp'
   }
 
-  handlePost = () => {
+  handlePost = (e) => {
+    e.preventDefault()
+
     const { access_token: token, message: defaultMessage } = this.props
-    const { image, channel, message } = this.state
+    const { image, channel, message, uploading } = this.state
+
+    if (!image || !channel || uploading) return
 
     this.setState({ uploading: true, success: null, error: null })
 
@@ -45,13 +49,17 @@ export default class App extends Component {
       )
   }
 
-  // TODO: reset message and image when posting another
-  // TODO: reset button when erroring
-  // TODO: responsive canvas and video
+  reset = (e) => {
+    e.preventDefault()
+    this.setState({ image: null, success: null, error: null, uploading: false })
+  }
+
   render(
     { access_token: token, team_name: team, logout, message },
     { image, channel, uploading, success, error }
   ) {
+    const canPost = image && channel
+
     return (
       <div>
         <button class={styles.btnLogout} onClick={logout}>
@@ -62,24 +70,23 @@ export default class App extends Component {
           onChange={(channel) => this.setState({ channel })}
           token={token}
         />
-        <Capture image={image} onChange={(image) => this.setState({ image })} />
-        <Message
-          onChange={(message) => this.setState({ message })}
-          placeholder={message}
+        <Capture
+          image={image}
+          onChange={({ image }) => this.setState({ image })}
         />
-        {image &&
-          channel &&
-          !uploading &&
-          !success && <button onClick={this.handlePost}>Post</button>}
-        {uploading && <div>Uploading...</div>}
-        {success && (
-          <div>
-            Success!{' '}
-            <button onClick={() => this.setState({ success: null })}>
-              Post another
-            </button>
-          </div>
-        )}
+        <form onSubmit={success ? this.reset : this.handlePost}>
+          <Message
+            onChange={(message) => this.setState({ message })}
+            placeholder={message}
+          />
+          <button
+            class={styles.btnPost}
+            type="submit"
+            disabled={!image || !channel}
+          >
+            {uploading ? 'Uploading...' : success ? 'Post another' : 'Post'}
+          </button>
+        </form>
         {error && <div>{error}</div>}
       </div>
     )

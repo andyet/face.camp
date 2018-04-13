@@ -151,7 +151,8 @@ export default class Home extends Component {
           width={width}
           height={height}
           style={{
-            display: currentState === STATES.CAPTURING ? 'block' : 'none'
+            display:
+              !image || currentState === STATES.CAPTURING ? 'block' : 'none'
           }}
           ref={(c) => (this._canvas = c)}
         />
@@ -166,20 +167,19 @@ export default class Home extends Component {
             width: width * ((Date.now() - captureStart) / this.props.maxLength)
           }}
         />
+        <button onMouseDown={this.startCapture} onMouseUp={this.stopCapture}>
+          capture
+        </button>
         <div
           style={{
             width,
             height,
             background: '#ccc',
-            display:
-              currentState === STATES.RENDERING && !image ? 'block' : 'none'
+            display: currentState === STATES.RENDERING ? 'block' : 'none'
           }}
         >
           {(progress * 100).toFixed(0)}%
         </div>
-        <button onMouseDown={this.startCapture} onMouseUp={this.stopCapture}>
-          capture{' '}
-        </button>
       </div>
     )
   }

@@ -13,3 +13,18 @@
   background-color: #e90090;
   color: #fff;
 }
+
+.btnPost {
+  padding: 10px;
+  background: white;
+  border: 1px solid #e90090;
+  border-radius: 3px;
+  color: #e90090;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+}
+
+.btnPost:disabled {
+  opacity: 0.5;
+}

@@ -12,7 +12,7 @@
   cursor: pointer;
 }
 
-.selectChannel select {
+.select {
   width: 103%;
   margin: 0;
   height: 60px;
@@ -24,6 +24,16 @@
   text-indent: 55px;
   color: #12abee;
   cursor: pointer;
+}
+
+.empty {
+  color: #e90090;
+}
+.error {
+  color: #e90090;
+}
+.loading {
+  color: #ccc;
 }
 
 .selectChannel select:focus {
