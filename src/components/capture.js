@@ -27,7 +27,7 @@ export default class Home extends Component {
 
   componentDidMount() {
     navigator.mediaDevices
-      .getUserMedia({ audio: false, video: true })
+      .getUserMedia({ audio: false, video: { facingMode: 'user' } })
       .then((stream) => {
         this.setState({ stream })
 
@@ -149,6 +149,9 @@ export default class Home extends Component {
                 class={styles.video}
                 style={{ display: image || renderProgress ? 'none' : 'block' }}
                 ref={(c) => (this._video = c)}
+                autoplay
+                muted
+                playsinline
                 srcObject={stream}
               />
               {!image &&
