@@ -49,7 +49,7 @@ export default class Home extends Component {
         }, 0)
       })
       .catch((error) => {
-        this.setState({ error: `Video ${error.message.toLowerCase()}` })
+        this.setState({ error: error.message })
       })
   }
 
