@@ -153,6 +153,7 @@ export default class Home extends Component {
                 muted
                 playsinline
                 srcObject={stream}
+                playsinline
               />
               {!image &&
                 renderProgress > 0 && (
@@ -190,6 +191,8 @@ export default class Home extends Component {
                   })}
                   onMouseDown={this.startCapture}
                   onMouseUp={this.stopCapture}
+                  onTouchStart={this.startCapture}
+                  onTouchEnd={this.stopCapture}
                 >
                   {captureStart ? 'Recording' : 'Hold to record'}
                 </button>
