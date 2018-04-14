@@ -3,9 +3,12 @@
 import { h, Component } from 'preact'
 import cx from 'classnames'
 import gif from '../lib/gif'
+import keyBinding from '../lib/keyBindings'
 import styles from './capture.css'
 
 const ms = (fps) => 1000 / fps
+
+const R_KEY = 'r'
 
 export default class Home extends Component {
   state = {
@@ -26,6 +29,7 @@ export default class Home extends Component {
   }
 
   componentDidMount() {
+    this._spaceBarTrigger = keyBinding('keypress', R_KEY, this.startCapture)
     navigator.mediaDevices
       .getUserMedia({ audio: false, video: true })
       .then((stream) => {
@@ -57,6 +61,7 @@ export default class Home extends Component {
     clearInterval(this._canvasInterval)
     clearInterval(this._captureInterval)
     clearTimeout(this._minTimeout)
+    this._spaceBarTrigger()
   }
 
   componentDidUpdate() {
@@ -73,11 +78,21 @@ export default class Home extends Component {
   }
 
   startCapture = (e) => {
-    if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey || e.button !== 0) {
+    if (
+      e.altKey ||
+      e.ctrlKey ||
+      e.metaKey ||
+      e.shiftKey ||
+      (e.key && e.key !== R_KEY) ||
+      (e.button !== undefined && e.button !== 0)
+    ) {
       return
     }
 
     const { maxLength, gifFps, gifQuality, onChange } = this.props
+    const { captureStart } = this.state
+
+    if (captureStart) return this.stopCapture()
 
     this._gif = gif({
       height: this._canvas.height,
