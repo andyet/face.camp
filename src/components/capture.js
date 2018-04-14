@@ -194,10 +194,7 @@ export default class Home extends Component {
               )}
             {!image &&
               renderProgress > 0 && (
-                <button
-                  class={cx(styles.btnCapture, styles.btnRendering)}
-                  disabled
-                >
+                <button class={styles.btnCapture} disabled>
                   Rendering
                 </button>
               )}
