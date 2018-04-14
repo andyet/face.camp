@@ -1,7 +1,6 @@
 /* eslint-disable jsx-a11y/media-has-caption */
 
 import { h, Component } from 'preact'
-import getUserMedia from 'getusermedia'
 import cx from 'classnames'
 import gif from '../lib/gif'
 import styles from './capture.css'
@@ -27,31 +26,31 @@ export default class Home extends Component {
   }
 
   componentDidMount() {
-    getUserMedia({ video: true, audio: false }, (err, stream) => {
-      if (err) {
-        this.setState({ error: `Video ${err.message.toLowerCase()}` })
-        return
-      }
+    navigator.mediaDevices
+      .getUserMedia({ audio: false, video: true })
+      .then((stream) => {
+        this.setState({ stream })
 
-      this.setState({ stream: URL.createObjectURL(stream) })
+        // This allows for ref callbacks to be called first so they are available
+        setTimeout(() => {
+          const { _video: video, _canvas: canvas } = this
+          const context = canvas.getContext('2d')
 
-      // This allows for ref callbacks to be called first so they are available
-      setTimeout(() => {
-        const { _video: video, _canvas: canvas } = this
-        const context = canvas.getContext('2d')
+          // // Thanks, Phil!
+          this._canvasInterval = setInterval(function() {
+            canvas.width = video.videoWidth
+            canvas.height = video.videoHeight
 
-        // // Thanks, Phil!
-        this._canvasInterval = setInterval(function() {
-          canvas.width = video.videoWidth
-          canvas.height = video.videoHeight
+            this._height = video.clientHeight
 
-          this._height = video.clientHeight
-
-          context.drawImage(video, 0, 0, canvas.width, canvas.height)
-          video.play()
-        }, ms(60))
-      }, 0)
-    })
+            context.drawImage(video, 0, 0, canvas.width, canvas.height)
+            video.play()
+          }, ms(60))
+        }, 0)
+      })
+      .catch((error) => {
+        this.setState({ error: `Video ${error.message.toLowerCase()}` })
+      })
   }
 
   componentWillUnmount() {
@@ -150,7 +149,7 @@ export default class Home extends Component {
                 class={styles.video}
                 style={{ display: image || renderProgress ? 'none' : 'block' }}
                 ref={(c) => (this._video = c)}
-                src={stream}
+                srcObject={stream}
               />
               {!image &&
                 renderProgress > 0 && (

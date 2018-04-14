@@ -1,6 +1,11 @@
 import { h, Component } from 'preact'
 import styles from './splash.css'
 
+const auth =
+  process.env.NODE_ENV === 'production'
+    ? 'https://auth.face.camp'
+    : 'http://localhost:3000'
+
 export default class Splash extends Component {
   render() {
     return (
@@ -12,7 +17,7 @@ export default class Splash extends Component {
           <h1>Chat your mug</h1>
           <p> Sign in with:</p>
           <p>
-            <a class={styles.btnSlackAuth} href="https://auth.face.camp">
+            <a class={styles.btnSlackAuth} href={auth}>
               Login with Slack
             </a>
           </p>
