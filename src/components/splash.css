@@ -43,11 +43,11 @@ p {
   border: 1px solid #12abee;
   box-shadow: 2px 2px 0 #12abee;
   text-indent: -9999em;
-  transition: background-color .2s;
+  transition: background-color 0.2s;
 }
 
 .btnSlackAuth:hover {
-  background-color: rgba(18,172,239,.08);
+  background-color: rgba(18, 172, 239, 0.08);
 }
 
 .btnSlackAuth:active {

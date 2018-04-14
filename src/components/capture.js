@@ -69,8 +69,8 @@ export default class Home extends Component {
 
   setImage = (image) => {
     const { onChange } = this.props
-    this.setState({ captureStart: 0, captureCurrent: 0, renderProgress: 0 })
     onChange({ image })
+    this.setState({ captureStart: 0, captureCurrent: 0, renderProgress: 0 })
   }
 
   startCapture = (e) => {
@@ -150,11 +150,10 @@ export default class Home extends Component {
                 class={styles.video}
                 style={{ display: image || renderProgress ? 'none' : 'block' }}
                 ref={(c) => (this._video = c)}
-              >
-                <source src={stream} />
-              </video>
+                src={stream}
+              />
               {!image &&
-                renderProgress !== 0 && (
+                renderProgress > 0 && (
                   <div
                     class={styles.renderProgress}
                     style={{ height: this._videoHeight }}
@@ -166,6 +165,7 @@ export default class Home extends Component {
                 <img
                   class={styles.image}
                   alt="Your mug!"
+                  style={{ height: this._videoHeight }}
                   src={URL.createObjectURL(image)}
                 />
               )}
@@ -181,7 +181,7 @@ export default class Home extends Component {
                 )}
             </div>
             {!image &&
-              renderProgress === 0 && (
+              !renderProgress && (
                 <button
                   class={cx(styles.btnCapture, {
                     [styles.btnRecording]: !!captureStart
@@ -193,7 +193,7 @@ export default class Home extends Component {
                 </button>
               )}
             {!image &&
-              renderProgress !== 0 && (
+              renderProgress > 0 && (
                 <button
                   class={cx(styles.btnCapture, styles.btnRendering)}
                   disabled

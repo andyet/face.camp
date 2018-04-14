@@ -38,6 +38,7 @@
   height: 5px;
   position: absolute;
   bottom: 0;
+  border-radius: 3px;
 }
 
 .renderProgress {

@@ -79,7 +79,7 @@ export default class App extends Component {
           <button
             class={styles.btnPost}
             type="submit"
-            disabled={!image || !channel}
+            disabled={!image || !channel || uploading}
           >
             {uploading ? 'Uploading...' : success ? 'Post another' : 'Post'}
           </button>
