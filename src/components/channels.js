@@ -2,7 +2,6 @@
 
 import { h, Component } from 'preact'
 import cx from 'classnames'
-import url from '../lib/url-qs'
 import styles from './channels.css'
 
 export default class Channels extends Component {
@@ -22,11 +21,7 @@ export default class Channels extends Component {
     this.setState({ fetching: true })
 
     fetch(
-      url('https://slack.com/api/channels.list', {
-        exclude_members: true,
-        exclude_archived: true,
-        token
-      })
+      `https://slack.com/api/channels.list?exclude_members=true&exclude_archived=true&token=${token}`
     )
       .then((res) => res.json())
       .then((data) => {
