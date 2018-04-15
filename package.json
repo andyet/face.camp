@@ -21,14 +21,12 @@
     "preact-cli": "^2.1.0",
     "prettier": "^1.11.1"
   },
-  "eslintIgnore": [
-    "build/*"
-  ],
+  "eslintIgnore": ["build/*"],
   "license": "MIT",
   "private": true,
   "scripts": {
     "build": "preact build --no-prerender",
-    "dev": "preact watch",
+    "dev": "preact watch --https",
     "eslint": "eslint --fix .",
     "lint": "npm run prettier && npm run eslint",
     "prettier": "prettier --write \"src/**/*.{js,css}\"",

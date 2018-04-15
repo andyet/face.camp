@@ -4,7 +4,7 @@ import styles from './splash.css'
 const auth =
   process.env.NODE_ENV === 'production'
     ? 'https://auth.face.camp'
-    : 'http://localhost:3000'
+    : `http://${window.location.hostname}:3000`
 
 export default class Splash extends Component {
   render() {
