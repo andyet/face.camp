@@ -80,6 +80,10 @@ export default class Home extends Component {
     e.preventDefault()
 
     const { maxLength, gifFps, gifQuality, onChange } = this.props
+    const { start } = this.state
+
+    // Dont start multiple recordings
+    if (start) return
 
     this._gif = gif({
       height: this._canvas.height,
