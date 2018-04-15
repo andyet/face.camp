@@ -13,7 +13,7 @@ export default class Home extends Component {
     stream: null,
     start: 0,
     current: 0,
-    progress: 0
+    progress: null
   }
 
   static defaultProps = {
@@ -69,7 +69,7 @@ export default class Home extends Component {
   setImage = ({ image = null, now = 0 } = {}) => {
     const { onChange } = this.props
     onChange({ image })
-    this.setState({ start: now, current: now, progress: 0 })
+    this.setState({ start: now, current: now, progress: null })
   }
 
   startCapture = (e) => {
@@ -83,6 +83,7 @@ export default class Home extends Component {
     const { start } = this.state
 
     // Dont start multiple recordings
+    console.log({ start })
     if (start) return
 
     this._gif = gif({
@@ -131,6 +132,8 @@ export default class Home extends Component {
   }
 
   render({ image, maxLength }, { error, stream, progress, start, current }) {
+    const hasProgress = typeof progress === 'number'
+
     return (
       <div class={styles.container}>
         {!stream && !error ? (
@@ -146,7 +149,7 @@ export default class Home extends Component {
             <div class={styles.mediaContainer}>
               <video
                 class={styles.video}
-                style={{ display: image || progress ? 'none' : 'block' }}
+                style={{ display: image || hasProgress ? 'none' : 'block' }}
                 ref={(c) => (this._video = c)}
                 autoplay
                 muted
@@ -155,7 +158,7 @@ export default class Home extends Component {
                 playsinline
               />
               {!image &&
-                progress > 0 && (
+                hasProgress && (
                   <div
                     class={styles.renderProgress}
                     style={{ height: this._videoHeight }}
@@ -172,7 +175,7 @@ export default class Home extends Component {
                 />
               )}
               {!image &&
-                !progress && (
+                !hasProgress && (
                   <div
                     class={styles.captureProgress}
                     style={{
@@ -182,7 +185,7 @@ export default class Home extends Component {
                 )}
             </div>
             {!image &&
-              !progress && (
+              !hasProgress && (
                 <button
                   class={cx(styles.btnCapture, {
                     [styles.btnRecording]: !!start
@@ -196,7 +199,7 @@ export default class Home extends Component {
                 </button>
               )}
             {!image &&
-              progress > 0 && (
+              hasProgress && (
                 <button class={styles.btnCapture} disabled>
                   Rendering
                 </button>
