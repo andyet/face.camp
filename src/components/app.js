@@ -3,7 +3,7 @@ import Capture from '../components/capture'
 import Channels from '../components/channels'
 import Message from '../components/message'
 import fetchForm from '../lib/fetch-formdata'
-import auth from '../lib/auth'
+import { authUrl } from '../lib/auth'
 import styles from './app.css'
 
 export default class App extends Component {
@@ -11,7 +11,8 @@ export default class App extends Component {
     image: null,
     channel: null,
     message: '',
-    error: null,
+    postError: null,
+    channelsError: null,
     uploading: false,
     success: null
   }
@@ -23,17 +24,17 @@ export default class App extends Component {
   handlePost = (e) => {
     e.preventDefault()
 
-    const { access_token: token, defaultMessage } = this.props
+    const { team, defaultMessage } = this.props
     const { image, channel, message, uploading } = this.state
 
     if (!image || !channel || uploading) return
 
-    this.setState({ uploading: true, success: null, error: null })
+    this.setState({ uploading: true, success: null, postError: null })
 
     fetchForm('https://slack.com/api/files.upload', {
       method: 'POST',
       data: {
-        token,
+        token: team.access_token,
         title: message || defaultMessage,
         channels: channel.id,
         filetype: 'gif',
@@ -42,10 +43,10 @@ export default class App extends Component {
       }
     })
       .then((success) => {
-        this.setState({ uploading: false, success, error: null })
+        this.setState({ uploading: false, success, postError: null })
       })
       .catch((error) =>
-        this.setState({ uploading: false, success: null, error })
+        this.setState({ uploading: false, success: null, postError: error })
       )
   }
 
@@ -54,26 +55,37 @@ export default class App extends Component {
     this.setState({
       image: null,
       success: null,
-      error: null,
+      postError: null,
       uploading: false,
       message: ''
     })
   }
 
   render(
-    { access_token: token, team_name: team, logout, defaultMessage },
-    { image, channel, uploading, success, error, message }
+    { teams, team, selectTeam, logout, defaultMessage },
+    { image, channel, uploading, success, postError, channelsError, message }
   ) {
+    const error = postError || channelsError
     return (
       <div>
         <button class={styles.btnLogout} onClick={logout}>
           logout
         </button>
-        <p>Posting to {team}</p>
+        <p>
+          Posting to{' '}
+          {teams.length === 1 ? (
+            team.team_name
+          ) : (
+            <button onClick={selectTeam} class={styles.btnLink}>
+              {team.team_name}
+            </button>
+          )}{' '}
+          | <a href={authUrl}>Add team</a>
+        </p>
         <Channels
-          onError={(error) => this.setState({ error })}
+          onError={(error) => this.setState({ channelsError: error })}
           onChange={(channel) => this.setState({ channel })}
-          token={token}
+          token={team.access_token}
         />
         <Capture
           image={image}
@@ -88,9 +100,15 @@ export default class App extends Component {
           {error && (
             <div class={styles.error}>
               Error: {error}. Try{' '}
-              <a onClick={auth.delete} href={auth.url}>
+              <button
+                class={styles.btnLink}
+                onClick={() => {
+                  logout()
+                  window.location.href = authUrl
+                }}
+              >
                 logging in
-              </a>{' '}
+              </button>{' '}
               again.
             </div>
           )}

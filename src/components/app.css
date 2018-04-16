@@ -58,3 +58,28 @@
 .error a:visited {
   color: #e90090;
 }
+
+.btnLink {
+  background: none !important;
+  color: #e90090;
+  border: none;
+  padding: 0 !important;
+  font: inherit;
+  cursor: pointer;
+}
+
+.btnLink,
+.btnLink:focus,
+.btnLink:active {
+  background: none;
+  border: none;
+  display: inline;
+  font: inherit;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  outline-offset: 0;
+  color: #e90090;
+  cursor: pointer;
+  text-decoration: underline;
+}
