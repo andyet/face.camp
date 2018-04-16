@@ -34,9 +34,9 @@ export default class Index extends Component {
     const nextIndex = index + 1 >= teams.length ? 0 : index + 1
     const nextTeam = teams[nextIndex]
 
-    updateTeam(nextTeam, { last_used: Date.now() })
+    const nextTeams = updateTeam(nextTeam, { last_used: Date.now() })
 
-    this.setState({ selectedTeam: nextTeam })
+    this.setState({ teams: nextTeams, selectedTeam: nextTeam })
   }
 
   render(props, { teams, selectedTeam }) {
