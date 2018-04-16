@@ -73,7 +73,10 @@ export default class Home extends Component {
   }
 
   startCapture = (e) => {
-    if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey || e.button !== 0) {
+    const isAltKey = e.altKey || e.ctrlKey || e.metaKey || e.shiftKey
+    const isAltButton = e.button !== undefined && e.button !== 0
+
+    if (isAltKey || isAltButton) {
       return
     }
 
