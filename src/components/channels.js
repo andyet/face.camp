@@ -16,7 +16,7 @@ export default class Channels extends Component {
   }
 
   fetchChannels = () => {
-    const { onChange, token } = this.props
+    const { onChange, onError, token } = this.props
 
     this.setState({ fetching: true })
 
@@ -26,9 +26,15 @@ export default class Channels extends Component {
       .then((res) => res.json())
       .then((data) => {
         if (data.error || !data.ok) {
+          const error = data.error || 'Could not fetch channels'
+
+          onChange(null)
+          onError(error)
+
           return this.setState({
-            fetching: false,
-            error: data.error || 'Error finding channels'
+            error,
+            channels: [],
+            fetching: false
           })
         }
 
@@ -36,7 +42,7 @@ export default class Channels extends Component {
           (a, b) => b.num_members - a.num_members
         )
 
-        onChange(channels[0])
+        onChange(channels.length ? channels[0] : null)
 
         this.setState({
           channels,

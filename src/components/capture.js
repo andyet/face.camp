@@ -139,9 +139,9 @@ export default class Home extends Component {
     return (
       <div class={styles.container}>
         {!stream && !error ? (
-          <div class={styles.initial}>Grant camera access</div>
+          <div class={styles.initial}>Granting camera access</div>
         ) : error ? (
-          <div class={styles.error}>{error}</div>
+          <div class={styles.error}>Error: {error}</div>
         ) : (
           <div>
             <canvas

@@ -3,6 +3,7 @@ import Capture from '../components/capture'
 import Channels from '../components/channels'
 import Message from '../components/message'
 import fetchForm from '../lib/fetch-formdata'
+import auth from '../lib/auth'
 import styles from './app.css'
 
 export default class App extends Component {
@@ -70,6 +71,7 @@ export default class App extends Component {
         </button>
         <p>Posting to {team}</p>
         <Channels
+          onError={(error) => this.setState({ error })}
           onChange={(channel) => this.setState({ channel })}
           token={token}
         />
@@ -83,6 +85,15 @@ export default class App extends Component {
             onChange={(message) => this.setState({ message })}
             placeholder={defaultMessage}
           />
+          {error && (
+            <div class={styles.error}>
+              Error: {error}. Try{' '}
+              <a onClick={auth.delete} href={auth.url}>
+                logging in
+              </a>{' '}
+              again.
+            </div>
+          )}
           <button
             class={styles.btnPost}
             type="submit"
@@ -91,7 +102,6 @@ export default class App extends Component {
             {uploading ? 'Uploading...' : success ? 'Post another' : 'Post'}
           </button>
         </form>
-        {error && <div>{error}</div>}
       </div>
     )
   }

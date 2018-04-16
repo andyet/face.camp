@@ -1,6 +1,12 @@
 const LS_KEY = 'facecamp-data'
 
+const url =
+  process.env.NODE_ENV === 'production'
+    ? 'https://auth.face.camp'
+    : `http://${window.location.hostname}:3000`
+
 export default {
+  url,
   get(hash) {
     if (hash && hash.length > 1) {
       try {
