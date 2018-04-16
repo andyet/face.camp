@@ -16,7 +16,6 @@
 
 .btnPost {
   width: 100%;
-  margin-bottom: 30px;
   padding: 15px;
   display: block;
   background: white;
@@ -46,4 +45,16 @@
   cursor: default;
   color: #e90090;
   background: white;
+}
+
+.error {
+  margin-bottom: 20px;
+  color: #e90090;
+  text-align: center;
+  font-size: 24px;
+}
+
+.error a,
+.error a:visited {
+  color: #e90090;
 }

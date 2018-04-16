@@ -2,7 +2,6 @@
 
 import { h, Component } from 'preact'
 import cx from 'classnames'
-import url from '../lib/url-qs'
 import styles from './channels.css'
 
 export default class Channels extends Component {
@@ -17,23 +16,25 @@ export default class Channels extends Component {
   }
 
   fetchChannels = () => {
-    const { onChange, token } = this.props
+    const { onChange, onError, token } = this.props
 
     this.setState({ fetching: true })
 
     fetch(
-      url('https://slack.com/api/channels.list', {
-        exclude_members: true,
-        exclude_archived: true,
-        token
-      })
+      `https://slack.com/api/channels.list?exclude_members=true&exclude_archived=true&token=${token}`
     )
       .then((res) => res.json())
       .then((data) => {
         if (data.error || !data.ok) {
+          const error = data.error || 'Could not fetch channels'
+
+          onChange(null)
+          onError(error)
+
           return this.setState({
-            fetching: false,
-            error: data.error || 'Error finding channels'
+            error,
+            channels: [],
+            fetching: false
           })
         }
 
@@ -41,7 +42,7 @@ export default class Channels extends Component {
           (a, b) => b.num_members - a.num_members
         )
 
-        onChange(channels[0])
+        onChange(channels.length ? channels[0] : null)
 
         this.setState({
           channels,

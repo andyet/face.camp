@@ -14,9 +14,9 @@ export default class Home extends Component {
   state = {
     error: null,
     stream: null,
-    captureStart: 0,
-    captureCurrent: 0,
-    renderProgress: 0
+    start: 0,
+    current: 0,
+    progress: null
   }
 
   static defaultProps = {
@@ -31,7 +31,7 @@ export default class Home extends Component {
   componentDidMount() {
     this._spaceBarTrigger = keyBinding('keypress', R_KEY, this.startCapture)
     navigator.mediaDevices
-      .getUserMedia({ audio: false, video: true })
+      .getUserMedia({ audio: false, video: { facingMode: 'user' } })
       .then((stream) => {
         this.setState({ stream })
 
@@ -53,7 +53,7 @@ export default class Home extends Component {
         }, 0)
       })
       .catch((error) => {
-        this.setState({ error: `Video ${error.message.toLowerCase()}` })
+        this.setState({ error: error.message })
       })
   }
 
@@ -71,28 +71,32 @@ export default class Home extends Component {
     }
   }
 
-  setImage = (image) => {
+  setImage = ({ image = null, now = 0 } = {}) => {
     const { onChange } = this.props
     onChange({ image })
-    this.setState({ captureStart: 0, captureCurrent: 0, renderProgress: 0 })
+    this.setState({ start: now, current: now, progress: null })
   }
 
   startCapture = (e) => {
-    if (
-      e.altKey ||
-      e.ctrlKey ||
-      e.metaKey ||
-      e.shiftKey ||
-      (e.key && e.key !== R_KEY) ||
-      (e.button !== undefined && e.button !== 0)
-    ) {
+    const isAltKey = e.altKey || e.ctrlKey || e.metaKey || e.shiftKey
+    const isAltButton = e.button !== undefined && e.button !== 0
+    const isKeyPress = !!e.key
+    const isKeyStart = e.key === R_KEY
+
+    if (isAltKey || isAltButton || (isKeyPress && !isKeyStart)) {
       return
     }
 
-    const { maxLength, gifFps, gifQuality, onChange } = this.props
-    const { captureStart } = this.state
+    e.preventDefault()
 
-    if (captureStart) return this.stopCapture()
+    const { maxLength, gifFps, gifQuality } = this.props
+    const { start } = this.state
+
+    // Dont start multiple recordings
+    if (start) {
+      if (isKeyStart) return this.stopCapture()
+      return
+    }
 
     this._gif = gif({
       height: this._canvas.height,
@@ -100,32 +104,28 @@ export default class Home extends Component {
       quality: gifQuality
     })
 
-    this._gif.on('progress', (renderProgress) =>
-      this.setState({ renderProgress })
-    )
-    this._gif.on('finished', this.setImage)
+    this._gif.on('progress', (progress) => this.setState({ progress }))
+    this._gif.on('finished', (image) => this.setImage({ image, now: 0 }))
 
-    onChange({ image: null })
-    const now = Date.now()
-    this.setState({ renderProgress: 0, captureStart: now, captureCurrent: now })
+    this.setImage({ image: null, now: Date.now() })
 
     this._captureInterval = setInterval(() => {
       const now = Date.now()
 
-      const { captureStart: start } = this.state
+      const { start } = this.state
 
       if (start && now - start > maxLength) {
         return this.stopCapture()
       }
 
-      this.setState({ captureCurrent: now })
+      this.setState({ current: now })
       this._gif.addFrame(this._canvas, { copy: true, delay: ms(gifFps) })
     }, ms(gifFps))
   }
 
   stopCapture = () => {
     const { minLength } = this.props
-    const { captureStart: start, captureCurrent: current } = this.state
+    const { start, current } = this.state
 
     // Re-call stopCapture in the event of a quick tap after the minimum length
     // has passed
@@ -143,16 +143,15 @@ export default class Home extends Component {
     this._gif.render()
   }
 
-  render(
-    { image, maxLength },
-    { error, stream, renderProgress, captureStart, captureCurrent }
-  ) {
+  render({ image, maxLength }, { error, stream, progress, start, current }) {
+    const hasProgress = typeof progress === 'number'
+
     return (
       <div class={styles.container}>
         {!stream && !error ? (
-          <div class={styles.initial}>Grant camera access</div>
+          <div class={styles.initial}>Granting camera access</div>
         ) : error ? (
-          <div class={styles.error}>{error}</div>
+          <div class={styles.error}>Error: {error}</div>
         ) : (
           <div>
             <canvas
@@ -162,17 +161,20 @@ export default class Home extends Component {
             <div class={styles.mediaContainer}>
               <video
                 class={styles.video}
-                style={{ display: image || renderProgress ? 'none' : 'block' }}
+                style={{ display: image || hasProgress ? 'none' : 'block' }}
                 ref={(c) => (this._video = c)}
+                autoplay
+                muted
+                playsinline
                 srcObject={stream}
               />
               {!image &&
-                renderProgress > 0 && (
+                hasProgress && (
                   <div
                     class={styles.renderProgress}
                     style={{ height: this._videoHeight }}
                   >
-                    {(renderProgress * 100).toFixed(0)}%
+                    {(progress * 100).toFixed(0)}%
                   </div>
                 )}
               {image && (
@@ -184,30 +186,31 @@ export default class Home extends Component {
                 />
               )}
               {!image &&
-                !renderProgress && (
+                !hasProgress && (
                   <div
                     class={styles.captureProgress}
                     style={{
-                      width: `${100 *
-                        ((captureCurrent - captureStart) / maxLength)}%`
+                      width: `${100 * ((current - start) / maxLength)}%`
                     }}
                   />
                 )}
             </div>
             {!image &&
-              !renderProgress && (
+              !hasProgress && (
                 <button
                   class={cx(styles.btnCapture, {
-                    [styles.btnRecording]: !!captureStart
+                    [styles.btnRecording]: !!start
                   })}
                   onMouseDown={this.startCapture}
                   onMouseUp={this.stopCapture}
+                  onTouchStart={this.startCapture}
+                  onTouchEnd={this.stopCapture}
                 >
-                  {captureStart ? 'Recording' : 'Hold to record'}
+                  {start ? 'Recording' : 'Hold to record'}
                 </button>
               )}
             {!image &&
-              renderProgress > 0 && (
+              hasProgress && (
                 <button class={styles.btnCapture} disabled>
                   Rendering
                 </button>
@@ -215,7 +218,7 @@ export default class Home extends Component {
             {image && (
               <button
                 class={styles.btnCapture}
-                onClick={() => this.setImage(null)}
+                onClick={() => this.setImage({ image: null, now: 0 })}
               >
                 Reset
               </button>
