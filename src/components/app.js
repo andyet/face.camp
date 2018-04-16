@@ -16,13 +16,13 @@ export default class App extends Component {
   }
 
   static defaultProps = {
-    message: 'It’s my mug on facecamp'
+    defaultMessage: 'It’s my mug on facecamp'
   }
 
   handlePost = (e) => {
     e.preventDefault()
 
-    const { access_token: token, message: defaultMessage } = this.props
+    const { access_token: token, defaultMessage } = this.props
     const { image, channel, message, uploading } = this.state
 
     if (!image || !channel || uploading) return
@@ -50,12 +50,18 @@ export default class App extends Component {
 
   reset = (e) => {
     e.preventDefault()
-    this.setState({ image: null, success: null, error: null, uploading: false })
+    this.setState({
+      image: null,
+      success: null,
+      error: null,
+      uploading: false,
+      message: ''
+    })
   }
 
   render(
-    { access_token: token, team_name: team, logout, message },
-    { image, channel, uploading, success, error }
+    { access_token: token, team_name: team, logout, defaultMessage },
+    { image, channel, uploading, success, error, message }
   ) {
     return (
       <div>
@@ -73,8 +79,9 @@ export default class App extends Component {
         />
         <form onSubmit={success ? this.reset : this.handlePost}>
           <Message
+            message={message}
             onChange={(message) => this.setState({ message })}
-            placeholder={message}
+            placeholder={defaultMessage}
           />
           <button
             class={styles.btnPost}

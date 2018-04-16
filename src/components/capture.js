@@ -79,11 +79,10 @@ export default class Home extends Component {
 
     e.preventDefault()
 
-    const { maxLength, gifFps, gifQuality, onChange } = this.props
+    const { maxLength, gifFps, gifQuality } = this.props
     const { start } = this.state
 
     // Dont start multiple recordings
-    console.log({ start })
     if (start) return
 
     this._gif = gif({
@@ -155,7 +154,6 @@ export default class Home extends Component {
                 muted
                 playsinline
                 srcObject={stream}
-                playsinline
               />
               {!image &&
                 hasProgress && (
