@@ -1,9 +1,7 @@
 const LS_KEY = 'facecamp-data'
 
 export default {
-  get() {
-    const { hash } = window.location
-
+  get(hash) {
     if (hash && hash.length > 1) {
       try {
         const parsedData = JSON.parse(decodeURI(hash.slice(1)))

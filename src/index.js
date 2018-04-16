@@ -12,7 +12,7 @@ if (module.hot) {
 
 export default class Index extends Component {
   state = {
-    auth: auth.get()
+    auth: auth.get(window.location.hash)
   }
 
   logout = () => {
