@@ -89,6 +89,17 @@
   background-color: white;
 }
 
+@media screen and (max-height: 565px) {
+  .btnCapture {
+    margin-top: -1px;
+    padding: 10px 7px 7px;
+    border-top: none;
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+    font-size: 15px;
+  }
+}
+
 .btnRecording {
   box-shadow: none;
   transform: translate(2px, 2px);

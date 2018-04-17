@@ -26,6 +26,20 @@
   cursor: pointer;
 }
 
+@media screen and (max-height: 565px) {
+  .selectChannel {
+    margin-bottom: 10px;
+    background-size: 18px 9px;
+  }
+  .select {
+    padding-left: 40px;
+    height: 32px;
+    font-size: 14px;
+    text-indent: 35px;
+    background-size: 15px auto;
+  }
+}
+
 .empty {
   color: #e90090;
 }

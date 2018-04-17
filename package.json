@@ -22,7 +22,9 @@
     "preact-cli": "^2.1.0",
     "prettier": "^1.11.1"
   },
-  "eslintIgnore": ["build/*"],
+  "eslintIgnore": [
+    "build/*"
+  ],
   "license": "MIT",
   "private": true,
   "scripts": {

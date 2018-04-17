@@ -9,6 +9,14 @@
   cursor: pointer;
 }
 
+@media screen and (max-height: 565px) {
+  .btnLogout {
+    border-top: none;
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+  }
+}
+
 .btnLogout:hover {
   background-color: #e90090;
   color: #fff;
@@ -30,6 +38,13 @@
   color: #e90090;
   cursor: pointer;
   transition: background-color 0.2s;
+}
+
+@media screen and (max-height: 565px) {
+  .btnPost {
+    padding: 7px;
+    font-size: 15px;
+  }
 }
 
 .btnPost:hover {

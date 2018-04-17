@@ -17,3 +17,10 @@
 .inputMessage:focus {
   outline: none;
 }
+
+@media screen and (max-height: 565px) {
+  .inputMessage {
+    padding: 7px 10px;
+    font-size: 15px;
+  }
+}
