@@ -30,6 +30,12 @@ select {
   padding: 20px;
 }
 
+@media screen and (max-height: 565px) {
+  #app {
+    padding: 10px 20px 0;
+  }
+}
+
 p {
   margin: 0;
 }

@@ -1,5 +1,5 @@
 .btnLogout {
-  margin: -7px 0 5px 10px;
+  margin: -10px 0 5px 5px;
   padding: 5px 10px;
   background: white;
   border: 1px solid #e90090;
@@ -9,23 +9,42 @@
   cursor: pointer;
 }
 
+@media screen and (max-height: 565px) {
+  .btnLogout {
+    border-top: none;
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+  }
+}
+
 .btnLogout:hover {
   background-color: #e90090;
   color: #fff;
 }
 
+.btnLogout + p {
+  margin-bottom: 10px;
+}
+
 .btnPost {
   width: 100%;
-  padding: 15px;
+  padding: 10px 15px;
   display: block;
   background: white;
   border: 1px solid #e90090;
   border-radius: 5px;
   box-shadow: 2px 2px 0 #e90090;
-  font-size: 20px;
+  font-size: 18px;
   color: #e90090;
   cursor: pointer;
   transition: background-color 0.2s;
+}
+
+@media screen and (max-height: 565px) {
+  .btnPost {
+    padding: 7px;
+    font-size: 15px;
+  }
 }
 
 .btnPost:hover {
