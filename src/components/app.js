@@ -1,4 +1,5 @@
 import { h, Component } from 'preact'
+import cx from 'classnames'
 import Capture from '../components/capture'
 import Channels from '../components/channels'
 import Message from '../components/message'
@@ -72,15 +73,21 @@ export default class App extends Component {
           logout
         </button>
         <p>
-          Posting to{' '}
-          {teams.length === 1 ? (
-            team.team_name
-          ) : (
-            <button onClick={selectTeam} class={styles.btnLink}>
-              {team.team_name}
-            </button>
+          Posting to {team.team_name}
+          {teams.length > 1 && (
+            <span>
+              {' '}
+              <button
+                onClick={selectTeam}
+                class={cx(styles.btnLink, styles.btnNav)}
+              >
+                🔀
+              </button>
+            </span>
           )}{' '}
-          | <a href={authUrl}>Add team</a>
+          <a href={authUrl} class={styles.btnNav}>
+            ➕
+          </a>
         </p>
         <Channels
           onError={(error) => this.setState({ channelsError: error })}

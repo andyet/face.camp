@@ -83,3 +83,9 @@
   cursor: pointer;
   text-decoration: underline;
 }
+
+.btnNav,
+.btnNav:focus,
+.btnNav:active {
+  text-decoration: none;
+}
