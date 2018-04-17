@@ -8,8 +8,6 @@ import styles from './capture.css'
 
 const ms = (fps) => 1000 / fps
 
-const R_KEY = 'r'
-
 export default class Home extends Component {
   state = {
     error: null,
@@ -29,7 +27,6 @@ export default class Home extends Component {
   }
 
   componentDidMount() {
-    this._spaceBarTrigger = keyBinding('keypress', R_KEY, this.startCapture)
     navigator.mediaDevices
       .getUserMedia({ audio: false, video: { facingMode: 'user' } })
       .then((stream) => {
@@ -44,12 +41,16 @@ export default class Home extends Component {
           this._canvasInterval = setInterval(function() {
             canvas.width = video.videoWidth
             canvas.height = video.videoHeight
-
-            this._height = video.clientHeight
-
             context.drawImage(video, 0, 0, canvas.width, canvas.height)
             video.play()
           }, ms(60))
+
+          this._removeCaptureKey = keyBinding(
+            'keypress',
+            ' ',
+            this._postButton,
+            this.startCapture
+          )
         }, 0)
       })
       .catch((error) => {
@@ -61,7 +62,7 @@ export default class Home extends Component {
     clearInterval(this._canvasInterval)
     clearInterval(this._captureInterval)
     clearTimeout(this._minTimeout)
-    this._spaceBarTrigger()
+    if (this._removeCaptureKey) this._removeCaptureKey()
   }
 
   componentDidUpdate() {
@@ -80,10 +81,9 @@ export default class Home extends Component {
   startCapture = (e) => {
     const isAltKey = e.altKey || e.ctrlKey || e.metaKey || e.shiftKey
     const isAltButton = e.button !== undefined && e.button !== 0
-    const isKeyPress = !!e.key
-    const isKeyStart = e.key === R_KEY
+    const isKeyPress = e.type === 'keypress'
 
-    if (isAltKey || isAltButton || (isKeyPress && !isKeyStart)) {
+    if (isAltKey || isAltButton || (this._gif && this._gif.running)) {
       return
     }
 
@@ -92,9 +92,10 @@ export default class Home extends Component {
     const { maxLength, gifFps, gifQuality } = this.props
     const { start } = this.state
 
-    // Dont start multiple recordings
     if (start) {
-      if (isKeyStart) return this.stopCapture()
+      // Stop hands-free capture mode
+      if (isKeyPress) return this.stopCapture()
+      // Dont start multiple recordings
       return
     }
 
@@ -105,7 +106,11 @@ export default class Home extends Component {
     })
 
     this._gif.on('progress', (progress) => this.setState({ progress }))
-    this._gif.on('finished', (image) => this.setImage({ image, now: 0 }))
+    this._gif.on('finished', (image) => {
+      // gif.js turns this on when rendering but not off when finished
+      this._gif.running = false
+      this.setImage({ image, now: 0 })
+    })
 
     this.setImage({ image: null, now: Date.now() })
 
@@ -127,19 +132,21 @@ export default class Home extends Component {
     const { minLength } = this.props
     const { start, current } = this.state
 
+    if (this._gif.running) return
+
     // Re-call stopCapture in the event of a quick tap after the minimum length
     // has passed
     if (current - start < minLength) {
-      this._minTimeout = setTimeout(
-        this.stopCapture,
-        minLength - (current - start)
-      )
+      if (!this._minTimeout) {
+        this._minTimeout = setTimeout(() => {
+          this.stopCapture()
+          this._minTimeout = null
+        }, minLength - (current - start))
+      }
       return
     }
 
     clearInterval(this._captureInterval)
-
-    this._gif.running = false
     this._gif.render()
   }
 
@@ -198,6 +205,7 @@ export default class Home extends Component {
             {!image &&
               !hasProgress && (
                 <button
+                  ref={(c) => (this._postButton = c)}
                   class={cx(styles.btnCapture, {
                     [styles.btnRecording]: !!start
                   })}

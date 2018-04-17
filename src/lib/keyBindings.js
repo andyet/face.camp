@@ -1,12 +1,8 @@
-export default (event, key, cb) => {
+export default (event, key, element, cb) => {
   const handler = (e) => {
-    if (e.target.nodeName.toLowerCase() === 'input' || e.target.nodeName.toLowerCase() === 'textarea') {
-      return undefined
+    if (e.target === document.body || e.target === element) {
+      if (e.key === key) return cb(e)
     }
-    if (e.key === key) {
-      return cb(e)
-    }
-    return undefined
   }
   document.addEventListener(event, handler)
   return () => document.removeEventListener(event, handler)
