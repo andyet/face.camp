@@ -2,6 +2,7 @@
 
 import { h, Component } from 'preact'
 import cx from 'classnames'
+import BlobImage from './blob-image'
 import gif from '../lib/gif'
 import keyBinding from '../lib/keyBindings'
 import styles from './capture.css'
@@ -19,10 +20,10 @@ export default class Home extends Component {
   }
 
   static defaultProps = {
-    allowReset: true,
+    readonly: false,
     image: null,
     maxLength: 3000,
-    minLength: 1000,
+    minLength: 300,
     gifQuality: 10, // lower is better
     gifFps: 10,
     onChange: () => {}
@@ -153,7 +154,7 @@ export default class Home extends Component {
   }
 
   render(
-    { image, maxLength, allowReset },
+    { image, maxLength, readonly },
     { error, stream, progress, start, current }
   ) {
     const hasProgress = typeof progress === 'number'
@@ -190,11 +191,11 @@ export default class Home extends Component {
                   </div>
                 )}
               {image && (
-                <img
+                <BlobImage
                   class={styles.image}
                   alt="Your mug!"
                   style={{ height: this._videoHeight }}
-                  src={URL.createObjectURL(image)}
+                  src={image}
                 />
               )}
               {!image &&
@@ -230,15 +231,13 @@ export default class Home extends Component {
               )}
             {image && (
               <button
-                disabled={!allowReset}
+                disabled={readonly}
                 class={styles.btnCapture}
                 onClick={
-                  allowReset
-                    ? () => this.setImage({ image: null, now: 0 })
-                    : noop
+                  readonly ? noop : () => this.setImage({ image: null, now: 0 })
                 }
               >
-                {allowReset ? 'Reset gif' : 'Looking good'}
+                {readonly ? 'Looking good' : 'Reset gif'}
               </button>
             )}
           </div>

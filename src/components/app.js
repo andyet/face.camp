@@ -6,6 +6,8 @@ import Channels from '../components/channels'
 import Message from '../components/message'
 import fetchForm from '../lib/fetch-formdata'
 import { authUrl } from '../lib/auth'
+import slug from '../lib/slug'
+import ts from '../lib/timestamp'
 import styles from './app.css'
 
 export default class App extends Component {
@@ -33,14 +35,16 @@ export default class App extends Component {
 
     this.setState({ uploading: true, success: null, postError: null })
 
+    const title = message || defaultMessage
+
     fetchForm('https://slack.com/api/files.upload', {
       method: 'POST',
       data: {
         token: team.access_token,
-        title: message || defaultMessage,
+        title,
         channels: channel.id,
         filetype: 'gif',
-        filename: 'facecamp.gif',
+        filename: `${ts()} ${slug(title).substring(0, 240)}.gif`,
         file: image
       }
     })
@@ -97,11 +101,12 @@ export default class App extends Component {
         />
         <Capture
           image={image}
-          allowReset={!uploading && !success && !error}
-          onChange={({ image }) => this.setState({ image })}
+          readonly={uploading || success}
+          onChange={({ image }) => this.setState({ image, postError: null })}
         />
         <form onSubmit={success ? this.reset : this.handlePost}>
           <Message
+            readonly={uploading || success}
             message={message}
             onChange={(message) => this.setState({ message })}
             placeholder={defaultMessage}
