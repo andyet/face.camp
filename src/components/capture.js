@@ -6,6 +6,7 @@ import gif from '../lib/gif'
 import keyBinding from '../lib/keyBindings'
 import styles from './capture.css'
 
+const noop = () => {}
 const ms = (fps) => 1000 / fps
 
 export default class Home extends Component {
@@ -18,6 +19,7 @@ export default class Home extends Component {
   }
 
   static defaultProps = {
+    allowReset: true,
     image: null,
     maxLength: 3000,
     minLength: 1000,
@@ -150,7 +152,10 @@ export default class Home extends Component {
     this._gif.render()
   }
 
-  render({ image, maxLength }, { error, stream, progress, start, current }) {
+  render(
+    { image, maxLength, allowReset },
+    { error, stream, progress, start, current }
+  ) {
     const hasProgress = typeof progress === 'number'
 
     return (
@@ -225,10 +230,15 @@ export default class Home extends Component {
               )}
             {image && (
               <button
+                disabled={!allowReset}
                 class={styles.btnCapture}
-                onClick={() => this.setImage({ image: null, now: 0 })}
+                onClick={
+                  allowReset
+                    ? () => this.setImage({ image: null, now: 0 })
+                    : noop
+                }
               >
-                Reset
+                {allowReset ? 'Reset gif' : 'Looking good'}
               </button>
             )}
           </div>

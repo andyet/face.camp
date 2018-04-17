@@ -8,7 +8,7 @@ export default class Message extends Component {
         value={message}
         class={styles.inputMessage}
         placeholder={placeholder}
-        onChange={(e) => onChange(e.target.value)}
+        onInput={(e) => onChange(e.target.value)}
       />
     )
   }

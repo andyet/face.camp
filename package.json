@@ -4,7 +4,8 @@
   "dependencies": {
     "classnames": "^2.2.5",
     "gif.js": "^0.2.0",
-    "preact": "^8.2.6"
+    "preact": "^8.2.6",
+    "pretty-bytes": "^4.0.2"
   },
   "devDependencies": {
     "babel-eslint": "^7.2.3",

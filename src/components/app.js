@@ -1,5 +1,6 @@
 import { h, Component } from 'preact'
 import cx from 'classnames'
+import pb from 'pretty-bytes'
 import Capture from '../components/capture'
 import Channels from '../components/channels'
 import Message from '../components/message'
@@ -96,6 +97,7 @@ export default class App extends Component {
         />
         <Capture
           image={image}
+          allowReset={!uploading && !success && !error}
           onChange={({ image }) => this.setState({ image })}
         />
         <form onSubmit={success ? this.reset : this.handlePost}>
@@ -124,7 +126,11 @@ export default class App extends Component {
             type="submit"
             disabled={!image || !channel || uploading}
           >
-            {uploading ? 'Uploading...' : success ? 'Post another' : 'Post'}
+            {uploading
+              ? 'Uploading...'
+              : success
+                ? 'Post another'
+                : `Post${image ? ` (${pb(image.size)})` : ''}`}
           </button>
         </form>
       </div>
