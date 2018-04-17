@@ -3,6 +3,7 @@
 import { h, Component } from 'preact'
 import cx from 'classnames'
 import gif from '../lib/gif'
+import keyBinding from '../lib/keyBindings'
 import styles from './capture.css'
 
 const ms = (fps) => 1000 / fps
@@ -40,12 +41,16 @@ export default class Home extends Component {
           this._canvasInterval = setInterval(function() {
             canvas.width = video.videoWidth
             canvas.height = video.videoHeight
-
-            this._height = video.clientHeight
-
             context.drawImage(video, 0, 0, canvas.width, canvas.height)
             video.play()
           }, ms(60))
+
+          this._removeCaptureKey = keyBinding(
+            'keypress',
+            ' ',
+            this._postButton,
+            this.startCapture
+          )
         }, 0)
       })
       .catch((error) => {
@@ -57,6 +62,7 @@ export default class Home extends Component {
     clearInterval(this._canvasInterval)
     clearInterval(this._captureInterval)
     clearTimeout(this._minTimeout)
+    if (this._removeCaptureKey) this._removeCaptureKey()
   }
 
   componentDidUpdate() {
@@ -75,8 +81,9 @@ export default class Home extends Component {
   startCapture = (e) => {
     const isAltKey = e.altKey || e.ctrlKey || e.metaKey || e.shiftKey
     const isAltButton = e.button !== undefined && e.button !== 0
+    const isKeyPress = e.type === 'keypress'
 
-    if (isAltKey || isAltButton) {
+    if (isAltKey || isAltButton || (this._gif && this._gif.running)) {
       return
     }
 
@@ -85,8 +92,12 @@ export default class Home extends Component {
     const { maxLength, gifFps, gifQuality } = this.props
     const { start } = this.state
 
-    // Dont start multiple recordings
-    if (start) return
+    if (start) {
+      // Stop hands-free capture mode
+      if (isKeyPress) return this.stopCapture()
+      // Dont start multiple recordings
+      return
+    }
 
     this._gif = gif({
       height: this._canvas.height,
@@ -95,7 +106,11 @@ export default class Home extends Component {
     })
 
     this._gif.on('progress', (progress) => this.setState({ progress }))
-    this._gif.on('finished', (image) => this.setImage({ image, now: 0 }))
+    this._gif.on('finished', (image) => {
+      // gif.js turns this on when rendering but not off when finished
+      this._gif.running = false
+      this.setImage({ image, now: 0 })
+    })
 
     this.setImage({ image: null, now: Date.now() })
 
@@ -117,19 +132,21 @@ export default class Home extends Component {
     const { minLength } = this.props
     const { start, current } = this.state
 
+    if (this._gif.running) return
+
     // Re-call stopCapture in the event of a quick tap after the minimum length
     // has passed
     if (current - start < minLength) {
-      this._minTimeout = setTimeout(
-        this.stopCapture,
-        minLength - (current - start)
-      )
+      if (!this._minTimeout) {
+        this._minTimeout = setTimeout(() => {
+          this.stopCapture()
+          this._minTimeout = null
+        }, minLength - (current - start))
+      }
       return
     }
 
     clearInterval(this._captureInterval)
-
-    this._gif.running = false
     this._gif.render()
   }
 
@@ -188,6 +205,7 @@ export default class Home extends Component {
             {!image &&
               !hasProgress && (
                 <button
+                  ref={(c) => (this._postButton = c)}
                   class={cx(styles.btnCapture, {
                     [styles.btnRecording]: !!start
                   })}
