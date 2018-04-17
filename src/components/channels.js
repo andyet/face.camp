@@ -12,13 +12,21 @@ export default class Channels extends Component {
   }
 
   componentDidMount() {
-    this.fetchChannels()
+    this.fetchChannels(this.props)
   }
 
-  fetchChannels = () => {
-    const { onChange, onError, token } = this.props
+  componentWillReceiveProps(nextProps) {
+    if (this.props.token !== nextProps.token) {
+      this.fetchChannels(nextProps)
+    }
+  }
 
-    this.setState({ fetching: true })
+  fetchChannels = (props) => {
+    const { onChange, onError, token } = props
+
+    onChange(null)
+    onError(null)
+    this.setState({ fetching: true, channels: [], error: null })
 
     fetch(
       `https://slack.com/api/channels.list?exclude_members=true&exclude_archived=true&token=${token}`

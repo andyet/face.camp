@@ -1,5 +1,5 @@
 import { h, Component } from 'preact'
-import auth from '../lib/auth'
+import { authUrl } from '../lib/auth'
 import styles from './splash.css'
 
 export default class Splash extends Component {
@@ -13,7 +13,7 @@ export default class Splash extends Component {
           <h1>Chat your mug</h1>
           <p> Sign in with:</p>
           <p>
-            <a class={styles.btnSlackAuth} href={auth.url}>
+            <a class={styles.btnSlackAuth} href={authUrl}>
               Login with Slack
             </a>
           </p>
