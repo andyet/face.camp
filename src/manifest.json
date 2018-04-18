@@ -1,6 +1,6 @@
 {
-  "name": "facecamp",
-  "short_name": "facecamp",
+  "name": "Facecamp",
+  "short_name": "Facecamp",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",
