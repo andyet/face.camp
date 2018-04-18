@@ -98,7 +98,7 @@
 .btnLink,
 .btnLink:focus,
 .btnLink:active {
-  background: none;
+  /*background: none;*/
   border: none;
   display: inline;
   font: inherit;
