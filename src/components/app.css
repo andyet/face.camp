@@ -67,10 +67,18 @@
 }
 
 .error {
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   color: #e90090;
   text-align: center;
-  font-size: 24px;
+  font-size: 18px;
+}
+
+@media screen and (max-height: 565px) {
+  .error {
+    font-size: 15px;
+    margin-top: -5px;
+    margin-bottom: 10px;
+  }
 }
 
 .error a,

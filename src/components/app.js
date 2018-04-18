@@ -115,7 +115,8 @@ export default class App extends Component {
             <div class={styles.error}>
               Error: {error.message}.
               {error.slackAuth && (
-                <div>
+                <span>
+                  {' '}
                   Try{' '}
                   <button
                     class={styles.btnLink}
@@ -127,7 +128,7 @@ export default class App extends Component {
                     logging in
                   </button>{' '}
                   again.
-                </div>
+                </span>
               )}
             </div>
           )}
