@@ -1,7 +1,7 @@
 .inputMessage {
   width: 100%;
-  margin: 20px 0;
-  padding: 15px;
+  margin: 15px 0;
+  padding: 10px 15px;
   overflow: hidden;
   background-repeat: no-repeat;
   border: 1px solid #12abee;
@@ -21,4 +21,11 @@
 .inputMessage[readonly] {
   opacity: 0.5;
   cursor: default;
+}
+
+@media screen and (max-height: 565px) {
+  .inputMessage {
+    padding: 7px 10px;
+    font-size: 15px;
+  }
 }

@@ -63,8 +63,8 @@
   box-shadow: 2px 2px 0 #12abee;
   background-color: white;
   color: #12abee;
-  padding: 15px;
-  font-size: 20px;
+  padding: 10px 15px;
+  font-size: 18px;
   margin-top: 10px;
   user-select: none;
 }
@@ -87,6 +87,17 @@
   opacity: 0.5;
   cursor: default;
   background-color: white;
+}
+
+@media screen and (max-height: 565px) {
+  .btnCapture {
+    margin-top: -1px;
+    padding: 10px 7px 7px;
+    border-top: none;
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+    font-size: 15px;
+  }
 }
 
 .btnRecording {
