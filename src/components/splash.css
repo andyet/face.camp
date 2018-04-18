@@ -42,7 +42,7 @@
   display: inline-block;
   vertical-align: middle;
   text-indent: -9999em;
-  background: url('/assets/images/logo-andyet.svg') no-repeat center center;
+  background: url('../images/logo-andyet.svg') no-repeat center center;
   background-size: contain;
   transition: opacity 0.2s;
 }

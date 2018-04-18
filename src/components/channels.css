@@ -3,7 +3,7 @@
   margin: 10px 0 15px;
   overflow: hidden;
   background-repeat: no-repeat;
-  background-image: url('/assets/images/caret.svg');
+  background-image: url('../images/caret.svg');
   background-size: 22px 12px;
   background-position: 97% 55%;
   border: 1px solid #12abee;
@@ -17,7 +17,7 @@
   margin: 0;
   height: 40px;
   padding-left: 50px;
-  background: url('/assets/images/logo-slack.svg') no-repeat 15px 50%;
+  background: url('../images/logo-slack.svg') no-repeat 15px 50%;
   background-size: 24px auto;
   border: none;
   font-size: 16px;

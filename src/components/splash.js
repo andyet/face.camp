@@ -1,5 +1,6 @@
 import { h, Component } from 'preact'
 import styles from './splash.css'
+import logo from '../images/logo-facecamp.svg'
 
 export default class Splash extends Component {
   render({ children }) {
@@ -7,7 +8,7 @@ export default class Splash extends Component {
       <div class={styles.container}>
         <div>
           <a class={styles.logoFacecamp} href="/">
-            <img src={'/assets/images/logo-facecamp.svg'} alt="Facecamp logo" />
+            <img src={logo} alt="Facecamp logo" />
           </a>
           <h1 class={styles.title}>Chat your mug</h1>
           {children}

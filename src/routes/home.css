@@ -2,7 +2,7 @@
   width: 100%;
   padding: 20px;
   display: block;
-  background: url('/assets/images/logo-slack-full.svg') no-repeat center center;
+  background: url('../images/logo-slack-full.svg') no-repeat center center;
   background-size: auto 70px;
   border-radius: 5px;
   border: 1px solid #12abee;
