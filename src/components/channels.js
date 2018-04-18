@@ -2,6 +2,7 @@
 
 import { h, Component } from 'preact'
 import cx from 'classnames'
+import slackFetch from '../lib/slack-fetch'
 import styles from './channels.css'
 
 export default class Channels extends Component {
@@ -28,24 +29,10 @@ export default class Channels extends Component {
     onError(null)
     this.setState({ fetching: true, channels: [], error: null })
 
-    fetch(
+    slackFetch(
       `https://slack.com/api/channels.list?exclude_members=true&exclude_archived=true&token=${token}`
     )
-      .then((res) => res.json())
       .then((data) => {
-        if (data.error || !data.ok) {
-          const error = data.error || 'Could not fetch channels'
-
-          onChange(null)
-          onError(error)
-
-          return this.setState({
-            error,
-            channels: [],
-            fetching: false
-          })
-        }
-
         const channels = data.channels.sort(
           (a, b) => b.num_members - a.num_members
         )
@@ -55,6 +42,16 @@ export default class Channels extends Component {
         this.setState({
           channels,
           error: null,
+          fetching: false
+        })
+      })
+      .catch((error) => {
+        onChange(null)
+        onError(error)
+
+        this.setState({
+          error,
+          channels: [],
           fetching: false
         })
       })
@@ -74,7 +71,7 @@ export default class Channels extends Component {
           }
         >
           {error ? (
-            <option>Error: {error}</option>
+            <option>Error fetching channels</option>
           ) : fetching ? (
             <option>Loading channels</option>
           ) : !channels.length ? (

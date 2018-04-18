@@ -4,7 +4,7 @@ import pb from 'pretty-bytes'
 import Capture from '../components/capture'
 import Channels from '../components/channels'
 import Message from '../components/message'
-import fetchForm from '../lib/fetch-formdata'
+import slackFetch from '../lib/slack-fetch'
 import { authUrl } from '../lib/auth'
 import slug from '../lib/slug'
 import ts from '../lib/timestamp'
@@ -37,9 +37,9 @@ export default class App extends Component {
 
     const title = message || defaultMessage
 
-    fetchForm('https://slack.com/api/files.upload', {
+    slackFetch('https://slack.com/api/files.upload', {
       method: 'POST',
-      data: {
+      body: {
         token: team.access_token,
         title,
         channels: channel.id,
@@ -113,17 +113,22 @@ export default class App extends Component {
           />
           {error && (
             <div class={styles.error}>
-              Error: {error}. Try{' '}
-              <button
-                class={styles.btnLink}
-                onClick={() => {
-                  logout()
-                  window.location.href = authUrl
-                }}
-              >
-                logging in
-              </button>{' '}
-              again.
+              Error: {error.message}.
+              {error.slackAuth && (
+                <div>
+                  Try{' '}
+                  <button
+                    class={styles.btnLink}
+                    onClick={() => {
+                      logout()
+                      window.location.href = authUrl
+                    }}
+                  >
+                    logging in
+                  </button>{' '}
+                  again.
+                </div>
+              )}
             </div>
           )}
           <button
