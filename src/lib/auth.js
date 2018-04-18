@@ -27,6 +27,7 @@ const addTeam = createTeamUpdater((teams, index, team) => {
     teams.splice(index, 1)
   }
   team.last_used = Date.now()
+  team.slack = true
   teams.unshift(team)
 })
 

@@ -1,10 +1,11 @@
 import './index.css'
 
 import { h, Component } from 'preact'
-
+import { Router } from 'preact-router'
 import { readTeams, deleteTeam, updateTeam } from './lib/auth'
-import App from './components/app'
-import Splash from './components/splash'
+import Home from './routes/home'
+import Privacy from './routes/privacy'
+import browserSupport from './lib/browser-support'
 
 if (module.hot) {
   require('preact/debug')
@@ -16,42 +17,42 @@ const getSelected = (teams) => (teams && teams.length ? teams[0] : null)
 export default class Index extends Component {
   state = {
     teams: initialTeams,
-    selectedTeam: getSelected(initialTeams)
+    team: getSelected(initialTeams),
+    supported: browserSupport()
   }
 
   logout = () => {
-    const { selectedTeam } = this.state
-    const remainingTeams = deleteTeam(selectedTeam)
+    const { team } = this.state
+    const remainingTeams = deleteTeam(team)
     this.setState({
       teams: remainingTeams,
-      selectedTeam: getSelected(remainingTeams)
+      team: getSelected(remainingTeams)
     })
   }
 
   selectTeam = () => {
-    const { teams, selectedTeam } = this.state
-    const index = teams.indexOf(selectedTeam)
+    const { teams, team } = this.state
+    const index = teams.indexOf(team)
     const nextIndex = index + 1 >= teams.length ? 0 : index + 1
     const nextTeam = teams[nextIndex]
 
     const nextTeams = updateTeam(nextTeam, { last_used: Date.now() })
 
-    this.setState({ teams: nextTeams, selectedTeam: nextTeam })
+    this.setState({ teams: nextTeams, team: nextTeam })
   }
 
-  render(props, { teams, selectedTeam }) {
+  render(props, state) {
     return (
       <div id="app">
-        {selectedTeam ? (
-          <App
-            teams={teams}
-            team={selectedTeam}
+        <Router>
+          <Home
+            path="/"
+            {...state}
             selectTeam={this.selectTeam}
             logout={this.logout}
           />
-        ) : (
-          <Splash />
-        )}
+          <Privacy path="/privacy" />
+        </Router>
       </div>
     )
   }

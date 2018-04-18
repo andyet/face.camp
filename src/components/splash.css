@@ -22,36 +22,14 @@
   display: inline-block;
 }
 
-h1 {
+.title {
   margin-bottom: 40px;
   font-size: 40px;
   color: #12abee;
 }
 
-p {
+.container p {
   margin-bottom: 20px;
-}
-
-.btnSlackAuth {
-  width: 100%;
-  padding: 20px;
-  display: block;
-  background: url('/assets/images/logo-slack-full.svg') no-repeat center center;
-  background-size: auto 70px;
-  border-radius: 5px;
-  border: 1px solid #12abee;
-  box-shadow: 2px 2px 0 #12abee;
-  text-indent: -9999em;
-  transition: background-color 0.2s;
-}
-
-.btnSlackAuth:hover {
-  background-color: rgba(18, 172, 239, 0.08);
-}
-
-.btnSlackAuth:active {
-  box-shadow: none;
-  transform: translate(2px, 2px);
 }
 
 .byline {
