@@ -10,5 +10,9 @@
     "react": {
       "pragma": "h"
     }
+  },
+  "rules": {
+    "jsx-a11y/media-has-caption": 0,
+    "jsx-a11y/no-onchange": 0
   }
 }

@@ -31,6 +31,7 @@ export default class BlobImage extends Component {
   }
 
   render({ src: __, ...props }, { src }) {
+    // eslint-disable-next-line jsx-a11y/alt-text
     return <img {...props} src={src} />
   }
 }

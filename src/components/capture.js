@@ -1,5 +1,3 @@
-/* eslint-disable jsx-a11y/media-has-caption */
-
 import { h, Component } from 'preact'
 import cx from 'classnames'
 import BlobImage from './blob-image'
