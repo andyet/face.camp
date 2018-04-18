@@ -78,20 +78,20 @@ export default class App extends Component {
           logout
         </button>
         <p>
-          Posting to {team.team_name}
+          Post to {team.team_name}
           {teams.length > 1 && (
             <span>
               {' '}
               <button
                 onClick={selectTeam}
-                class={cx(styles.btnLink, styles.btnNav)}
+                class={cx(styles.btnLink, styles.btnNav, styles.btnSwap)}
               >
-                🔀
+                Swap Team
               </button>
             </span>
           )}{' '}
-          <a href={authUrl} class={styles.btnNav}>
-            ➕
+          <a href={authUrl} class={styles.btnNav, styles.btnAdd}>
+            Add Team
           </a>
         </p>
         <Channels
