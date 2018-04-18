@@ -87,7 +87,6 @@
 }
 
 .btnLink {
-  /*background: none !important;*/
   color: #e90090;
   border: none;
   padding: 0 !important;
@@ -98,7 +97,6 @@
 .btnLink,
 .btnLink:focus,
 .btnLink:active {
-  /*background: none;*/
   border: none;
   display: inline;
   font: inherit;
@@ -120,7 +118,7 @@
 .btnSwap {
   width: 12px;
   margin-right: 10px;
-  background: url('/images/swap.svg') no-repeat 0 4px;
+  background: url('../images/swap.svg') no-repeat 0 4px;
   background-size: 12px 9px;
   text-indent: -9999em;
 }
@@ -128,7 +126,7 @@
 a.btnAdd {
   padding-left: 13px;
   display: inline-block;
-  background: url('/images/plus.svg') no-repeat 0 3px;
+  background: url('../images/plus.svg') no-repeat 0 3px;
   background-size: 12px 9px;
   text-decoration: none;
   color: #12abee;
