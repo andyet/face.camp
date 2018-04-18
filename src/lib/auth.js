@@ -53,7 +53,7 @@ export const readTeams = () => {
   const { hash } = window.location
   if (hash && hash.length > 1) {
     try {
-      const teams = addTeam(JSON.parse(decodeURI(hash.slice(1))))
+      const teams = addTeam(JSON.parse(decodeURIComponent(hash.slice(1))))
       window.location.hash = ''
       return teams
     } catch (e) {
