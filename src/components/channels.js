@@ -23,7 +23,7 @@ export default class Channels extends Component {
   }
 
   fetchChannels = (props) => {
-    const { onChange, onError, token } = props
+    const { onChange, onError, token, selected } = props
 
     onChange(null)
     onError(null)
@@ -41,7 +41,9 @@ export default class Channels extends Component {
             return a.name_normalized - b.name_normalized
           })
 
-        onChange(channels.length ? channels[0] : null)
+        const channel =
+          channels.find((c) => c.id === selected) || channels[0] || null
+        onChange(channel)
 
         this.setState({
           channels,
@@ -71,7 +73,9 @@ export default class Channels extends Component {
             [styles.empty]: !channels.length
           })}
           onChange={(e) =>
-            onChange(channels.find((c) => c.id === e.target.value), e)
+            onChange(channels.find((c) => c.id === e.target.value), {
+              userSelected: true
+            })
           }
         >
           {error ? (

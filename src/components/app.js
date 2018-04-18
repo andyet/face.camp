@@ -13,7 +13,6 @@ import styles from './app.css'
 export default class App extends Component {
   state = {
     image: null,
-    channel: null,
     message: '',
     postError: null,
     channelsError: null,
@@ -25,13 +24,18 @@ export default class App extends Component {
     defaultMessage: 'It’s my mug on Facecamp'
   }
 
+  canPost = () => {
+    const { image, channel, uploading, postError, channelsError } = this.state
+    return !!(image && channel && !uploading && !postError && !channelsError)
+  }
+
   handlePost = (e) => {
     e.preventDefault()
 
     const { team, defaultMessage } = this.props
-    const { image, channel, message, uploading } = this.state
+    const { image, channel, message } = this.state
 
-    if (!image || !channel || uploading) return
+    if (!this.canPost()) return
 
     this.setState({ uploading: true, success: null, postError: null })
 
@@ -67,9 +71,9 @@ export default class App extends Component {
     })
   }
 
-  selectChannel = (channel, e) => {
+  selectChannel = (channel, { userSelected } = {}) => {
     this.setState({ channel })
-    if (e) {
+    if (userSelected) {
       this.props.selectChannel(channel)
     }
   }
@@ -143,7 +147,7 @@ export default class App extends Component {
           <button
             class={styles.btnPost}
             type="submit"
-            disabled={!image || !channel || uploading}
+            disabled={!this.canPost()}
           >
             {uploading
               ? 'Uploading...'
