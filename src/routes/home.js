@@ -1,7 +1,7 @@
 import { h, Component } from 'preact'
 import { authUrl } from '../lib/auth'
 import Splash from '../components/splash'
-import App from '../components/app'
+import App from 'async!../components/app'
 import styles from './home.css'
 
 export default class Home extends Component {

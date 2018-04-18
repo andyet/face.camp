@@ -23,9 +23,7 @@
     "preact-cli": "^2.1.0",
     "prettier": "^1.11.1"
   },
-  "eslintIgnore": [
-    "build/*"
-  ],
+  "eslintIgnore": ["build/*"],
   "license": "MIT",
   "private": true,
   "scripts": {
@@ -34,7 +32,7 @@
     "eslint": "eslint --fix .",
     "lint": "npm run prettier && npm run eslint",
     "prettier": "prettier --write \"src/**/*.{js,css}\"",
-    "serve": "preact build && preact serve",
+    "serve": "npm run build && preact serve",
     "start": "if-env NODE_ENV=production && npm run -s serve || npm run -s dev"
   }
 }
