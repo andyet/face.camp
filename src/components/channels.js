@@ -33,9 +33,13 @@ export default class Channels extends Component {
       `https://slack.com/api/channels.list?exclude_members=true&exclude_archived=true&token=${token}`
     )
       .then((data) => {
-        const channels = data.channels.sort(
-          (a, b) => b.num_members - a.num_members
-        )
+        const channels = data.channels
+          .filter(({ is_member }) => is_member)
+          .sort((a, b) => {
+            if (a.is_general) return -1
+            if (b.is_general) return 1
+            return a.name_normalized - b.name_normalized
+          })
 
         onChange(channels.length ? channels[0] : null)
 
@@ -57,7 +61,7 @@ export default class Channels extends Component {
       })
   }
 
-  render({ onChange }, { fetching, error, channels }) {
+  render({ onChange, selected }, { fetching, error, channels }) {
     return (
       <div class={styles.selectChannel}>
         <select
@@ -67,7 +71,7 @@ export default class Channels extends Component {
             [styles.empty]: !channels.length
           })}
           onChange={(e) =>
-            onChange(channels.find((c) => c.id === e.target.value))
+            onChange(channels.find((c) => c.id === e.target.value), e)
           }
         >
           {error ? (
@@ -78,7 +82,7 @@ export default class Channels extends Component {
             <option>No channels</option>
           ) : (
             channels.map((c) => (
-              <option key={c.id} value={c.id}>
+              <option key={c.id} value={c.id} selected={c.id === selected}>
                 #{c.name}
               </option>
             ))

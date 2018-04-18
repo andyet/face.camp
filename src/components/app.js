@@ -67,6 +67,13 @@ export default class App extends Component {
     })
   }
 
+  selectChannel = (channel, e) => {
+    this.setState({ channel })
+    if (e) {
+      this.props.selectChannel(channel)
+    }
+  }
+
   render(
     { teams, team, selectTeam, logout, defaultMessage },
     { image, channel, uploading, success, postError, channelsError, message }
@@ -90,13 +97,14 @@ export default class App extends Component {
               </button>
             </span>
           )}{' '}
-          <a href={authUrl} class={styles.btnNav, styles.btnAdd}>
+          <a href={authUrl} class={cx(styles.btnNav, styles.btnAdd)}>
             Add Team
           </a>
         </p>
         <Channels
+          selected={team.last_channel || null}
           onError={(error) => this.setState({ channelsError: error })}
-          onChange={(channel) => this.setState({ channel })}
+          onChange={this.selectChannel}
           token={team.access_token}
         />
         <Capture

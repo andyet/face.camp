@@ -41,6 +41,14 @@ export default class Index extends Component {
     this.setState({ teams: nextTeams, team: nextTeam })
   }
 
+  selectChannel = (channel) => {
+    if (channel) {
+      const { team } = this.state
+      const teams = updateTeam(team, { last_channel: channel.id })
+      this.setState({ teams, team })
+    }
+  }
+
   render(props, state) {
     return (
       <div id="app">
@@ -49,6 +57,7 @@ export default class Index extends Component {
             path="/"
             {...state}
             selectTeam={this.selectTeam}
+            selectChannel={this.selectChannel}
             logout={this.logout}
           />
           <Privacy path="/privacy" />
