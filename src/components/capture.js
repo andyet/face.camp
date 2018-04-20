@@ -20,11 +20,11 @@ export default class Home extends Component {
   static defaultProps = {
     readonly: false,
     image: null,
-    maxLength: 3000,
+    maxLength: 2000,
     minLength: 300,
     gifQuality: 10, // lower is better
     gifFps: 10,
-    onChange: () => {}
+    gifScale: 0.75
   }
 
   componentDidMount() {
@@ -35,13 +35,14 @@ export default class Home extends Component {
 
         // This allows for ref callbacks to be called first so they are available
         setTimeout(() => {
+          const { gifScale } = this.props
           const { _video: video, _canvas: canvas } = this
           const context = canvas.getContext('2d')
 
           // // Thanks, Phil!
           this._canvasInterval = setInterval(function() {
-            canvas.width = video.videoWidth
-            canvas.height = video.videoHeight
+            canvas.width = video.videoWidth * gifScale
+            canvas.height = video.videoHeight * gifScale
             context.drawImage(video, 0, 0, canvas.width, canvas.height)
             video.play()
           }, ms(60))
@@ -156,7 +157,9 @@ export default class Home extends Component {
     { error, stream, progress, start, current }
   ) {
     const hasProgress = typeof progress === 'number'
-
+    // Add two for some reason, sorry!
+    // (It prevents elements being jumpy when transitioning from video -> progress -> image)
+    const prevVideoHeight = this._videoHeight + 2
     return (
       <div class={styles.container}>
         {!stream && !error ? (
@@ -183,7 +186,7 @@ export default class Home extends Component {
                 hasProgress && (
                   <div
                     class={styles.renderProgress}
-                    style={{ height: this._videoHeight }}
+                    style={{ height: prevVideoHeight }}
                   >
                     {(progress * 100).toFixed(0)}%
                   </div>
@@ -192,7 +195,7 @@ export default class Home extends Component {
                 <BlobImage
                   class={styles.image}
                   alt="Your mug!"
-                  style={{ height: this._videoHeight }}
+                  style={{ height: prevVideoHeight }}
                   src={image}
                 />
               )}

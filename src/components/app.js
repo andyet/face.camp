@@ -21,7 +21,8 @@ export default class App extends Component {
   }
 
   static defaultProps = {
-    defaultMessage: 'It’s my mug on Facecamp'
+    defaultMessage: 'It’s my mug on Facecamp',
+    confirmSize: 1500000
   }
 
   canPost = () => {
@@ -32,10 +33,21 @@ export default class App extends Component {
   handlePost = (e) => {
     e.preventDefault()
 
-    const { team, defaultMessage } = this.props
+    const { team, defaultMessage, confirmSize } = this.props
     const { image, channel, message } = this.state
 
     if (!this.canPost()) return
+
+    if (
+      image.size > confirmSize &&
+      !confirm(
+        `Images over ${pb(
+          confirmSize
+        )} won't show inline previews on mobile Slack clients. Would you like to continue?`
+      )
+    ) {
+      return
+    }
 
     this.setState({ uploading: true, success: null, postError: null })
 

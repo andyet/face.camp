@@ -32,7 +32,12 @@ select {
 
 @media screen and (max-height: 565px) {
   #app {
-    padding: 10px 20px 0;
+    /* Gets rid of the iOS issue where the bottom 40px is reserved to show
+       the browser bottom nav when not visible, so that when the post button
+       is tapped it posts the first time. TODO: remove this when apps works as
+       an iOS PWA. https://github.com/andyet/face.camp/issues/33
+      */
+    padding: 10px 20px 40px;
   }
 }
 
