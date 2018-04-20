@@ -22,7 +22,7 @@ export default class App extends Component {
 
   static defaultProps = {
     defaultMessage: 'It’s my mug on Facecamp',
-    confirmSize: 1500000
+    confirmSize: 2e6
   }
 
   canPost = () => {
