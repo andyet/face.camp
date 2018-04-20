@@ -24,14 +24,14 @@ select {
   box-sizing: border-box;
 }
 
-#app {
+#root {
   max-width: 550px;
   margin: 0 auto;
   padding: 20px;
 }
 
 @media screen and (max-height: 565px) {
-  #app {
+  #root {
     padding: 10px 20px 0;
   }
 }
