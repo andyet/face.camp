@@ -21,7 +21,8 @@
     "eslint-plugin-react": "^7.7.0",
     "if-env": "^1.0.0",
     "preact-cli": "^2.1.0",
-    "prettier": "^1.11.1"
+    "prettier": "^1.11.1",
+    "uglifyjs-webpack-plugin": "^1.2.5"
   },
   "eslintIgnore": ["build/*"],
   "license": "MIT",
@@ -31,7 +32,7 @@
     "dev": "preact watch --https",
     "eslint": "eslint --fix .",
     "lint": "npm run prettier && npm run eslint",
-    "prettier": "prettier --write \"src/**/*.{js,css}\"",
+    "prettier": "prettier --write \"src/**/*.{js,css}\" \"*.js\"",
     "serve": "npm run build && preact serve",
     "start": "if-env NODE_ENV=production && npm run -s serve || npm run -s dev"
   }
