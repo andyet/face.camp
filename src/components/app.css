@@ -43,7 +43,7 @@
 @media screen and (max-height: 565px) {
   .btnPost {
     padding: 7px;
-    font-size: 15px;
+    font-size: 16px;
   }
 }
 
@@ -75,7 +75,7 @@
 
 @media screen and (max-height: 565px) {
   .error {
-    font-size: 15px;
+    font-size: 16px;
     margin-top: -5px;
     margin-bottom: 10px;
   }
