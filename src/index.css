@@ -24,14 +24,14 @@ select {
   box-sizing: border-box;
 }
 
-#app {
+#root {
   max-width: 550px;
   margin: 0 auto;
   padding: 20px;
 }
 
 @media screen and (max-height: 565px) {
-  #app {
+  #root {
     /* Gets rid of the iOS issue where the bottom 40px is reserved to show
        the browser bottom nav when not visible, so that when the post button
        is tapped it posts the first time. TODO: remove this when apps works as

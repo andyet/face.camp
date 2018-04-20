@@ -2,7 +2,7 @@ import { h, Component } from 'preact'
 import { authUrl } from '../lib/auth'
 import Splash from '../components/splash'
 // eslint-disable-next-line import/no-webpack-loader-syntax, import/no-unresolved
-import App from 'async!../components/app'
+import Gif from 'async!../components/gif'
 import styles from './home.css'
 
 export default class Home extends Component {
@@ -30,7 +30,7 @@ export default class Home extends Component {
             </div>
           </Splash>
         ) : (
-          <App {...props} />
+          <Gif {...props} />
         )}
       </div>
     )
