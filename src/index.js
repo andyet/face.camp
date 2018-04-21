@@ -11,10 +11,5 @@ if (module.hot) {
   require('preact/debug')
 }
 
-try {
-  render(<Container />, document.getElementById('root'))
-  registerServiceWorker()
-} catch (e) {
-  document.getElementById('root').innerHTML =
-    '<h1>This browser is not supported</h1>'
-}
+render(<Container />, document.getElementById('root'))
+registerServiceWorker()

@@ -27,6 +27,7 @@
 			url: '/'
 		}) %>
 		<div id="root"></div>
+		<script>window.onerror=function(m){document.getElementById('root').innerHTML = '<div><div><img src="/assets/icons/android-chrome-192x192.png" alt="Facecamp logo" /></div><h1>An error occurred: <pre>'+(m||'Unknown error')+'</pre>This browser might not be supported.</h1></div>'};</script>
 		<script defer src="<%= htmlWebpackPlugin.files.chunks['bundle'].entry %>"></script>
 	</body>
 </html>

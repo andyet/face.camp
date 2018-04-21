@@ -1,5 +1,6 @@
 export default () => {
   if (
+    process.env.NODE_ENV !== 'development' &&
     process.env.ADD_SW &&
     'serviceWorker' in navigator &&
     location.protocol === 'https:'
