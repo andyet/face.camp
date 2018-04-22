@@ -24,7 +24,7 @@ export default class Home extends Component {
     minLength: 300,
     gifQuality: 10, // lower is better
     gifFps: 10,
-    gifScale: 0.75
+    gifScale: 0.5
   }
 
   componentDidMount() {
