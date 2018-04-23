@@ -21,6 +21,7 @@
 .inputMessage[readonly] {
   opacity: 0.5;
   cursor: default;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
 @media screen and (max-height: 565px) {
