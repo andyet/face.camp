@@ -21,6 +21,10 @@ export default class Home extends Component {
         ) : !team ? (
           <Splash>
             <div>
+              <p>
+                Facecamp connects to Slack to let you take an animated gif and
+                post it for your teamies to see.
+              </p>
               <p>Sign in with:</p>
               <p>
                 <a class={styles.btnSlackAuth} href={authUrl}>
