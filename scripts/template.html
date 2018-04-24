@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title><%= htmlWebpackPlugin.options.title %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="mobile-web-app-capable" content="no">
+    <meta name="apple-mobile-web-app-capable" content="no">
+    <meta name="slack-app-id" content="AA4PZPLQL">
+    <link rel="apple-touch-icon" href="<%= htmlWebpackPlugin.files.publicPath %>assets/icons/apple-touch-icon.png">
+    <link rel="manifest" href="<%= htmlWebpackPlugin.files.publicPath %>manifest.json">
+    <% if (htmlWebpackPlugin.options.manifest.theme_color) { %>
+      <meta name="theme-color" content="<%= htmlWebpackPlugin.options.manifest.theme_color %>">
+    <% } %>
+    <% for (var chunk of webpack.chunks) { %>
+      <% for (var file of chunk.files) { %>
+        <% if (htmlWebpackPlugin.options.preload && file.match(/\.(js|css)$/)) { %>
+          <link rel="preload" href="<%= htmlWebpackPlugin.files.publicPath + file %>" as="<%= file.match(/\.css$/)?'style':'script' %>">
+        <% } else if (file.match(/manifest\.json$/)) { %>
+          <link rel="manifest" href="<%= htmlWebpackPlugin.files.publicPath + file %>">
+        <% } %>
+      <% } %>
+    <% } %>
+  </head>
+  <body>
+    <%= htmlWebpackPlugin.options.ssr({
+      url: '/'
+    }) %>
+    <div id="root"></div>
+    <noscript id="noscript">
+      <div id="root">
+        <img src="<%= htmlWebpackPlugin.options.manifest.icons[0].src %>" alt="Facecamp logo" />
+        <h1>Facecamp requires JavaScript.</h1>
+      </div>
+    </noscript>
+    <script>
+      window.onerror = function (err) {
+        var message = 'An error occurred: <code>' + (err.message || 'Unknown error' ) + '</code>.<br/>This browser might not be supported.';
+        document.getElementById('root').innerHTML = document.getElementById('noscript')
+          .innerHTML
+          .replace('Facecamp requires JavaScript.', message)
+          .replace('id="root"', '');
+      };
+      </script>
+    <script defer src="<%= htmlWebpackPlugin.files.chunks['bundle'].entry %>"></script>
+  </body>
+</html>
