@@ -40,6 +40,7 @@ export default class App extends Component {
 
     if (
       image.size > confirmSize &&
+      // eslint-disable-next-line no-restricted-globals
       !confirm(
         `Images over ${pb(
           confirmSize
