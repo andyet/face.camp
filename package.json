@@ -1,5 +1,6 @@
 {
   "name": "facecamp",
+  "description": "Send animated gifs from the browser to Slack.",
   "version": "0.0.0",
   "dependencies": {
     "classnames": "^2.2.5",
@@ -24,11 +25,16 @@
     "prettier": "^1.11.1",
     "uglifyjs-webpack-plugin": "^1.2.5"
   },
-  "eslintIgnore": ["build/*"],
+  "eslintIgnore": [
+    "build/*"
+  ],
   "license": "MIT",
+  "main": "preact.config.js",
   "private": true,
   "scripts": {
     "build": "preact build --no-prerender",
+    "build:size": "find build -type f \\( -name 'bundle*.js' -o -name 'route-*.js' -o -name '*.chunk.*.js' \\) -exec printf '%s - ' {} \\; -exec gzip-size --raw {} \\; | sort",
+    "build:sizes": "node build-sizes.js",
     "dev": "preact watch --https",
     "eslint": "eslint --fix .",
     "lint": "npm run prettier && npm run eslint",

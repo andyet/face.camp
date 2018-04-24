@@ -13,6 +13,7 @@ export default class Home extends Component {
         {!supported ? (
           <Splash>
             <p>
+              {/* TODO: detect WKWebView and change message to say open in Safari */}
               Facecamp uses technologies that are not supported by this browser.
               Try using <a href="https://chrome.com">Chrome</a> or{' '}
               <a href="http://www.mozilla.org/en-US/firefox/new/">Firefox</a>.

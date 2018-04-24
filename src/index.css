@@ -30,6 +30,11 @@ select {
   padding: 20px;
 }
 
+#root:empty {
+  margin: 0;
+  padding: 0;
+}
+
 @media screen and (max-height: 565px) {
   #root {
     /* Gets rid of the iOS issue where the bottom 40px is reserved to show

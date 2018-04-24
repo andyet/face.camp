@@ -1,4 +1,4 @@
-import { h, Component, render } from 'preact'
+import { h, render } from 'preact'
 import registerServiceWorker from './lib/register-service-worker'
 import Container from './components/container'
 import './index.css'
