@@ -30,9 +30,9 @@ export default (config, env, helpers) => {
   // Change html plugin to use our own template from the root of the project
   helpers.setHtmlTemplate(config, 'template.html')
   // This preloads the gif capture chunk when the user hits the unauthed landing
-  html.plugin.options.preload = true
+  html.plugin.options.preload = env.production
   // Minify JS in the template since there's an inline onerror handler
-  html.plugin.options.minify.minifyJS = true
+  if (env.production) html.plugin.options.minify.minifyJS = true
   // No polyfills needed for the supported browser list
   delete config.entry.polyfills
 
