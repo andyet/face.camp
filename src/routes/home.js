@@ -22,8 +22,8 @@ export default class Home extends Component {
           <Splash>
             <div>
               <p>
-                Facecamp connects to Slack to let you take an animated gif and
-                post it for your teamies to see.
+                Facecamp connects to Slack to let you take animated gifs and
+                post them in any channel for your teamies to see.
               </p>
               <p>Sign in with:</p>
               <p>
