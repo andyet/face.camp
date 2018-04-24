@@ -41,12 +41,14 @@ const buildAndSize = (params) => () =>
       }
     })
 
-const FLAGS = ['COMPILE_TO_ES6', 'USE_OBJ_ASSIGN', 'DISABLE_ASYNC_ROUTE']
+const FLAGS = ['COMPILE_TO_ES6', 'USE_OBJ_ASSIGN', 'USE_ASYNC_ROUTES']
 
 const builds = combinations(FLAGS)
   .map((b) => b.map((v, i) => `${FLAGS[i]}=${v}`).join(' '))
   .map(buildAndSize)
 
 promiseSerial(builds).then((r) =>
-  process.stdout.write(JSON.stringify(r, null, 2))
+  process.stdout.write(
+    JSON.stringify(r.sort((a, b) => a.total.raw - b.total.raw), null, 2)
+  )
 )

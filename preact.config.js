@@ -1,10 +1,13 @@
 import UglifyJsPlugin from 'uglifyjs-webpack-plugin'
 
-const env = (k) => (process.env[k] === 'true' ? true : false)
-const COMPILE_TO_ES6 = env('COMPILE_TO_ES6')
-const USE_OBJ_ASSIGN = env('USE_OBJ_ASSIGN')
-const DISABLE_ASYNC_ROUTE = env('DISABLE_ASYNC_ROUTE')
+// See output from `npm run build:sizes` for the size of all possible builds
+const env = (k, def) => (k in process.env ? process.env[k] !== 'false' : def)
+const COMPILE_TO_ES6 = env('COMPILE_TO_ES6', true)
+const USE_OBJ_ASSIGN = env('USE_OBJ_ASSIGN', true)
+const USE_ASYNC_ROUTES = env('USE_ASYNC_ROUTES', false)
 
+// uglifyjs plugin has different allowed options for v3 and v4. This massages
+// the v3 config into the closest possible equivalent v4 config
 const uglify3To4 = (v3) => {
   const v4 = { uglifyOptions: {} }
   Object.keys(v3).forEach((key) => {
@@ -23,19 +26,22 @@ const uglify3To4 = (v3) => {
 }
 
 export default (config, env, helpers) => {
-  // Change html plugin to use our own template from the root of the project
   const html = helpers.getPluginsByName(config, 'HtmlWebpackPlugin')[0]
+  // Change html plugin to use our own template from the root of the project
   helpers.setHtmlTemplate(config, 'template.html')
+  // This preloads the gif capture chunk when the user hits the unauthed landing
   html.plugin.options.preload = true
+  // Minify JS in the template since there's an inline onerror handler
   html.plugin.options.minify.minifyJS = true
+  // No polyfills needed for the supported browser list
   delete config.entry.polyfills
 
   // Get babel loader for use in changing presets and plugins
   const babel = helpers.getLoadersByName(config, 'babel-loader')[0]
 
+  // Remove babel plugin that will transform Object.assign and change options
+  // for other plugins to use Object.assign instead of a custom inline helper
   if (USE_OBJ_ASSIGN) {
-    // Remove any babel plugin that will transform Bbject.assign and change options
-    // for other plugins to use Object.assign instead of a custom helper
     babel.rule.options.plugins = babel.rule.options.plugins
       .map((plugin) => {
         const [name, options] =
@@ -58,7 +64,9 @@ export default (config, env, helpers) => {
   }
 
   // Disable async route splitting for files in routes/ dir
-  if (DISABLE_ASYNC_ROUTE) {
+  // Since the app doesn't have many routes, the bundle is best split by only
+  // splitting the gif capture mode into a chunk
+  if (!USE_ASYNC_ROUTES) {
     config.module.loaders.splice(
       helpers
         .getLoaders(config)
@@ -71,19 +79,24 @@ export default (config, env, helpers) => {
     )
   }
 
+  // This flag will make Babel's compile target into ES6+. This relies on the
+  // `onerror` handler in template.html which will catch syntax errors in unsupported
+  // browsers
   if (COMPILE_TO_ES6) {
-    // Set babel-preset-env supported browsers to versions that support
-    // navigator.mediaDevices and last two versions
+    // Set babel-preset-env supported browsers to recent versions of major
+    // browsers that also support navigator.mediaDevices
+    // Last updated 2018-04-24 from https://caniuse.com/#feat=stream
     babel.rule.options.presets = babel.rule.options.presets.map((preset) => {
       const [name, options] = typeof preset === 'string' ? [preset, {}] : preset
 
       if (name.includes('/babel-preset-env/')) {
-        // options.debug = true // Helpful to see which browsers are being used
+        // Helpful to see which browsers are being used
+        // options.debug = true
         options.targets.browsers = [
           'chrome 63',
           'edge 15',
           'firefox 58',
-          'ios 11.3',
+          'ios 11.2',
           'safari 11',
           'opera 50'
         ]
