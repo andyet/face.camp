@@ -5,6 +5,7 @@ const env = (k, def) => (k in process.env ? process.env[k] !== 'false' : def)
 const COMPILE_TO_ES6 = env('COMPILE_TO_ES6', true)
 const USE_OBJ_ASSIGN = env('USE_OBJ_ASSIGN', true)
 const USE_ASYNC_ROUTES = env('USE_ASYNC_ROUTES', false)
+const USE_MINIFY = env('USE_MINIFY', true)
 
 // uglifyjs plugin has different allowed options for v3 and v4. This massages
 // the v3 config into the closest possible equivalent v4 config
@@ -38,6 +39,8 @@ export default (config, env, helpers) => {
 
   // Get babel loader for use in changing presets and plugins
   const babel = helpers.getLoadersByName(config, 'babel-loader')[0]
+  // Get uglify plugin to change options on
+  const uglify = helpers.getPluginsByName(config, 'UglifyJsPlugin')[0]
 
   // Remove babel plugin that will transform Object.assign and change options
   // for other plugins to use Object.assign instead of a custom inline helper
@@ -108,12 +111,15 @@ export default (config, env, helpers) => {
     // Use uglify-plugin v4 which uses uglify-es under the hood so it supports
     // minifying es6+. This only needs to be used if the browserslist config
     // supports not compiling down to es5
-    const uglify = helpers.getPluginsByName(config, 'UglifyJsPlugin')[0]
+
     if (uglify) {
-      // config.plugins[uglify.index] = new UglifyJsPlugin(
-      //   uglify3To4(uglify.plugin.options)
-      // )
-      config.plugins.splice(uglify.index, 1)
+      config.plugins[uglify.index] = new UglifyJsPlugin(
+        uglify3To4(uglify.plugin.options)
+      )
     }
+  }
+
+  if (!USE_MINIFY) {
+    config.plugins.splice(uglify.index, 1)
   }
 }
