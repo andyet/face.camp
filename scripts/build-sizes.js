@@ -41,7 +41,7 @@ const buildAndSize = (params) => () =>
       }
     })
 
-const FLAGS = ['COMPILE_TO_ES6', 'USE_OBJ_ASSIGN', 'USE_ASYNC_ROUTES']
+const FLAGS = ['USE_ES6', 'USE_OBJ_ASSIGN', 'USE_ASYNC_ROUTES']
 
 const builds = combinations(FLAGS)
   .map((b) => b.map((v, i) => `${FLAGS[i]}=${v}`).join(' '))

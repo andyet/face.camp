@@ -2,7 +2,7 @@ import UglifyJsPlugin from 'uglifyjs-webpack-plugin'
 
 // See output from `npm run build:sizes` for the size of all possible builds
 const env = (k, def) => (k in process.env ? process.env[k] !== 'false' : def)
-const COMPILE_TO_ES6 = env('COMPILE_TO_ES6', true)
+const USE_ES6 = env('USE_ES6', true)
 const USE_OBJ_ASSIGN = env('USE_OBJ_ASSIGN', true)
 const USE_ASYNC_ROUTES = env('USE_ASYNC_ROUTES', false)
 const USE_MINIFY = env('USE_MINIFY', true)
@@ -85,7 +85,7 @@ export default (config, env, helpers) => {
   // This flag will make Babel's compile target into ES6+. This relies on the
   // `onerror` handler in template.html which will catch syntax errors in unsupported
   // browsers
-  if (COMPILE_TO_ES6) {
+  if (USE_ES6) {
     // Set babel-preset-env supported browsers to recent versions of major
     // browsers that also support navigator.mediaDevices
     // Last updated 2018-04-24 from https://caniuse.com/#feat=stream
