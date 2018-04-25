@@ -110,9 +110,10 @@ export default (config, env, helpers) => {
     // supports not compiling down to es5
     const uglify = helpers.getPluginsByName(config, 'UglifyJsPlugin')[0]
     if (uglify) {
-      config.plugins[uglify.index] = new UglifyJsPlugin(
-        uglify3To4(uglify.plugin.options)
-      )
+      // config.plugins[uglify.index] = new UglifyJsPlugin(
+      //   uglify3To4(uglify.plugin.options)
+      // )
+      config.plugins.splice(uglify.index, 1)
     }
   }
 }
