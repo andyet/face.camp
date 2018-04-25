@@ -123,7 +123,8 @@
   text-indent: -9999em;
 }
 
-a.btnAdd {
+a.btnAdd,
+a.btnAdd:visited {
   padding-left: 13px;
   display: inline-block;
   background: url('../images/plus.svg') no-repeat 0 3px;

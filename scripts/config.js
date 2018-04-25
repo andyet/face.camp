@@ -111,7 +111,6 @@ export default (config, env, helpers) => {
     // Use uglify-plugin v4 which uses uglify-es under the hood so it supports
     // minifying es6+. This only needs to be used if the browserslist config
     // supports not compiling down to es5
-
     if (uglify) {
       config.plugins[uglify.index] = new UglifyJsPlugin(
         uglify3To4(uglify.plugin.options)

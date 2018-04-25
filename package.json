@@ -39,7 +39,7 @@
     "eslint": "eslint --fix .",
     "lint": "npm run prettier && npm run eslint",
     "prettier": "prettier --write \"src/**/*.{js,css}\" \"*.js\"",
-    "serve": "npm run build && preact serve",
+    "serve": "npm run build && preact serve -p 8081",
     "start": "if-env NODE_ENV=production && npm run -s serve || npm run -s dev"
   }
 }
