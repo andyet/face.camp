@@ -32,7 +32,7 @@
   "main": "preact.config.js",
   "private": true,
   "scripts": {
-    "build": "USE_ES6=false preact build --no-prerender --config scripts/config.js",
+    "build": "preact build --no-prerender --config scripts/config.js",
     "build:size": "find build -type f -name '*.js' -exec printf '%s - ' {} \\; -exec gzip-size --raw {} \\; | sort",
     "build:sizes": "node scripts/build-sizes",
     "dev": "preact watch --https --config scripts/config.js",

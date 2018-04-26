@@ -1,4 +1,5 @@
 import UglifyJsPlugin from 'uglifyjs-webpack-plugin'
+import path from 'path'
 
 // See output from `npm run build:sizes` for the size of all possible builds
 const env = (k, def) => (k in process.env ? process.env[k] !== 'false' : def)
@@ -15,8 +16,12 @@ const uglify3To4 = (v3) => {
     const value = v3[key]
     if (key === 'output' || key === 'mangle' || key === 'compress') {
       if (key === 'compress') {
+        // These aren't allowed in v4
         delete value.screw_ie8
         delete value.cascade
+        // This keeps uglify from breaking preact component mounting
+        // https://github.com/developit/preact/issues/961#issuecomment-358615579
+        value.reduce_vars = false
       }
       v4.uglifyOptions[key] = value
     } else {
@@ -34,11 +39,16 @@ export default (config, env, helpers) => {
   html.plugin.options.preload = env.production
   // Minify JS in the template since there's an inline onerror handler
   if (env.production) html.plugin.options.minify.minifyJS = true
+
   // No polyfills needed for the supported browser list
   delete config.entry.polyfills
 
+  // Use our own entry point instead of preact-cli-entrypoint
+  config.entry.bundle = path.resolve(process.cwd(), 'src', 'index.js')
+
   // Get babel loader for use in changing presets and plugins
   const babel = helpers.getLoadersByName(config, 'babel-loader')[0]
+
   // Get uglify plugin to change options on
   const uglify = helpers.getPluginsByName(config, 'UglifyJsPlugin')[0]
 
