@@ -11,7 +11,7 @@ const USE_MINIFY = env('USE_MINIFY', true)
 // uglifyjs plugin has different allowed options for v3 and v4. This massages
 // the v3 config into the closest possible equivalent v4 config
 const uglify3To4 = (v3) => {
-  const v4 = { uglifyOptions: {} }
+  const v4 = { uglifyOptions: { ecma: 6 } }
   Object.keys(v3).forEach((key) => {
     const value = v3[key]
     if (key === 'output' || key === 'mangle' || key === 'compress') {
