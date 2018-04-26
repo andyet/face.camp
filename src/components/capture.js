@@ -5,9 +5,6 @@ import gif from '../lib/gif'
 import keyBinding from '../lib/keyBindings'
 import styles from './capture.css'
 
-const noop = () => {}
-const ms = (fps) => 1000 / fps
-
 export default class Home extends Component {
   state = {
     error: null,
@@ -20,10 +17,7 @@ export default class Home extends Component {
   static defaultProps = {
     readonly: false,
     image: null,
-    maxLength: 2000,
-    minLength: 300,
-    gifQuality: 10, // lower is better
-    gifFps: 10,
+    maxLength: 3000,
     gifScale: 0.75
   }
 
@@ -45,7 +39,7 @@ export default class Home extends Component {
             canvas.height = video.videoHeight * gifScale
             context.drawImage(video, 0, 0, canvas.width, canvas.height)
             video.play()
-          }, ms(60))
+          }, 1000 / 60)
 
           this._removeCaptureKey = keyBinding(
             'keypress',
@@ -62,8 +56,7 @@ export default class Home extends Component {
 
   componentWillUnmount() {
     clearInterval(this._canvasInterval)
-    clearInterval(this._captureInterval)
-    clearTimeout(this._minTimeout)
+    if (this._gif) this._gif.cleanUp()
     if (this._removeCaptureKey) this._removeCaptureKey()
   }
 
@@ -91,7 +84,6 @@ export default class Home extends Component {
 
     e.preventDefault()
 
-    const { maxLength, gifFps, gifQuality } = this.props
     const { start } = this.state
 
     if (start) {
@@ -102,53 +94,16 @@ export default class Home extends Component {
     }
 
     this._gif = gif({
-      height: this._canvas.height,
-      width: this._canvas.width,
-      quality: gifQuality
+      maxLength: this.props.maxLength,
+      canvas: this._canvas,
+      onStart: (now) => this.setImage({ now }),
+      onProgress: (progress) => this.setState({ progress }),
+      onFinished: (image) => this.setImage({ image }),
+      onFrame: (current) => this.setState({ current })
     })
-
-    this._gif.on('progress', (progress) => this.setState({ progress }))
-    this._gif.on('finished', (image) => {
-      // gif.js turns this on when rendering but not off when finished
-      this._gif.running = false
-      this.setImage({ image, now: 0 })
-    })
-
-    this.setImage({ image: null, now: Date.now() })
-
-    this._captureInterval = setInterval(() => {
-      const now = Date.now()
-
-      const { start } = this.state
-
-      if (start && now - start > maxLength) {
-        return this.stopCapture()
-      }
-
-      this.setState({ current: now })
-      this._gif.addFrame(this._canvas, { copy: true, delay: ms(gifFps) })
-    }, ms(gifFps))
   }
 
   stopCapture = () => {
-    const { minLength } = this.props
-    const { start, current } = this.state
-
-    if (this._gif.running) return
-
-    // Re-call stopCapture in the event of a quick tap after the minimum length
-    // has passed
-    if (current - start < minLength) {
-      if (!this._minTimeout) {
-        this._minTimeout = setTimeout(() => {
-          this.stopCapture()
-          this._minTimeout = null
-        }, minLength - (current - start))
-      }
-      return
-    }
-
-    clearInterval(this._captureInterval)
     this._gif.render()
   }
 
@@ -234,9 +189,7 @@ export default class Home extends Component {
               <button
                 disabled={readonly}
                 class={styles.btnCapture}
-                onClick={
-                  readonly ? noop : () => this.setImage({ image: null, now: 0 })
-                }
+                onClick={readonly ? () => {} : () => this.setImage()}
               >
                 {readonly ? 'Looking good' : 'Reset gif'}
               </button>
