@@ -11,14 +11,13 @@ export default class Home extends Component {
     stream: null,
     start: 0,
     current: 0,
+    captureProgress: null,
     progress: null
   }
 
   static defaultProps = {
     readonly: false,
-    image: null,
-    maxLength: 3000,
-    gifScale: 0.75
+    image: null
   }
 
   componentDidMount() {
@@ -27,27 +26,12 @@ export default class Home extends Component {
       .then((stream) => {
         this.setState({ stream })
 
-        // This allows for ref callbacks to be called first so they are available
-        setTimeout(() => {
-          const { gifScale } = this.props
-          const { _video: video, _canvas: canvas } = this
-          const context = canvas.getContext('2d')
-
-          // // Thanks, Phil!
-          this._canvasInterval = setInterval(function() {
-            canvas.width = video.videoWidth * gifScale
-            canvas.height = video.videoHeight * gifScale
-            context.drawImage(video, 0, 0, canvas.width, canvas.height)
-            video.play()
-          }, 1000 / 60)
-
-          this._removeCaptureKey = keyBinding(
-            'keypress',
-            ' ',
-            this._postButton,
-            this.startCapture
-          )
-        }, 0)
+        this._removeCaptureKey = keyBinding(
+          'keypress',
+          ' ',
+          this._postButton,
+          this.startCapture
+        )
       })
       .catch((error) => {
         this.setState({ error: error.message })
@@ -55,7 +39,6 @@ export default class Home extends Component {
   }
 
   componentWillUnmount() {
-    clearInterval(this._canvasInterval)
     if (this._gif) this._gif.cleanUp()
     if (this._removeCaptureKey) this._removeCaptureKey()
   }
@@ -70,7 +53,12 @@ export default class Home extends Component {
   setImage = ({ image = null, now = 0 } = {}) => {
     const { onChange } = this.props
     onChange({ image })
-    this.setState({ start: now, current: now, progress: null })
+    this.setState({
+      start: now,
+      current: now,
+      captureProgress: null,
+      progress: null
+    })
   }
 
   startCapture = (e) => {
@@ -94,12 +82,12 @@ export default class Home extends Component {
     }
 
     this._gif = gif({
-      maxLength: this.props.maxLength,
-      canvas: this._canvas,
+      video: this._video,
       onStart: (now) => this.setImage({ now }),
       onProgress: (progress) => this.setState({ progress }),
       onFinished: (image) => this.setImage({ image }),
-      onFrame: (current) => this.setState({ current })
+      onFrame: ({ current, progress }) =>
+        this.setState({ current, captureProgress: progress })
     })
   }
 
@@ -108,8 +96,8 @@ export default class Home extends Component {
   }
 
   render(
-    { image, maxLength, readonly },
-    { error, stream, progress, start, current }
+    { image, readonly },
+    { error, stream, progress, start, current, captureProgress }
   ) {
     const hasProgress = typeof progress === 'number'
     // Add two for some reason, sorry!
@@ -123,10 +111,6 @@ export default class Home extends Component {
           <div class={styles.error}>Error: {error}</div>
         ) : (
           <div>
-            <canvas
-              ref={(c) => (this._canvas = c)}
-              style={{ display: 'none' }}
-            />
             <div class={styles.mediaContainer}>
               <video
                 class={styles.video}
@@ -159,7 +143,7 @@ export default class Home extends Component {
                   <div
                     class={styles.captureProgress}
                     style={{
-                      width: `${100 * ((current - start) / maxLength)}%`
+                      width: `${100 * captureProgress}%`
                     }}
                   />
                 )}
