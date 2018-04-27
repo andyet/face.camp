@@ -1,4 +1,4 @@
-import { h, cloneElement, Component } from 'preact'
+import { h, Component } from 'preact'
 import cx from 'classnames'
 import throttle from '../lib/throttle-event'
 import styles from './square-video.css'
@@ -11,6 +11,7 @@ export default class SquareVideo extends Component {
 
   componentDidMount() {
     this._removeResize = throttle('resize', this.setDimensions)
+    this.setDimensions()
   }
 
   componentWillUnmount() {
@@ -18,13 +19,20 @@ export default class SquareVideo extends Component {
   }
 
   setDimensions = () => {
-    if (!this._video) return
-
-    const { clientWidth } = this._container.parentElement
     const { videoHeight, videoWidth } = this._video
+    const { clientWidth } = this._container.parentElement
 
-    this.setState({ width: clientWidth, ratio: videoWidth / videoHeight })
+    const dimensions = { width: clientWidth }
+
+    if (videoWidth && videoHeight) {
+      dimensions.ratio = videoWidth / videoHeight
+    }
+
+    this.setState(dimensions)
   }
+
+  getVideo = () => this._video
+  getContainer = () => this._container
 
   render(
     { video, class: containerClass, style: containerStyle, ...props },

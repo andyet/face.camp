@@ -98,6 +98,9 @@ export default class App extends Component {
     const error = postError || channelsError
     return (
       <div>
+        <div class={styles.minHeight}>
+          <h1>Increase your browser height</h1>
+        </div>
         <button class={styles.btnLogout} onClick={logout}>
           logout
         </button>

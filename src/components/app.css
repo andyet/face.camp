@@ -132,3 +132,26 @@ a.btnAdd:visited {
   text-decoration: none;
   color: #12abee;
 }
+
+.minHeight {
+  display: none;
+}
+
+@media screen and (max-height: 400px) {
+  .minHeight {
+    position: fixed;
+    margin: 0;
+    text-align: center;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #fff;
+    display: block;
+    z-index: 100;
+  }
+
+  .minHeight h1 {
+    margin-top: 47vh;
+  }
+}

@@ -24,7 +24,12 @@ export default class Home extends Component {
 
   componentDidMount() {
     navigator.mediaDevices
-      .getUserMedia({ audio: false, video: { facingMode: 'user' } })
+      .getUserMedia({
+        audio: false,
+        video: {
+          facingMode: 'user'
+        }
+      })
       .then((stream) => {
         this.setState({ stream })
 
@@ -46,9 +51,12 @@ export default class Home extends Component {
   }
 
   componentDidUpdate() {
-    const { clientHeight } = this._video || {}
-    if (clientHeight) {
-      this._videoHeight = clientHeight
+    const videoContainer = this._video && this._video.getContainer()
+
+    if (!videoContainer) return
+
+    if (videoContainer.clientHeight) {
+      this._videoHeight = videoContainer.clientHeight
     }
   }
 
@@ -84,7 +92,7 @@ export default class Home extends Component {
     }
 
     this._gif = gif({
-      video: this._video,
+      video: this._video.getVideo(),
       onStart: (now) => this.setImage({ now }),
       onProgress: (progress) => this.setState({ progress }),
       onFinished: (image) => this.setImage({ image }),
@@ -117,7 +125,7 @@ export default class Home extends Component {
               <SquareVideo
                 class={styles.cropVideo}
                 style={{ display: image || hasProgress ? 'none' : 'block' }}
-                ref={(c) => (this._video = c.base.querySelector('video'))}
+                ref={(c) => (this._video = c)}
                 autoplay
                 muted
                 playsinline
