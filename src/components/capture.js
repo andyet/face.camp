@@ -1,6 +1,7 @@
 import { h, Component } from 'preact'
 import cx from 'classnames'
 import BlobImage from './blob-image'
+import SquareVideo from './square-video'
 import gif from '../lib/gif'
 import keyBinding from '../lib/keyBindings'
 import styles from './capture.css'
@@ -12,7 +13,8 @@ export default class Home extends Component {
     start: 0,
     current: 0,
     captureProgress: null,
-    progress: null
+    progress: null,
+    imageLoaded: false
   }
 
   static defaultProps = {
@@ -92,12 +94,12 @@ export default class Home extends Component {
   }
 
   stopCapture = () => {
-    this._gif.render()
+    this._gif.stop()
   }
 
   render(
     { image, readonly },
-    { error, stream, progress, start, current, captureProgress }
+    { error, stream, progress, start, current, captureProgress, imageLoaded }
   ) {
     const hasProgress = typeof progress === 'number'
     // Add two for some reason, sorry!
@@ -112,10 +114,10 @@ export default class Home extends Component {
         ) : (
           <div>
             <div class={styles.mediaContainer}>
-              <video
-                class={styles.video}
+              <SquareVideo
+                class={styles.cropVideo}
                 style={{ display: image || hasProgress ? 'none' : 'block' }}
-                ref={(c) => (this._video = c)}
+                ref={(c) => (this._video = c.base.querySelector('video'))}
                 autoplay
                 muted
                 playsinline
@@ -134,7 +136,8 @@ export default class Home extends Component {
                 <BlobImage
                   class={styles.image}
                   alt="Your mug!"
-                  style={{ height: prevVideoHeight }}
+                  style={!imageLoaded && { height: prevVideoHeight }}
+                  onload={() => this.setState({ imageLoaded: true })}
                   src={image}
                 />
               )}

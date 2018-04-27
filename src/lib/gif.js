@@ -28,8 +28,6 @@ const createGif = ({
   const gif = new Gif({
     workerScript: GifWorker,
     workers: 4,
-    height: canvas.height,
-    width: canvas.width,
     quality
   })
 
@@ -40,26 +38,13 @@ const createGif = ({
     onFinished(image)
   })
 
-  const stop = () => {
-    if (gif.running) return
-
-    // Re-call stop in the event of a quick tap after the minimum length has passed
-    if (current - start < minLength && !minTimeout) {
-      minTimeout = setTimeout(() => {
-        stop()
-        this._minTimeout = null
-      }, minLength - (current - start))
-      return
-    }
-
-    gif.render()
-  }
-
   const interval = setInterval(() => {
-    current = Date.now()
+    const now = Date.now()
+    const delay = now - current
+    current = now
 
-    if (start && current - start > maxLength) {
-      return stop()
+    if (current - start > maxLength) {
+      return gif.stop()
     }
 
     onFrame({ current, progress: (current - start) / maxLength })
@@ -77,20 +62,29 @@ const createGif = ({
     )
 
     gif.addFrame(context.getImageData(0, 0, canvas.width, canvas.height), {
-      delay: 1000 / fps
+      delay
     })
   }, 1000 / fps)
 
   gif.cleanUp = () => {
     clearInterval(interval)
     clearTimeout(minTimeout)
+    minTimeout = null
   }
 
-  const _render = gif.render
-  gif.render = () => {
+  gif.stop = () => {
     if (gif.running) return
+
+    // Re-call stop in the event of a quick tap after the minimum length has passed
+    if (current - start < minLength) {
+      if (!minTimeout) {
+        minTimeout = setTimeout(gif.stop, minLength - (current - start))
+      }
+      return
+    }
+
     gif.cleanUp()
-    _render.call(gif)
+    gif.render()
   }
 
   onStart(start)
