@@ -1,6 +1,6 @@
 .selectChannel {
   width: 100%;
-  margin: 10px 0 15px;
+  margin: 10px 0 10px;
   overflow: hidden;
   background-repeat: no-repeat;
   background-image: url('../images/caret.svg');
@@ -28,7 +28,6 @@
 
 @media screen and (max-height: 565px) {
   .selectChannel {
-    margin-bottom: 10px;
     background-size: 18px 9px;
   }
   .select {

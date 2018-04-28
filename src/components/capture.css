@@ -7,15 +7,11 @@
   position: relative;
 }
 
-.video,
+.cropVideo,
 .image {
   border: 1px solid #12abee;
   border-radius: 3px;
-}
-
-.video {
-  width: 100%;
-  transform: rotateY(180deg);
+  margin: 0 auto;
 }
 
 .image {
