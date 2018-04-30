@@ -47,7 +47,7 @@ const cropVideo = (video, scale) => {
   }
 }
 
-const createGif = ({
+export default ({
   video,
   onStart,
   onRender,
@@ -55,6 +55,8 @@ const createGif = ({
   onCapture,
   maxLength = 2000,
   minLength = 200,
+  workers = 4,
+  quality = 10,
   fps = 10,
   scale = 0.75,
   maxSize = 2e6,
@@ -66,8 +68,8 @@ const createGif = ({
 
   const gif = new Gif({
     workerScript: GifWorker,
-    workers: 4,
-    quality: 10
+    workers,
+    quality
   })
 
   gif.on('progress', (progress) => onRender({ progress, attempts }))
@@ -177,5 +179,3 @@ const createGif = ({
     cleanUp
   }
 }
-
-export default createGif
