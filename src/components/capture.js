@@ -42,13 +42,16 @@ export default class Home extends Component {
             this.startCapture
           )
 
+          this.setVideoHeight()
+
           this._gif = gif({
+            maxSize: this.props.maxSize,
             video: this._video.getVideo(),
             onStart: ({ time }) => this.setImage({ now: time }),
-            onProgress: ({ progress }) =>
+            onRender: ({ progress }) =>
               this.setState({ renderProgress: progress }),
             onFinished: ({ image }) => this.setImage({ image }),
-            onFrame: ({ current, progress }) =>
+            onCapture: ({ current, progress }) =>
               this.setState({ current, captureProgress: progress })
           })
         }, 0)
@@ -64,6 +67,10 @@ export default class Home extends Component {
   }
 
   componentDidUpdate() {
+    this.setVideoHeight()
+  }
+
+  setVideoHeight = () => {
     const videoContainer = this._video && this._video.getContainer()
 
     if (!videoContainer) return
@@ -122,9 +129,7 @@ export default class Home extends Component {
     }
   ) {
     const isRendering = typeof renderProgress === 'number'
-    // Add two for some reason, sorry!
-    // (It prevents elements being jumpy when transitioning from video -> progress -> image)
-    const prevVideoHeight = this._videoHeight + 2
+    const prevVideoHeight = this._videoHeight
     return (
       <div class={styles.container}>
         {!stream && !error ? (
@@ -135,7 +140,6 @@ export default class Home extends Component {
           <div>
             <div class={styles.mediaContainer}>
               <SquareVideo
-                class={styles.cropVideo}
                 style={{ display: image || isRendering ? 'none' : 'block' }}
                 ref={(c) => (this._video = c)}
                 autoplay

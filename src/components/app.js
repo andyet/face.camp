@@ -22,7 +22,7 @@ export default class App extends Component {
 
   static defaultProps = {
     defaultMessage: 'It’s my mug on Facecamp',
-    confirmSize: 2e6
+    maxSize: 2e6
   }
 
   canPost = () => {
@@ -33,17 +33,17 @@ export default class App extends Component {
   handlePost = (e) => {
     e.preventDefault()
 
-    const { team, defaultMessage, confirmSize } = this.props
+    const { team, defaultMessage, maxSize } = this.props
     const { image, channel, message } = this.state
 
     if (!this.canPost()) return
 
     if (
-      image.size > confirmSize &&
+      image.size > maxSize &&
       // eslint-disable-next-line no-restricted-globals
       !confirm(
         `Images over ${pb(
-          confirmSize
+          maxSize
         )} won't show inline previews on mobile Slack clients. Would you like to continue?`
       )
     ) {
@@ -92,7 +92,7 @@ export default class App extends Component {
   }
 
   render(
-    { teams, team, selectTeam, logout, defaultMessage },
+    { teams, team, selectTeam, logout, defaultMessage, maxSize },
     { image, channel, uploading, success, postError, channelsError, message }
   ) {
     const error = postError || channelsError
@@ -128,6 +128,7 @@ export default class App extends Component {
           token={team.access_token}
         />
         <Capture
+          maxSize={maxSize}
           image={image}
           readonly={uploading || success}
           onChange={({ image }) => this.setState({ image, postError: null })}

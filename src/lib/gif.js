@@ -50,15 +50,15 @@ const cropVideo = (video, scale) => {
 const createGif = ({
   video,
   onStart,
-  onProgress,
+  onRender,
   onFinished,
-  onFrame,
+  onCapture,
   maxLength = 2000,
   minLength = 200,
   fps = 10,
   scale = 0.75,
   maxSize = 2e6,
-  maxAttempts = 2
+  maxAttempts = 3
 }) => {
   let startTime, currentTime, minTimeout, captureInterval
   let attempts = 0
@@ -70,10 +70,12 @@ const createGif = ({
     quality: 10
   })
 
-  gif.on('progress', (progress) => onProgress({ progress, attempts }))
+  gif.on('progress', (progress) => onRender({ progress, attempts }))
   gif.on('finished', (image) => {
     if (image.size > maxSize && attempts < maxAttempts) {
-      rerender(scale * (2 / 3))
+      // Mutate scale so that any future gifs also use this scaling
+      scale *= maxSize / image.size
+      rerender()
     } else {
       // gif.js turns this on when rendering but not off when finished
       gif.running = false
@@ -123,7 +125,7 @@ const createGif = ({
       const frame = cropFrame()
       frames.push({ frame, delay })
 
-      onFrame({
+      onCapture({
         current: currentTime,
         progress: (currentTime - startTime) / maxLength
       })
@@ -134,7 +136,7 @@ const createGif = ({
     onStart({ time: startTime })
   }
 
-  const rerender = (scale) => {
+  const rerender = () => {
     const scaleFrame = scaleImage(frames[0].frame, scale)
 
     // Reset gif state so we can reuse the object and get the same event emitters
