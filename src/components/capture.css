@@ -5,18 +5,20 @@
 
 .mediaContainer {
   position: relative;
-}
-
-.cropVideo,
-.image {
   border: 1px solid #12abee;
   border-radius: 3px;
   margin: 0 auto;
 }
 
-.image {
+.mediaContainer > * {
   width: 100%;
   display: block;
+}
+
+@media screen and (max-height: 565px) {
+  .mediaContainer {
+    border-radius: 3px 3px 0 0;
+  }
 }
 
 .initial {
@@ -35,17 +37,15 @@
   background: #e90090;
   height: 5px;
   position: absolute;
-  bottom: 0;
+  bottom: -1px;
+  left: -1px;
   border-radius: 3px;
 }
 
 .renderProgress {
-  background: #ddd;
-  width: 100%;
+  background: rgba(18, 172, 239, 0.08);
   font-size: 24px;
   color: #e90090;
-  border: 1px solid #12abee;
-  border-radius: 3px;
   text-align: center;
   padding-top: 50px;
 }

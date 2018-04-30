@@ -13,7 +13,7 @@ export default class Home extends Component {
     start: 0,
     current: 0,
     captureProgress: null,
-    progress: null,
+    renderProgress: null,
     imageLoaded: false
   }
 
@@ -33,12 +33,28 @@ export default class Home extends Component {
       .then((stream) => {
         this.setState({ stream })
 
-        this._removeCaptureKey = keyBinding(
-          'keypress',
-          ' ',
-          this._postButton,
-          this.startCapture
-        )
+        // Wait a tick until the doms refs have been instantiated
+        setTimeout(() => {
+          this._removeCaptureKey = keyBinding(
+            'keypress',
+            ' ',
+            this._postButton,
+            this.startCapture
+          )
+
+          this.setVideoHeight()
+
+          this._gif = gif({
+            maxSize: this.props.maxSize,
+            video: this._video.getVideo(),
+            onStart: ({ time }) => this.setImage({ now: time }),
+            onRender: ({ progress }) =>
+              this.setState({ renderProgress: progress }),
+            onFinished: ({ image }) => this.setImage({ image }),
+            onCapture: ({ current, progress }) =>
+              this.setState({ current, captureProgress: progress })
+          })
+        }, 0)
       })
       .catch((error) => {
         this.setState({ error: error.message })
@@ -51,6 +67,10 @@ export default class Home extends Component {
   }
 
   componentDidUpdate() {
+    this.setVideoHeight()
+  }
+
+  setVideoHeight = () => {
     const videoContainer = this._video && this._video.getContainer()
 
     if (!videoContainer) return
@@ -67,7 +87,7 @@ export default class Home extends Component {
       start: now,
       current: now,
       captureProgress: null,
-      progress: null
+      renderProgress: null
     })
   }
 
@@ -76,7 +96,7 @@ export default class Home extends Component {
     const isAltButton = e.button !== undefined && e.button !== 0
     const isKeyPress = e.type === 'keypress'
 
-    if (isAltKey || isAltButton || (this._gif && this._gif.running)) {
+    if (isAltKey || isAltButton || this._gif.isRunning()) {
       return
     }
 
@@ -91,28 +111,25 @@ export default class Home extends Component {
       return
     }
 
-    this._gif = gif({
-      video: this._video.getVideo(),
-      onStart: (now) => this.setImage({ now }),
-      onProgress: (progress) => this.setState({ progress }),
-      onFinished: (image) => this.setImage({ image }),
-      onFrame: ({ current, progress }) =>
-        this.setState({ current, captureProgress: progress })
-    })
+    this._gif.start()
   }
 
-  stopCapture = () => {
-    this._gif.stop()
-  }
+  stopCapture = () => this._gif.stop()
 
   render(
     { image, readonly },
-    { error, stream, progress, start, current, captureProgress, imageLoaded }
+    {
+      error,
+      stream,
+      renderProgress,
+      start,
+      current,
+      captureProgress,
+      imageLoaded
+    }
   ) {
-    const hasProgress = typeof progress === 'number'
-    // Add two for some reason, sorry!
-    // (It prevents elements being jumpy when transitioning from video -> progress -> image)
-    const prevVideoHeight = this._videoHeight + 2
+    const isRendering = typeof renderProgress === 'number'
+    const prevVideoHeight = this._videoHeight
     return (
       <div class={styles.container}>
         {!stream && !error ? (
@@ -123,8 +140,7 @@ export default class Home extends Component {
           <div>
             <div class={styles.mediaContainer}>
               <SquareVideo
-                class={styles.cropVideo}
-                style={{ display: image || hasProgress ? 'none' : 'block' }}
+                style={{ display: image || isRendering ? 'none' : 'block' }}
                 ref={(c) => (this._video = c)}
                 autoplay
                 muted
@@ -132,12 +148,12 @@ export default class Home extends Component {
                 srcObject={stream}
               />
               {!image &&
-                hasProgress && (
+                isRendering && (
                   <div
                     class={styles.renderProgress}
                     style={{ height: prevVideoHeight }}
                   >
-                    {(progress * 100).toFixed(0)}%
+                    {(renderProgress * 100).toFixed(0)}%
                   </div>
                 )}
               {image && (
@@ -150,7 +166,7 @@ export default class Home extends Component {
                 />
               )}
               {!image &&
-                !hasProgress && (
+                !isRendering && (
                   <div
                     class={styles.captureProgress}
                     style={{
@@ -160,7 +176,7 @@ export default class Home extends Component {
                 )}
             </div>
             {!image &&
-              !hasProgress && (
+              !isRendering && (
                 <button
                   ref={(c) => (this._postButton = c)}
                   class={cx(styles.btnCapture, {
@@ -175,7 +191,7 @@ export default class Home extends Component {
                 </button>
               )}
             {!image &&
-              hasProgress && (
+              isRendering && (
                 <button class={styles.btnCapture} disabled>
                   Rendering
                 </button>
