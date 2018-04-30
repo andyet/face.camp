@@ -62,7 +62,11 @@ export default ({
   maxSize = 2e6,
   maxAttempts = 3
 }) => {
-  let startTime, currentTime, minTimeout, captureInterval
+  // Some mutable state
+  let startTime = null
+  let currentTime = null
+  let minTimeout = null
+  let captureInterval = null
   let attempts = 0
   let frames = []
 
@@ -93,6 +97,14 @@ export default ({
     gif.frames = []
     gif.freeWorkers = []
     gif.activeWorkers = []
+  }
+
+  const cleanUp = () => {
+    gif.abort()
+    clearInterval(captureInterval)
+    clearTimeout(minTimeout)
+    captureInterval = null
+    minTimeout = null
   }
 
   const resetState = () => {
@@ -148,14 +160,6 @@ export default ({
       gif.addFrame(scaleFrame(data.frame), { delay: data.delay })
     )
     render()
-  }
-
-  const cleanUp = () => {
-    gif.abort()
-    clearInterval(captureInterval)
-    clearTimeout(minTimeout)
-    captureInterval = null
-    minTimeout = null
   }
 
   const stop = () => {
