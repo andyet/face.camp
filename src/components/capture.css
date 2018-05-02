@@ -1,14 +1,33 @@
 @import '../variables.css';
 
 .mediaContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   position: relative;
+  overflow: hidden;
+  margin: 0 auto;
+
+  width: calc(100vw - (var(--padding) * 2));
+  height: calc(100vw - (var(--padding) * 2));
+  max-width: calc(var(--max-width) - (var(--padding) * 2));
+  max-height: calc(var(--max-width) - (var(--padding) * 2));
+
   border: var(--media-border) solid var(--blue);
   border-radius: 3px;
-  margin: 0 auto;
+  color: var(--pink);
+  background: var(--blue-light);
 
   & > * {
     width: 100%;
     display: block;
+  }
+
+  &.errorContainer {
+    color: var(--pink);
+    background: var(--pink-light);
+    border-color: var(--pink);
   }
 
   @media (--small-height) {
@@ -16,54 +35,22 @@
   }
 }
 
-.initial {
+.mediaText {
   text-align: center;
-
-  width: calc(100vw - (var(--padding) * 2));
-  height: calc(100vw - (var(--padding) * 2));
-  max-width: 510px;
-  max-height: 510px;
   padding: 20px;
-
-  color: var(--pink);
-  background: var(--blue-light);
-  border: var(--media-border) solid var(--blue);
-  border-radius: 3px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  &.error {
-    color: var(--blue);
-    background: var(--pink-light);
-    border-color: var(--pink);
-  }
-
-  & h3 {
-    font-size: 24px;
-  }
+  font-size: 24px;
+  z-index: 100;
 }
 
 .captureProgress {
   background: var(--pink);
   height: 5px;
   position: absolute;
-  bottom: calc(-1 * var(--media-border));
-  left: calc(-1 * var(--media-border));
-  border-radius: 3px;
-}
-
-.renderProgress {
-  background: var(--blue-light);
-  font-size: 24px;
-  color: var(--pink);
-  text-align: center;
-  padding-top: 50px;
+  bottom: 0;
+  left: 0;
 }
 
 .btnCapture {
-  outline: none;
   cursor: pointer;
   display: block;
   width: 100%;
@@ -86,14 +73,11 @@
     transform: translate(2px, 2px);
   }
 
-  &:disabled {
-    opacity: 0.5;
-    cursor: default;
-  }
-
+  &:disabled,
   &:disabled:hover {
     opacity: 0.5;
     cursor: default;
+    outline: none;
     background-color: white;
   }
 

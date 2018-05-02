@@ -1,61 +1,36 @@
 import { h, Component } from 'preact'
-import cx from 'classnames'
-import throttle from '../lib/throttle-event'
 
 export default class SquareVideo extends Component {
   state = {
-    width: 0,
-    ratio: 0
-  }
-
-  componentDidMount() {
-    this._removeResize = throttle('resize', this.setDimensions)
-    this.setDimensions()
-  }
-
-  componentWillUnmount() {
-    if (this._removeResize) this._removeResize()
+    ratio: 1
   }
 
   setDimensions = () => {
     const { videoHeight, videoWidth } = this._video
-    const dimensions = { width: this.props.maxWidth() }
 
-    if (videoWidth && videoHeight) {
-      dimensions.ratio = videoWidth / videoHeight
-    }
-
-    this.setState(dimensions)
+    this.setState({
+      ratio: videoWidth / videoHeight
+    })
   }
 
   getVideo = () => this._video
-  getContainer = () => this._container
 
-  render({ style: containerStyle, maxWidth: __, ...props }, { width, ratio }) {
+  render(props, { ratio }) {
     return (
-      <div
-        ref={(c) => (this._container = c)}
+      <video
+        {...props}
+        ref={(c) => (this._video = c)}
         style={{
-          ...containerStyle,
-          width,
-          height: width,
-          overflow: 'hidden',
-          position: 'relative'
+          ...props.style,
+          [ratio > 1 ? 'height' : 'width']: '100%',
+          [ratio > 1 ? 'width' : 'height']: 'auto',
+          left: '50%',
+          position: 'absolute',
+          top: '50%',
+          transform: 'translate(-50%, -50%) rotateY(180deg)'
         }}
-      >
-        <video
-          {...props}
-          ref={(c) => (this._video = c)}
-          style={{
-            [ratio > 1 ? 'height' : 'width']: '100%',
-            left: '50%',
-            position: 'absolute',
-            top: '50%',
-            transform: 'translate(-50%, -50%) rotateY(180deg)'
-          }}
-          onloadedmetadata={this.setDimensions}
-        />
-      </div>
+        onloadedmetadata={this.setDimensions}
+      />
     )
   }
 }

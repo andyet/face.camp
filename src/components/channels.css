@@ -31,10 +31,6 @@
   cursor: pointer;
   -webkit-appearance: none;
 
-  &:focus {
-    outline: none;
-  }
-
   @media (--small-height) {
     padding-left: 40px;
     height: 32px;

@@ -11,5 +11,10 @@
 .inner {
   margin: auto;
   max-width: var(--max-width);
+  width: 100%;
   padding: var(--padding);
+
+  @media (--small-height) {
+    padding-top: calc(var(--padding) / 2);
+  }
 }

@@ -15,15 +15,63 @@
     color: var(--background-color);
   }
 
-  & + p {
-    margin-bottom: 10px;
-  }
-
   @media (--small-height) {
-    border-top: none;
-    border-top-right-radius: 0;
-    border-top-left-radius: 0;
+    margin-top: -12px;
   }
+}
+
+.team {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-right: 10px;
+
+  & > * {
+    margin: 0 5px;
+
+    &:first-child {
+      margin-left: 0;
+    }
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
+.teamName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.btnNav {
+  &,
+  &:focus,
+  &:active,
+  &:visited {
+    color: var(--blue);
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+  }
+}
+
+.btnAdd {
+  padding-left: 13px;
+  display: inline-block;
+  background: url('../images/plus.svg') no-repeat 0 3px;
+  background-size: 12px 9px;
+  flex: 1 0 auto;
+}
+
+.btnSwap {
+  flex-basis: auto;
+  background: url('../images/swap.svg') no-repeat 0 3px;
+  background-size: 100% 9px;
+  padding: 0;
+  text-indent: -9999em;
+  flex: 0;
 }
 
 .btnPost {
@@ -70,72 +118,19 @@
   }
 }
 
-.error {
-  margin-bottom: 15px;
-  color: var(--pink);
-  text-align: center;
-  font-size: 18px;
-
-  & a,
-  & a:visited {
-    color: var(--pink);
-  }
-
-  @media (--small-height) {
-    font-size: 16px;
-    margin-top: -5px;
-    margin-bottom: 10px;
-  }
-}
-
 .btnLink {
-  color: var(--pink);
-  border: none;
-  padding: 0 !important;
-  font: inherit;
-  cursor: pointer;
-
   &,
   &:focus,
   &:active {
+    color: var(--pink);
     border: none;
+    cursor: pointer;
     display: inline;
     font: inherit;
-    margin: 0;
-    padding: 0;
     outline: none;
     outline-offset: 0;
-    color: var(--pink);
-    cursor: pointer;
     text-decoration: underline;
-  }
-}
-
-.btnNav {
-  &,
-  &:focus,
-  &:active {
-    text-decoration: none;
-  }
-}
-
-.btnSwap {
-  width: 12px;
-  margin-right: 10px;
-  background: url('../images/swap.svg') no-repeat 0 4px;
-  background-size: 12px 9px;
-  text-indent: -9999em;
-}
-
-a.btnAdd {
-  &,
-  &:visited {
-    padding-left: 13px;
-    display: inline-block;
-    background: url('../images/plus.svg') no-repeat 0 3px;
-    background-size: 12px 9px;
-    text-decoration: none;
-    color: var(--blue);
+    background: none;
   }
 }
 

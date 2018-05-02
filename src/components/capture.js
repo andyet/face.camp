@@ -5,11 +5,10 @@ import SquareVideo from '../lib/square-video'
 import gif from '../lib/gif'
 import keyBinding from '../lib/key-bindings'
 import styles from './capture.css'
-import cssVariables from '../variables.css'
 
 export default class Home extends Component {
   state = {
-    error: null,
+    streamError: null,
     stream: null,
     start: 0,
     current: 0,
@@ -43,8 +42,6 @@ export default class Home extends Component {
             this.startCapture
           )
 
-          this.setVideoHeight()
-
           this._gif = gif({
             maxSize: this.props.maxSize,
             video: this._video.getVideo(),
@@ -58,27 +55,13 @@ export default class Home extends Component {
         }, 0)
       })
       .catch((error) => {
-        this.setState({ error: error.message })
+        this.setState({ streamError: error.message })
       })
   }
 
   componentWillUnmount() {
     if (this._gif) this._gif.cleanUp()
     if (this._removeCaptureKey) this._removeCaptureKey()
-  }
-
-  componentDidUpdate() {
-    this.setVideoHeight()
-  }
-
-  setVideoHeight = () => {
-    const videoContainer = this._video && this._video.getContainer()
-
-    if (!videoContainer) return
-
-    if (videoContainer.clientHeight) {
-      this._videoHeight = videoContainer.clientHeight
-    }
   }
 
   setImage = ({ image = null, now = 0 } = {}) => {
@@ -118,9 +101,9 @@ export default class Home extends Component {
   stopCapture = () => this._gif.stop()
 
   render(
-    { image, readonly },
+    { image, readonly, children, error, reauth },
     {
-      error,
+      streamError,
       stream,
       renderProgress,
       start,
@@ -130,13 +113,20 @@ export default class Home extends Component {
     }
   ) {
     const isRendering = typeof renderProgress === 'number'
-    const prevVideoHeight = this._videoHeight
     return (
       <div>
-        {!stream || error ? (
+        {!stream || streamError ? (
           <div>
-            <div class={cx(styles.initial, { [styles.error]: error })}>
-              <h3>{error ? `Error: ${error}` : 'Granting camera access'}</h3>
+            <div
+              class={cx(styles.mediaContainer, {
+                [styles.errorContainer]: !!streamError
+              })}
+            >
+              <div class={cx(styles.mediaText)}>
+                {streamError
+                  ? `Error: ${streamError}`
+                  : 'Granting camera access'}
+              </div>
             </div>
             <button class={cx(styles.btnCapture)} disabled>
               Hold to record
@@ -144,80 +134,62 @@ export default class Home extends Component {
           </div>
         ) : (
           <div>
-            <div class={styles.mediaContainer}>
+            <div
+              class={cx(styles.mediaContainer, {
+                [styles.errorContainer]: !!error
+              })}
+            >
               <SquareVideo
-                style={{ display: image || isRendering ? 'none' : 'block' }}
+                style={{
+                  display: image || isRendering || error ? 'none' : 'block'
+                }}
                 ref={(c) => (this._video = c)}
                 autoplay
                 muted
                 playsinline
                 srcObject={stream}
-                maxWidth={() =>
-                  window.innerWidth >= cssVariables.maxWidth
-                    ? cssVariables.maxWidth -
-                      cssVariables.padding * 2 -
-                      cssVariables.mediaBorder * 2
-                    : window.innerWidth -
-                      cssVariables.padding * 2 -
-                      cssVariables.mediaBorder * 2
-                }
               />
-              {!image &&
-                isRendering && (
-                  <div
-                    class={styles.renderProgress}
-                    style={{ height: prevVideoHeight }}
-                  >
-                    {(renderProgress * 100).toFixed(0)}%
-                  </div>
-                )}
-              {image && (
-                <BlobImage
-                  class={styles.image}
-                  alt="Your mug!"
-                  style={!imageLoaded && { height: prevVideoHeight }}
-                  onload={() => this.setState({ imageLoaded: true })}
-                  src={image}
+              {error ? (
+                <div class={cx(styles.mediaText)}>{error}</div>
+              ) : image ? (
+                <BlobImage class={styles.image} alt="Your mug!" src={image} />
+              ) : isRendering ? (
+                <div class={styles.mediaText}>
+                  {(renderProgress * 100).toFixed(0)}%
+                </div>
+              ) : (
+                <div
+                  class={styles.captureProgress}
+                  style={{
+                    width: `${100 * captureProgress}%`
+                  }}
                 />
               )}
-              {!image &&
-                !isRendering && (
-                  <div
-                    class={styles.captureProgress}
-                    style={{
-                      width: `${100 * captureProgress}%`
-                    }}
-                  />
-                )}
             </div>
-            {!image &&
-              !isRendering && (
-                <button
-                  ref={(c) => (this._postButton = c)}
-                  class={cx(styles.btnCapture, {
-                    [styles.btnRecording]: !!start
-                  })}
-                  onMouseDown={this.startCapture}
-                  onMouseUp={this.stopCapture}
-                  onTouchStart={this.startCapture}
-                  onTouchEnd={this.stopCapture}
-                >
-                  {start ? 'Recording' : 'Hold to record'}
-                </button>
-              )}
-            {!image &&
-              isRendering && (
-                <button class={styles.btnCapture} disabled>
-                  Rendering
-                </button>
-              )}
-            {image && (
+            {!image && !isRendering ? (
               <button
-                disabled={readonly}
-                class={styles.btnCapture}
-                onClick={readonly ? () => {} : () => this.setImage()}
+                ref={(c) => (this._postButton = c)}
+                class={cx(styles.btnCapture, {
+                  [styles.btnRecording]: !!start
+                })}
+                onMouseDown={this.startCapture}
+                onMouseUp={this.stopCapture}
+                onTouchStart={this.startCapture}
+                onTouchEnd={this.stopCapture}
               >
-                {readonly ? 'Looking good' : 'Reset gif'}
+                {start ? 'Recording' : 'Hold to record'}
+              </button>
+            ) : !image && isRendering ? (
+              <button class={styles.btnCapture} disabled>
+                Rendering
+              </button>
+            ) : readonly ? (
+              <button disabled class={styles.btnCapture}>
+                Looking good
+              </button>
+            ) : (
+              <button class={styles.btnCapture} onClick={() => this.setImage()}>
+                Reset gif
               </button>
             )}
           </div>

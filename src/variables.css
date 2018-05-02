@@ -11,5 +11,5 @@
   --media-border: 1px;
 }
 
-@custom-media --small-height screen and (height <= 565px);
+@custom-media --small-height screen and (height <= 800px);
 @custom-media --min-height screen and (height <= 400px);

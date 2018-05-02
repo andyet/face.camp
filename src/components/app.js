@@ -96,7 +96,7 @@ export default class App extends Component {
   }
 
   render(
-    { teams, team, selectTeam, logout, defaultMessage, maxSize },
+    { teams, team, selectTeam, logout, reauth, defaultMessage, maxSize },
     { image, channel, uploading, success, postError, channelsError, message }
   ) {
     const error = postError || channelsError
@@ -107,26 +107,23 @@ export default class App extends Component {
             <h1>Increase your browser height</h1>
           </div>
         </BodyClass>
-        <button class={styles.btnLogout} onClick={logout}>
+        <button class={styles.btnLogout} onClick={reauth}>
           logout
         </button>
-        <p>
-          Post to {team.team_name}
+        <div class={styles.team}>
+          <div class={styles.teamName}>{team.team_name}</div>
           {teams.length > 1 && (
-            <span>
-              {' '}
-              <button
-                onClick={selectTeam}
-                class={cx(styles.btnLink, styles.btnNav, styles.btnSwap)}
-              >
-                Swap Team
-              </button>
-            </span>
-          )}{' '}
+            <button
+              onClick={selectTeam}
+              class={cx(styles.btnNav, styles.btnSwap)}
+            >
+              Swap Team
+            </button>
+          )}
           <a href={authUrl} class={cx(styles.btnNav, styles.btnAdd)}>
             Add Team
           </a>
-        </p>
+        </div>
         <Channels
           selected={team.last_channel || null}
           onError={(error) => this.setState({ channelsError: error })}
@@ -138,35 +135,31 @@ export default class App extends Component {
           image={image}
           readonly={uploading || success}
           onChange={({ image }) => this.setState({ image, postError: null })}
+          error={
+            error && (
+              <span>
+                Error: {error.message}.
+                {error.slackAuth && (
+                  <span>
+                    {' '}
+                    Try{' '}
+                    <button class={styles.btnLink} onClick={reauth}>
+                      logging in
+                    </button>{' '}
+                    again.
+                  </span>
+                )}
+              </span>
+            )
+          }
         />
         <form onSubmit={success ? this.reset : this.handlePost}>
           <Message
             readonly={uploading || success}
-            message={message}
-            onChange={(message) => this.setState({ message })}
+            value={message}
+            onInput={(e) => this.setState({ message: e.target.value })}
             placeholder={defaultMessage}
           />
-          {error && (
-            <div class={styles.error}>
-              Error: {error.message}.
-              {error.slackAuth && (
-                <span>
-                  {' '}
-                  Try{' '}
-                  <button
-                    class={styles.btnLink}
-                    onClick={() => {
-                      logout()
-                      window.location.href = authUrl
-                    }}
-                  >
-                    logging in
-                  </button>{' '}
-                  again.
-                </span>
-              )}
-            </div>
-          )}
           <button
             class={cx(styles.btnPost, {
               [styles.bottomSpacing]: ios.ios && !ios.standalone
@@ -177,7 +170,7 @@ export default class App extends Component {
             {uploading
               ? 'Uploading...'
               : success
-                ? 'Post another'
+                ? 'Success! Post another?'
                 : `Post${image ? ` (${pb(image.size)})` : ''}`}
           </button>
         </form>

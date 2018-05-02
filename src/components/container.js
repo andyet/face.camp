@@ -1,6 +1,6 @@
 import { h, Component } from 'preact'
 import { Router } from 'preact-router'
-import { readTeams, deleteTeam, updateTeam } from '../lib/auth'
+import { readTeams, deleteTeam, updateTeam, authUrl } from '../lib/auth'
 import Home from '../routes/home'
 import Privacy from '../routes/privacy'
 import browserSupport from '../lib/browser-support'
@@ -16,13 +16,22 @@ export default class Container extends Component {
     supported: browserSupport()
   }
 
-  logout = () => {
+  deleteTeam = () => {
     const { team } = this.state
-    const remainingTeams = deleteTeam(team)
+    return deleteTeam(this.state.team)
+  }
+
+  logout = () => {
+    const remainingTeams = this.deleteTeam()
     this.setState({
       teams: remainingTeams,
       team: getSelected(remainingTeams)
     })
+  }
+
+  reauth = () => {
+    this.deleteTeam()
+    window.location.href = authUrl
   }
 
   selectTeam = () => {
@@ -55,6 +64,7 @@ export default class Container extends Component {
               selectTeam={this.selectTeam}
               selectChannel={this.selectChannel}
               logout={this.logout}
+              reauth={this.reauth}
             />
             <Privacy path="/privacy" />
           </Router>
