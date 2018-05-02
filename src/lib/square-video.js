@@ -1,7 +1,6 @@
 import { h, Component } from 'preact'
 import cx from 'classnames'
 import throttle from '../lib/throttle-event'
-import styles from './square-video.css'
 
 export default class SquareVideo extends Component {
   state = {
@@ -20,9 +19,7 @@ export default class SquareVideo extends Component {
 
   setDimensions = () => {
     const { videoHeight, videoWidth } = this._video
-    const { clientWidth } = this._container.parentElement
-
-    const dimensions = { width: clientWidth }
+    const dimensions = { width: this.props.maxWidth() }
 
     if (videoWidth && videoHeight) {
       dimensions.ratio = videoWidth / videoHeight
@@ -34,25 +31,28 @@ export default class SquareVideo extends Component {
   getVideo = () => this._video
   getContainer = () => this._container
 
-  render(
-    { video, class: containerClass, style: containerStyle, ...props },
-    { width, ratio }
-  ) {
+  render({ style: containerStyle, maxWidth: __, ...props }, { width, ratio }) {
     return (
       <div
         ref={(c) => (this._container = c)}
-        class={cx(containerClass, styles.square)}
         style={{
           ...containerStyle,
           width,
-          height: width
+          height: width,
+          overflow: 'hidden',
+          position: 'relative'
         }}
       >
         <video
           {...props}
           ref={(c) => (this._video = c)}
-          class={styles.video}
-          style={{ [ratio > 1 ? 'height' : 'width']: '100%' }}
+          style={{
+            [ratio > 1 ? 'height' : 'width']: '100%',
+            left: '50%',
+            position: 'absolute',
+            top: '50%',
+            transform: 'translate(-50%, -50%) rotateY(180deg)'
+          }}
           onloadedmetadata={this.setDimensions}
         />
       </div>

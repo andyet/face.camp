@@ -1,15 +1,27 @@
+@import './variables.css';
+
+* {
+  box-sizing: border-box;
+}
+
 html,
 body {
-  width: 100%;
-  padding: 0;
-  margin: 0;
-  background: #fff;
+  background: var(--background-color);
   font-weight: 400;
   font-size: 12px;
   line-height: 1.4;
-  color: #000;
+  color: var(--text-color);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body,
+#root {
+  height: 100vh;
+  width: 100%;
+  padding: 0;
+  margin: 0;
 }
 
 html,
@@ -18,32 +30,6 @@ input,
 button,
 select {
   font-family: 'Menlo', 'Monaco', 'Courier New', mono;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-#root {
-  max-width: 550px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-#root:empty {
-  margin: 0;
-  padding: 0;
-}
-
-@media screen and (max-height: 565px) {
-  #root {
-    /* Gets rid of the iOS issue where the bottom 40px is reserved to show
-       the browser bottom nav when not visible, so that when the post button
-       is tapped it posts the first time. TODO: remove this when apps works as
-       an iOS PWA. https://github.com/andyet/face.camp/issues/33
-      */
-    padding: 10px 20px 40px;
-  }
 }
 
 p {
@@ -58,5 +44,30 @@ h3 {
 
 a,
 a:visited {
-  color: #e90090;
+  color: var(--pink);
+}
+
+/* CSS for the static error and noscript messages */
+#static-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+
+  & > div {
+    max-width: var(--max-width);
+    padding: var(--padding);
+  }
+
+  & img {
+    margin-top: -30px;
+  }
+
+  & h1 {
+    margin-top: -20px;
+  }
+
+  & code {
+    word-break: break-all;
+  }
 }

@@ -1,5 +1,7 @@
 import UglifyJsPlugin from 'uglifyjs-webpack-plugin'
 import path from 'path'
+import cssnext from 'postcss-cssnext'
+import cssimport from 'postcss-import'
 
 // See output from `npm run build:sizes` for the size of all possible builds
 const env = (k, def) => (k in process.env ? process.env[k] !== 'false' : def)
@@ -7,6 +9,16 @@ const USE_ES6 = env('USE_ES6', true)
 const USE_OBJ_ASSIGN = env('USE_OBJ_ASSIGN', true)
 const USE_ASYNC_ROUTES = env('USE_ASYNC_ROUTES', false)
 const USE_MINIFY = env('USE_MINIFY', true)
+
+// A list of supported browsers for css and js plugins
+const BROWSERS = [
+  'chrome 63',
+  'edge 15',
+  'firefox 58',
+  'ios 11.2',
+  'safari 11',
+  'opera 50'
+]
 
 // uglifyjs plugin has different allowed options for v3 and v4. This massages
 // the v3 config into the closest possible equivalent v4 config
@@ -46,11 +58,22 @@ export default (config, env, helpers) => {
   // Use our own entry point instead of preact-cli-entrypoint
   config.entry.bundle = path.resolve(process.cwd(), 'src', 'index.js')
 
-  // Get babel loader for use in changing presets and plugins
+  const postcss = helpers.getLoadersByName(config, 'postcss-loader')
   const babel = helpers.getLoadersByName(config, 'babel-loader')[0]
-
-  // Get uglify plugin to change options on
   const uglify = helpers.getPluginsByName(config, 'UglifyJsPlugin')[0]
+
+  // Use cssnext plugin
+  postcss.forEach(({ rule, loader }) => {
+    if (rule.exclude) {
+      rule.exclude.push(path.resolve(process.cwd(), 'src', 'variables.css'))
+    }
+    loader.options.plugins = [cssimport(), cssnext({ browsers: BROWSERS })]
+  })
+
+  config.module.loaders.push({
+    test: /variables\.css$/,
+    loader: 'babel-loader!postcss-variables-loader'
+  })
 
   // Remove babel plugin that will transform Object.assign and change options
   // for other plugins to use Object.assign instead of a custom inline helper
@@ -105,14 +128,7 @@ export default (config, env, helpers) => {
       if (name.includes('/babel-preset-env/')) {
         // Helpful to see which browsers are being used
         // options.debug = true
-        options.targets.browsers = [
-          'chrome 63',
-          'edge 15',
-          'firefox 58',
-          'ios 11.2',
-          'safari 11',
-          'opera 50'
-        ]
+        options.targets.browsers = BROWSERS
       }
 
       return preset

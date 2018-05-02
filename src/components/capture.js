@@ -1,10 +1,11 @@
 import { h, Component } from 'preact'
 import cx from 'classnames'
-import BlobImage from './blob-image'
-import SquareVideo from './square-video'
+import BlobImage from '../lib/blob-image'
+import SquareVideo from '../lib/square-video'
 import gif from '../lib/gif'
-import keyBinding from '../lib/keyBindings'
+import keyBinding from '../lib/key-bindings'
 import styles from './capture.css'
+import cssVariables from '../variables.css'
 
 export default class Home extends Component {
   state = {
@@ -131,11 +132,16 @@ export default class Home extends Component {
     const isRendering = typeof renderProgress === 'number'
     const prevVideoHeight = this._videoHeight
     return (
-      <div class={styles.container}>
-        {!stream && !error ? (
-          <div class={styles.initial}>Granting camera access</div>
-        ) : error ? (
-          <div class={styles.error}>Error: {error}</div>
+      <div>
+        {!stream || error ? (
+          <div>
+            <div class={cx(styles.initial, { [styles.error]: error })}>
+              <h3>{error ? `Error: ${error}` : 'Granting camera access'}</h3>
+            </div>
+            <button class={cx(styles.btnCapture)} disabled>
+              Hold to record
+            </button>
+          </div>
         ) : (
           <div>
             <div class={styles.mediaContainer}>
@@ -146,6 +152,15 @@ export default class Home extends Component {
                 muted
                 playsinline
                 srcObject={stream}
+                maxWidth={() =>
+                  window.innerWidth >= cssVariables.maxWidth
+                    ? cssVariables.maxWidth -
+                      cssVariables.padding * 2 -
+                      cssVariables.mediaBorder * 2
+                    : window.innerWidth -
+                      cssVariables.padding * 2 -
+                      cssVariables.mediaBorder * 2
+                }
               />
               {!image &&
                 isRendering && (

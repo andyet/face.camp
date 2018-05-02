@@ -1,51 +1,63 @@
-.container {
-  position: relative;
-  min-height: 120px;
-}
+@import '../variables.css';
 
 .mediaContainer {
   position: relative;
-  border: 1px solid #12abee;
+  border: var(--media-border) solid var(--blue);
   border-radius: 3px;
   margin: 0 auto;
-}
 
-.mediaContainer > * {
-  width: 100%;
-  display: block;
-}
+  & > * {
+    width: 100%;
+    display: block;
+  }
 
-@media screen and (max-height: 565px) {
-  .mediaContainer {
+  @media (--small-height) {
     border-radius: 3px 3px 0 0;
   }
 }
 
 .initial {
-  color: #12abee;
   text-align: center;
-  font-size: 18px;
-}
 
-.error {
-  color: #e90090;
-  text-align: center;
-  font-size: 18px;
+  width: calc(100vw - (var(--padding) * 2));
+  height: calc(100vw - (var(--padding) * 2));
+  max-width: 510px;
+  max-height: 510px;
+  padding: 20px;
+
+  color: var(--pink);
+  background: var(--blue-light);
+  border: var(--media-border) solid var(--blue);
+  border-radius: 3px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &.error {
+    color: var(--blue);
+    background: var(--pink-light);
+    border-color: var(--pink);
+  }
+
+  & h3 {
+    font-size: 24px;
+  }
 }
 
 .captureProgress {
-  background: #e90090;
+  background: var(--pink);
   height: 5px;
   position: absolute;
-  bottom: -1px;
-  left: -1px;
+  bottom: calc(-1 * var(--media-border));
+  left: calc(-1 * var(--media-border));
   border-radius: 3px;
 }
 
 .renderProgress {
-  background: rgba(18, 172, 239, 0.08);
+  background: var(--blue-light);
   font-size: 24px;
-  color: #e90090;
+  color: var(--pink);
   text-align: center;
   padding-top: 50px;
 }
@@ -56,39 +68,37 @@
   display: block;
   width: 100%;
   border-radius: 5px;
-  border: 1px solid #12abee;
-  box-shadow: 2px 2px 0 #12abee;
+  border: 1px solid var(--blue);
+  box-shadow: 2px 2px 0 var(--blue);
   background-color: white;
-  color: #12abee;
+  color: var(--blue);
   padding: 10px 15px;
   font-size: 18px;
   margin-top: 10px;
   user-select: none;
-}
 
-.btnCapture:hover {
-  background-color: rgba(18, 172, 239, 0.08);
-}
+  &:hover {
+    background-color: var(--blue-light);
+  }
 
-.btnCapture:active {
-  box-shadow: none;
-  transform: translate(2px, 2px);
-}
+  &:active {
+    box-shadow: none;
+    transform: translate(2px, 2px);
+  }
 
-.btnCapture:disabled {
-  opacity: 0.5;
-  cursor: default;
-}
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
 
-.btnCapture:disabled:hover {
-  opacity: 0.5;
-  cursor: default;
-  background-color: white;
-}
+  &:disabled:hover {
+    opacity: 0.5;
+    cursor: default;
+    background-color: white;
+  }
 
-@media screen and (max-height: 565px) {
-  .btnCapture {
-    margin-top: -1px;
+  @media (--small-height) {
+    margin-top: calc(-1 * var(--media-border));
     padding: 10px 7px 7px;
     border-top: none;
     border-top-right-radius: 0;
@@ -100,5 +110,5 @@
 .btnRecording {
   box-shadow: none;
   transform: translate(2px, 2px);
-  background-color: rgba(18, 172, 239, 0.08);
+  background-color: var(--blue-light);
 }

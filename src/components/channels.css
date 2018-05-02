@@ -1,3 +1,5 @@
+@import '../variables.css';
+
 .selectChannel {
   width: 100%;
   margin: 10px 0 10px;
@@ -6,10 +8,14 @@
   background-image: url('../images/caret.svg');
   background-size: 22px 12px;
   background-position: 97% 55%;
-  border: 1px solid #12abee;
+  border: 1px solid var(--blue);
   border-radius: 3px;
-  box-shadow: 2px 2px 0 #12abee;
+  box-shadow: 2px 2px 0 var(--blue);
   cursor: pointer;
+
+  @media (--small-height) {
+    background-size: 18px 9px;
+  }
 }
 
 .select {
@@ -21,16 +27,15 @@
   background-size: 24px auto;
   border: none;
   font-size: 16px;
-  color: #12abee;
+  color: var(--blue);
   cursor: pointer;
   -webkit-appearance: none;
-}
 
-@media screen and (max-height: 565px) {
-  .selectChannel {
-    background-size: 18px 9px;
+  &:focus {
+    outline: none;
   }
-  .select {
+
+  @media (--small-height) {
     padding-left: 40px;
     height: 32px;
     font-size: 16px;
@@ -38,16 +43,11 @@
   }
 }
 
-.empty {
-  color: #e90090;
-}
+.empty,
 .error {
-  color: #e90090;
-}
-.loading {
-  color: #ccc;
+  color: var(--pink);
 }
 
-.selectChannel select:focus {
-  outline: none;
+.loading {
+  color: var(--gray);
 }

@@ -4,6 +4,7 @@ import { readTeams, deleteTeam, updateTeam } from '../lib/auth'
 import Home from '../routes/home'
 import Privacy from '../routes/privacy'
 import browserSupport from '../lib/browser-support'
+import styles from './container.css'
 
 const initialTeams = readTeams()
 const getSelected = (teams) => (teams && teams.length ? teams[0] : null)
@@ -45,17 +46,19 @@ export default class Container extends Component {
 
   render(props, state) {
     return (
-      <div>
-        <Router>
-          <Home
-            path="/"
-            {...state}
-            selectTeam={this.selectTeam}
-            selectChannel={this.selectChannel}
-            logout={this.logout}
-          />
-          <Privacy path="/privacy" />
-        </Router>
+      <div class={styles.container}>
+        <div class={styles.inner}>
+          <Router>
+            <Home
+              path="/"
+              {...state}
+              selectTeam={this.selectTeam}
+              selectChannel={this.selectChannel}
+              logout={this.logout}
+            />
+            <Privacy path="/privacy" />
+          </Router>
+        </div>
       </div>
     )
   }

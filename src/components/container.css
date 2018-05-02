@@ -1,0 +1,15 @@
+@import '../variables.css';
+
+.container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.inner {
+  margin: auto;
+  max-width: var(--max-width);
+  padding: var(--padding);
+}

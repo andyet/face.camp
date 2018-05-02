@@ -1,14 +1,18 @@
 import { h, Component } from 'preact'
 import cx from 'classnames'
 import pb from 'pretty-bytes'
-import Capture from '../components/capture'
-import Channels from '../components/channels'
-import Message from '../components/message'
+import BodyClass from '../lib/body-class'
+import Capture from './capture'
+import Channels from './channels'
+import Message from './message'
 import slackFetch from '../lib/slack-fetch'
 import { authUrl } from '../lib/auth'
 import slug from '../lib/slug'
 import ts from '../lib/timestamp'
+import isiOS from '../lib/is-ios'
 import styles from './app.css'
+
+const ios = isiOS()
 
 export default class App extends Component {
   state = {
@@ -98,9 +102,11 @@ export default class App extends Component {
     const error = postError || channelsError
     return (
       <div>
-        <div class={styles.minHeight}>
-          <h1>Increase your browser height</h1>
-        </div>
+        <BodyClass class={styles.isMinHeight}>
+          <div class={styles.minHeight}>
+            <h1>Increase your browser height</h1>
+          </div>
+        </BodyClass>
         <button class={styles.btnLogout} onClick={logout}>
           logout
         </button>
@@ -162,7 +168,9 @@ export default class App extends Component {
             </div>
           )}
           <button
-            class={styles.btnPost}
+            class={cx(styles.btnPost, {
+              [styles.bottomSpacing]: ios.ios && !ios.standalone
+            })}
             type="submit"
             disabled={!this.canPost()}
           >

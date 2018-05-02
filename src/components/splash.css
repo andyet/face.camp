@@ -1,3 +1,5 @@
+@import '../variables.css';
+
 .container {
   width: 100%;
   height: 100%;
@@ -5,31 +7,29 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-}
 
-.container > div {
-  width: 100%;
+  & > div {
+    width: 100%;
+  }
+
+  & p {
+    margin-bottom: 20px;
+  }
 }
 
 .logoFacecamp {
-  margin-bottom: 30px;
   margin-right: -20px;
-  text-align: center;
-}
 
-.logoFacecamp img {
-  width: 150px;
-  display: inline-block;
+  & img {
+    width: 150px;
+    display: inline-block;
+  }
 }
 
 .title {
   margin-bottom: 40px;
   font-size: 40px;
-  color: #12abee;
-}
-
-.container p {
-  margin-bottom: 20px;
+  color: var(--blue);
 }
 
 .byline {
@@ -45,8 +45,8 @@
   background: url('../images/logo-andyet.svg') no-repeat center center;
   background-size: contain;
   transition: opacity 0.2s;
-}
 
-.logoAndyet:hover {
-  opacity: 0.7;
+  &:hover {
+    opacity: 0.7;
+  }
 }

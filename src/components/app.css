@@ -1,29 +1,29 @@
+@import '../variables.css';
+
 .btnLogout {
   margin: -10px 0 5px 5px;
   padding: 5px 10px;
-  background: white;
-  border: 1px solid #e90090;
+  background: var(--background-color);
+  border: 1px solid var(--pink);
   border-radius: 3px;
-  color: #e90090;
+  color: var(--pink);
   float: right;
   cursor: pointer;
-}
 
-@media screen and (max-height: 565px) {
-  .btnLogout {
+  &:hover {
+    background-color: var(--pink);
+    color: var(--background-color);
+  }
+
+  & + p {
+    margin-bottom: 10px;
+  }
+
+  @media (--small-height) {
     border-top: none;
     border-top-right-radius: 0;
     border-top-left-radius: 0;
   }
-}
-
-.btnLogout:hover {
-  background-color: #e90090;
-  color: #fff;
-}
-
-.btnLogout + p {
-  margin-bottom: 10px;
 }
 
 .btnPost {
@@ -31,88 +31,92 @@
   padding: 10px 15px;
   display: block;
   background: white;
-  border: 1px solid #e90090;
+  border: 1px solid var(--pink);
   border-radius: 5px;
-  box-shadow: 2px 2px 0 #e90090;
+  box-shadow: 2px 2px 0 var(--pink);
   font-size: 18px;
-  color: #e90090;
+  color: var(--pink);
   cursor: pointer;
   transition: background-color 0.2s;
-}
 
-@media screen and (max-height: 565px) {
-  .btnPost {
+  &:hover {
+    background-color: rgba(234, 0, 145, 0.08);
+  }
+
+  &:active {
+    box-shadow: none;
+    transform: translate(2px, 2px);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+  }
+
+  &:disabled:hover {
+    cursor: default;
+    color: var(--pink);
+    background: white;
+  }
+
+  &.bottomSpacing {
+    @media (--small-height) {
+      margin-bottom: 40px;
+    }
+  }
+
+  @media (--small-height) {
     padding: 7px;
     font-size: 16px;
   }
 }
 
-.btnPost:hover {
-  background-color: rgba(234, 0, 145, 0.08);
-}
-
-.btnPost:active {
-  box-shadow: none;
-  transform: translate(2px, 2px);
-}
-
-.btnPost:disabled {
-  opacity: 0.5;
-}
-
-.btnPost:disabled:hover {
-  cursor: default;
-  color: #e90090;
-  background: white;
-}
-
 .error {
   margin-bottom: 15px;
-  color: #e90090;
+  color: var(--pink);
   text-align: center;
   font-size: 18px;
-}
 
-@media screen and (max-height: 565px) {
-  .error {
+  & a,
+  & a:visited {
+    color: var(--pink);
+  }
+
+  @media (--small-height) {
     font-size: 16px;
     margin-top: -5px;
     margin-bottom: 10px;
   }
 }
 
-.error a,
-.error a:visited {
-  color: #e90090;
-}
-
 .btnLink {
-  color: #e90090;
+  color: var(--pink);
   border: none;
   padding: 0 !important;
   font: inherit;
   cursor: pointer;
+
+  &,
+  &:focus,
+  &:active {
+    border: none;
+    display: inline;
+    font: inherit;
+    margin: 0;
+    padding: 0;
+    outline: none;
+    outline-offset: 0;
+    color: var(--pink);
+    cursor: pointer;
+    text-decoration: underline;
+  }
 }
 
-.btnLink,
-.btnLink:focus,
-.btnLink:active {
-  border: none;
-  display: inline;
-  font: inherit;
-  margin: 0;
-  padding: 0;
-  outline: none;
-  outline-offset: 0;
-  color: #e90090;
-  cursor: pointer;
-  text-decoration: underline;
-}
-
-.btnNav,
-.btnNav:focus,
-.btnNav:active {
-  text-decoration: none;
+.btnNav {
+  &,
+  &:focus,
+  &:active {
+    text-decoration: none;
+  }
 }
 
 .btnSwap {
@@ -123,22 +127,35 @@
   text-indent: -9999em;
 }
 
-a.btnAdd,
-a.btnAdd:visited {
-  padding-left: 13px;
-  display: inline-block;
-  background: url('../images/plus.svg') no-repeat 0 3px;
-  background-size: 12px 9px;
-  text-decoration: none;
-  color: #12abee;
+a.btnAdd {
+  &,
+  &:visited {
+    padding-left: 13px;
+    display: inline-block;
+    background: url('../images/plus.svg') no-repeat 0 3px;
+    background-size: 12px 9px;
+    text-decoration: none;
+    color: var(--blue);
+  }
+}
+
+html,
+body {
+  &.isMinHeight {
+    @media (--min-height) {
+      overflow: hidden;
+    }
+  }
 }
 
 .minHeight {
   display: none;
-}
 
-@media screen and (max-height: 400px) {
-  .minHeight {
+  & h1 {
+    margin-top: 47vh;
+  }
+
+  @media (--min-height) {
     position: fixed;
     margin: 0;
     text-align: center;
@@ -149,9 +166,5 @@ a.btnAdd:visited {
     background: #fff;
     display: block;
     z-index: 100;
-  }
-
-  .minHeight h1 {
-    margin-top: 47vh;
   }
 }
