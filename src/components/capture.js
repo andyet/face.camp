@@ -87,6 +87,11 @@ export default class Home extends Component {
     e.preventDefault()
 
     const { start } = this.state
+    const { image } = this.props
+
+    if (image) {
+      return this.setImage()
+    }
 
     if (start) {
       // Stop hands-free capture mode
