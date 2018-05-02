@@ -1,9 +1,10 @@
 import { h, Component } from 'preact'
 import { Router } from 'preact-router'
-import { readTeams, deleteTeam, updateTeam } from '../lib/auth'
+import { readTeams, deleteTeam, updateTeam, authUrl } from '../lib/auth'
 import Home from '../routes/home'
 import Privacy from '../routes/privacy'
 import browserSupport from '../lib/browser-support'
+import styles from './container.css'
 
 const initialTeams = readTeams()
 const getSelected = (teams) => (teams && teams.length ? teams[0] : null)
@@ -15,13 +16,19 @@ export default class Container extends Component {
     supported: browserSupport()
   }
 
+  deleteTeam = () => deleteTeam(this.state.team)
+
   logout = () => {
-    const { team } = this.state
-    const remainingTeams = deleteTeam(team)
+    const remainingTeams = this.deleteTeam()
     this.setState({
       teams: remainingTeams,
       team: getSelected(remainingTeams)
     })
+  }
+
+  reauth = () => {
+    this.deleteTeam()
+    window.location.href = authUrl
   }
 
   selectTeam = () => {
@@ -45,17 +52,20 @@ export default class Container extends Component {
 
   render(props, state) {
     return (
-      <div>
-        <Router>
-          <Home
-            path="/"
-            {...state}
-            selectTeam={this.selectTeam}
-            selectChannel={this.selectChannel}
-            logout={this.logout}
-          />
-          <Privacy path="/privacy" />
-        </Router>
+      <div class={styles.container}>
+        <div class={styles.inner}>
+          <Router>
+            <Home
+              path="/"
+              {...state}
+              selectTeam={this.selectTeam}
+              selectChannel={this.selectChannel}
+              logout={this.logout}
+              reauth={this.reauth}
+            />
+            <Privacy path="/privacy" />
+          </Router>
+        </div>
       </div>
     )
   }

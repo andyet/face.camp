@@ -1,18 +1,16 @@
 import { h, Component } from 'preact'
+import cx from 'classnames'
 import styles from './message.css'
 
 export default class Message extends Component {
-  render({ message, onChange, placeholder, readonly }) {
+  render(props) {
     return (
       <input
+        {...props}
         onFocus={(e) =>
-          readonly ? (e.preventDefault(), e.target.blur()) : null
+          props.readonly ? (e.preventDefault(), e.target.blur()) : null
         }
-        readonly={readonly}
-        value={message}
-        class={styles.inputMessage}
-        placeholder={placeholder}
-        onInput={(e) => onChange(e.target.value)}
+        class={cx(styles.inputMessage, props.class)}
       />
     )
   }

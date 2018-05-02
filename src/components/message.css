@@ -1,33 +1,31 @@
+@import '../variables.css';
+
 .inputMessage {
   width: 100%;
-  margin: 15px 0;
+  margin: var(--vertical-margin) 0;
   padding: 10px 15px;
   overflow: hidden;
   background-repeat: no-repeat;
-  border: 1px solid #12abee;
+  border: 1px solid var(--blue);
   border-radius: 3px;
   font-size: 18px;
-  color: #12abee;
-}
+  color: var(--blue);
 
-.inputMessage::placeholder {
-  color: #12abee;
-}
+  &::placeholder {
+    color: var(--blue);
+  }
 
-.inputMessage:focus {
-  outline: none;
-}
+  &[readonly],
+  &[readonly]:focus {
+    opacity: 0.5;
+    cursor: default;
+    outline: none;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  }
 
-.inputMessage[readonly] {
-  opacity: 0.5;
-  cursor: default;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-}
-
-@media screen and (max-height: 565px) {
-  .inputMessage {
+  @media (--small-height) {
     padding: 7px 10px;
     font-size: 16px;
-    margin: 10px 0;
+    margin: var(--vertical-margin-short) 0;
   }
 }

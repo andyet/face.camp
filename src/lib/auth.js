@@ -31,11 +31,6 @@ const addTeam = createTeamUpdater((teams, index, team) => {
   teams.unshift(team)
 })
 
-export const authUrl =
-  process.env.NODE_ENV === 'production'
-    ? 'https://auth.face.camp'
-    : `http://${window.location.hostname}:3000`
-
 export const deleteTeam = createTeamUpdater((teams, index) => {
   if (index > -1) {
     teams.splice(index, 1)
@@ -68,3 +63,8 @@ export const readTeams = () => {
     }
   }
 }
+
+export const authUrl =
+  process.env.NODE_ENV === 'production'
+    ? 'https://auth.face.camp'
+    : `http://${window.location.hostname}:3000`

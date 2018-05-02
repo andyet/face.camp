@@ -1,29 +1,77 @@
+@import '../variables.css';
+
 .btnLogout {
-  margin: -10px 0 5px 5px;
+  margin-top: -10px;
   padding: 5px 10px;
-  background: white;
-  border: 1px solid #e90090;
+  background: var(--background-color);
+  border: 1px solid var(--pink);
   border-radius: 3px;
-  color: #e90090;
+  color: var(--pink);
   float: right;
   cursor: pointer;
-}
 
-@media screen and (max-height: 565px) {
-  .btnLogout {
-    border-top: none;
-    border-top-right-radius: 0;
-    border-top-left-radius: 0;
+  &:hover {
+    background-color: var(--pink);
+    color: var(--background-color);
+  }
+
+  @media (--small-height) {
+    margin-top: -12px;
   }
 }
 
-.btnLogout:hover {
-  background-color: #e90090;
-  color: #fff;
+.team {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-right: 10px;
+
+  & > * {
+    margin: 0 5px;
+
+    &:first-child {
+      margin-left: 0;
+    }
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
 }
 
-.btnLogout + p {
-  margin-bottom: 10px;
+.teamName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.btnNav {
+  &,
+  &:focus,
+  &:active,
+  &:visited {
+    color: var(--blue);
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+  }
+}
+
+.btnAdd {
+  padding-left: 13px;
+  display: inline-block;
+  background: url('../images/plus.svg') no-repeat 0 3px;
+  background-size: 12px 9px;
+  flex: 0 0 auto;
+}
+
+.btnSwap {
+  background: url('../images/swap.svg') no-repeat 0 3px;
+  background-size: 100% 9px;
+  padding: 0;
+  text-indent: -9999em;
+  flex: 0 0 auto;
+  height: 16px;
 }
 
 .btnPost {
@@ -31,127 +79,83 @@
   padding: 10px 15px;
   display: block;
   background: white;
-  border: 1px solid #e90090;
+  border: 1px solid var(--pink);
   border-radius: 5px;
-  box-shadow: 2px 2px 0 #e90090;
+  box-shadow: 2px 2px 0 var(--pink);
   font-size: 18px;
-  color: #e90090;
+  color: var(--pink);
   cursor: pointer;
   transition: background-color 0.2s;
-}
 
-@media screen and (max-height: 565px) {
-  .btnPost {
+  &:hover {
+    background-color: rgba(234, 0, 145, 0.08);
+  }
+
+  &:active {
+    box-shadow: none;
+    transform: translate(2px, 2px);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+  }
+
+  &:disabled:hover {
+    cursor: default;
+    color: var(--pink);
+    background: white;
+  }
+
+  @media (--small-height) {
     padding: 7px;
     font-size: 16px;
   }
 }
 
-.btnPost:hover {
-  background-color: rgba(234, 0, 145, 0.08);
-}
-
-.btnPost:active {
-  box-shadow: none;
-  transform: translate(2px, 2px);
-}
-
-.btnPost:disabled {
-  opacity: 0.5;
-}
-
-.btnPost:disabled:hover {
-  cursor: default;
-  color: #e90090;
-  background: white;
-}
-
-.error {
-  margin-bottom: 15px;
-  color: #e90090;
-  text-align: center;
-  font-size: 18px;
-}
-
-@media screen and (max-height: 565px) {
-  .error {
-    font-size: 16px;
-    margin-top: -5px;
-    margin-bottom: 10px;
+.btnLink {
+  &,
+  &:focus,
+  &:active {
+    color: var(--pink);
+    border: none;
+    cursor: pointer;
+    display: inline;
+    font: inherit;
+    outline: none;
+    outline-offset: 0;
+    text-decoration: underline;
+    background: none;
   }
 }
 
-.error a,
-.error a:visited {
-  color: #e90090;
-}
-
-.btnLink {
-  color: #e90090;
-  border: none;
-  padding: 0 !important;
-  font: inherit;
-  cursor: pointer;
-}
-
-.btnLink,
-.btnLink:focus,
-.btnLink:active {
-  border: none;
-  display: inline;
-  font: inherit;
-  margin: 0;
-  padding: 0;
-  outline: none;
-  outline-offset: 0;
-  color: #e90090;
-  cursor: pointer;
-  text-decoration: underline;
-}
-
-.btnNav,
-.btnNav:focus,
-.btnNav:active {
-  text-decoration: none;
-}
-
-.btnSwap {
-  width: 12px;
-  margin-right: 10px;
-  background: url('../images/swap.svg') no-repeat 0 4px;
-  background-size: 12px 9px;
-  text-indent: -9999em;
-}
-
-a.btnAdd,
-a.btnAdd:visited {
-  padding-left: 13px;
-  display: inline-block;
-  background: url('../images/plus.svg') no-repeat 0 3px;
-  background-size: 12px 9px;
-  text-decoration: none;
-  color: #12abee;
+html.isMinHeight {
+  &,
+  & body,
+  & #root {
+    @media (--min-height) {
+      overflow: hidden;
+      position: relative;
+    }
+  }
 }
 
 .minHeight {
   display: none;
-}
 
-@media screen and (max-height: 400px) {
-  .minHeight {
-    position: fixed;
+  & h1 {
+    margin-top: 47vh;
+  }
+
+  @media (--min-height) {
+    position: absolute;
     margin: 0;
     text-align: center;
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
-    background: #fff;
+    background: var(--background-color);
     display: block;
     z-index: 100;
-  }
-
-  .minHeight h1 {
-    margin-top: 47vh;
   }
 }

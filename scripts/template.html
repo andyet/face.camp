@@ -26,20 +26,22 @@
     <%= htmlWebpackPlugin.options.ssr({
       url: '/'
     }) %>
-    <div id="root"></div>
-    <noscript id="noscript">
-      <div id="root">
-        <img src="<%= htmlWebpackPlugin.options.manifest.icons[0].src %>" alt="Facecamp logo" />
-        <h1>Facecamp requires JavaScript.</h1>
-      </div>
-    </noscript>
+    <div id="root">
+      <noscript id="noscript">
+        <div id="static-message">
+          <div>
+            <img src="<%= htmlWebpackPlugin.options.manifest.icons[0].src %>" alt="Facecamp logo" />
+            <h1>Facecamp requires JavaScript.</h1>
+          </div>
+        </div>
+      </noscript>
+    </div>
     <script>
       window.onerror = function (err) {
         var message = 'An error occurred: <code>' + (err.message || 'Unknown error' ) + '</code>.<br/>This browser might not be supported.';
         document.getElementById('root').innerHTML = document.getElementById('noscript')
           .innerHTML
-          .replace('Facecamp requires JavaScript.', message)
-          .replace('id="root"', '');
+          .replace('Facecamp requires JavaScript.', message);
       };
       </script>
     <script defer src="<%= htmlWebpackPlugin.files.chunks['bundle'].entry %>"></script>
