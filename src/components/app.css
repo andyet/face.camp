@@ -1,7 +1,7 @@
 @import '../variables.css';
 
 .btnLogout {
-  margin: -10px 0 5px 5px;
+  margin-top: -10px;
   padding: 5px 10px;
   background: var(--background-color);
   border: 1px solid var(--pink);
@@ -62,16 +62,16 @@
   display: inline-block;
   background: url('../images/plus.svg') no-repeat 0 3px;
   background-size: 12px 9px;
-  flex: 1 0 auto;
+  flex: 0 0 auto;
 }
 
 .btnSwap {
-  flex-basis: auto;
   background: url('../images/swap.svg') no-repeat 0 3px;
   background-size: 100% 9px;
   padding: 0;
   text-indent: -9999em;
-  flex: 0;
+  flex: 0 0 auto;
+  height: 16px;
 }
 
 .btnPost {
@@ -106,12 +106,6 @@
     background: white;
   }
 
-  &.bottomSpacing {
-    @media (--small-height) {
-      margin-bottom: 40px;
-    }
-  }
-
   @media (--small-height) {
     padding: 7px;
     font-size: 16px;
@@ -134,11 +128,13 @@
   }
 }
 
-html,
-body {
-  &.isMinHeight {
+html.isMinHeight {
+  &,
+  & body,
+  & #root {
     @media (--min-height) {
       overflow: hidden;
+      position: relative;
     }
   }
 }
@@ -151,14 +147,14 @@ body {
   }
 
   @media (--min-height) {
-    position: fixed;
+    position: absolute;
     margin: 0;
     text-align: center;
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
-    background: #fff;
+    background: var(--background-color);
     display: block;
     z-index: 100;
   }

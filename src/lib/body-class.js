@@ -20,11 +20,11 @@ export default class BodyClass extends Component {
   }
 
   setBodyClass = (props) => {
-    document.body.classList.add(...toClasses(props))
+    document.documentElement.classList.add(...toClasses(props))
   }
 
   removeBodyClass = (props) => {
-    document.body.classList.remove(...toClasses(props))
+    document.documentElement.classList.remove(...toClasses(props))
   }
 
   render({ children }) {

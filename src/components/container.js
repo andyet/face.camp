@@ -16,10 +16,7 @@ export default class Container extends Component {
     supported: browserSupport()
   }
 
-  deleteTeam = () => {
-    const { team } = this.state
-    return deleteTeam(this.state.team)
-  }
+  deleteTeam = () => deleteTeam(this.state.team)
 
   logout = () => {
     const remainingTeams = this.deleteTeam()

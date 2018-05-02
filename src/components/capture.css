@@ -61,7 +61,7 @@
   color: var(--blue);
   padding: 10px 15px;
   font-size: 18px;
-  margin-top: 10px;
+  margin-top: var(--vertical-margin);
   user-select: none;
 
   &:hover {
@@ -85,8 +85,7 @@
     margin-top: calc(-1 * var(--media-border));
     padding: 10px 7px 7px;
     border-top: none;
-    border-top-right-radius: 0;
-    border-top-left-radius: 0;
+    border-radius: 0 0 3px 3px;
     font-size: 16px;
   }
 }

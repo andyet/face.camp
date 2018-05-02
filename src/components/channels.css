@@ -2,7 +2,7 @@
 
 .selectChannel {
   width: 100%;
-  margin: 10px 0 10px;
+  margin: var(--vertical-margin) 0;
   overflow: hidden;
   background-repeat: no-repeat;
   background-image: url('../images/caret.svg');
@@ -15,6 +15,7 @@
 
   @media (--small-height) {
     background-size: 18px 9px;
+    margin: var(--vertical-margin) 0;
   }
 }
 

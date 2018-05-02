@@ -9,10 +9,7 @@ import slackFetch from '../lib/slack-fetch'
 import { authUrl } from '../lib/auth'
 import slug from '../lib/slug'
 import ts from '../lib/timestamp'
-import isiOS from '../lib/is-ios'
 import styles from './app.css'
-
-const ios = isiOS()
 
 export default class App extends Component {
   state = {
@@ -161,9 +158,7 @@ export default class App extends Component {
             placeholder={defaultMessage}
           />
           <button
-            class={cx(styles.btnPost, {
-              [styles.bottomSpacing]: ios.ios && !ios.standalone
-            })}
+            class={styles.btnPost}
             type="submit"
             disabled={!this.canPost()}
           >
