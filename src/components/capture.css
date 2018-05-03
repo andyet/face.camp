@@ -14,8 +14,8 @@
   max-width: calc(var(--max-width) - (var(--padding) * 2));
   max-height: calc(var(--max-width) - (var(--padding) * 2));
 
-  border: var(--media-border) solid var(--blue);
-  border-radius: 3px;
+  border: 1px solid var(--blue);
+  border-radius: var(--border-radius);
   color: var(--pink);
   background: var(--blue-light);
 
@@ -31,7 +31,7 @@
   }
 
   @media (--small-height) {
-    border-radius: 3px 3px 0 0;
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
   }
 }
 
@@ -39,12 +39,11 @@
   text-align: center;
   padding: 20px;
   font-size: 24px;
-  z-index: 100;
 }
 
 .captureProgress {
-  background: var(--pink);
-  height: 5px;
+  background: color(var(--pink) alpha(65%));
+  height: 10px;
   position: absolute;
   bottom: 0;
   left: 0;
@@ -82,10 +81,10 @@
   }
 
   @media (--small-height) {
-    margin-top: calc(-1 * var(--media-border));
+    margin-top: 0;
     padding: 10px 7px 7px;
     border-top: none;
-    border-radius: 0 0 3px 3px;
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
     font-size: 16px;
   }
 }

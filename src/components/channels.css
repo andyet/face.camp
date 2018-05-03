@@ -9,7 +9,7 @@
   background-size: 22px 12px;
   background-position: 97% 55%;
   border: 1px solid var(--blue);
-  border-radius: 3px;
+  border-radius: var(--border-radius);
   box-shadow: 2px 2px 0 var(--blue);
   cursor: pointer;
 

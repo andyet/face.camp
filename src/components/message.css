@@ -7,7 +7,7 @@
   overflow: hidden;
   background-repeat: no-repeat;
   border: 1px solid var(--blue);
-  border-radius: 3px;
+  border-radius: var(--border-radius);
   font-size: 18px;
   color: var(--blue);
 

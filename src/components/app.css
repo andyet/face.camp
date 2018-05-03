@@ -1,11 +1,11 @@
 @import '../variables.css';
 
 .btnLogout {
-  margin-top: -10px;
+  margin-top: -5px;
   padding: 5px 10px;
   background: var(--background-color);
   border: 1px solid var(--pink);
-  border-radius: 3px;
+  border-radius: var(--border-radius);
   color: var(--pink);
   float: right;
   cursor: pointer;
@@ -16,7 +16,7 @@
   }
 
   @media (--small-height) {
-    margin-top: -12px;
+    margin-top: -10px;
   }
 }
 

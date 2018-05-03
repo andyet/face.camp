@@ -56,7 +56,12 @@ export default (config, env, helpers) => {
   delete config.entry.polyfills
 
   // Use our own entry point instead of preact-cli-entrypoint
-  config.entry.bundle = path.resolve(process.cwd(), 'src', 'index.js')
+  const bundleEntry = path.resolve(process.cwd(), 'src', 'index.js')
+  if (Array.isArray(config.entry.bundle)) {
+    config.entry.bundle[0] = bundleEntry
+  } else {
+    config.entry.bundle = bundleEntry
+  }
 
   const postcss = helpers.getLoadersByName(config, 'postcss-loader')
   const babel = helpers.getLoadersByName(config, 'babel-loader')[0]

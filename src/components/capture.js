@@ -19,7 +19,8 @@ export default class Home extends Component {
 
   static defaultProps = {
     readonly: false,
-    image: null
+    image: null,
+    error: null
   }
 
   componentDidMount() {
@@ -80,23 +81,31 @@ export default class Home extends Component {
     const isAltButton = e.button !== undefined && e.button !== 0
     const isKeyPress = e.type === 'keypress'
 
+    const { start } = this.state
+    const { image, error } = this.props
+
     if (isAltKey || isAltButton || this._gif.isRunning()) {
       return
     }
 
     e.preventDefault()
 
-    const { start } = this.state
-    const { image } = this.props
+    // Dont allow capturing if we're in error mode passed in from parent
+    if (error) {
+      return
+    }
 
+    // If there already is an image then starting (via spacebar) should reset
+    // the image first instead of immediately starting a new capture
     if (image) {
       return this.setImage()
     }
 
+    // If the capturing has already started
     if (start) {
-      // Stop hands-free capture mode
+      // Then stop hands-free capture mode if the event is the second press
       if (isKeyPress) return this.stopCapture()
-      // Dont start multiple recordings
+      // But dont start another capture
       return
     }
 
@@ -106,7 +115,7 @@ export default class Home extends Component {
   stopCapture = () => this._gif.stop()
 
   render(
-    { image, readonly, children, error, reauth },
+    { image, readonly, error },
     {
       streamError,
       stream,
@@ -171,7 +180,11 @@ export default class Home extends Component {
                 />
               )}
             </div>
-            {!image && !isRendering ? (
+            {error || readonly ? (
+              <button disabled class={styles.btnCapture}>
+                Hold to record
+              </button>
+            ) : !image && !isRendering ? (
               <button
                 ref={(c) => (this._postButton = c)}
                 class={cx(styles.btnCapture, {
@@ -187,10 +200,6 @@ export default class Home extends Component {
             ) : !image && isRendering ? (
               <button class={styles.btnCapture} disabled>
                 Rendering
-              </button>
-            ) : readonly ? (
-              <button disabled class={styles.btnCapture}>
-                Looking good
               </button>
             ) : (
               <button class={styles.btnCapture} onClick={() => this.setImage()}>

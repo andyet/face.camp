@@ -8,9 +8,9 @@
   --gray: #ccc;
   --max-width: 550px;
   --padding: 20px;
-  --media-border: 1px;
   --vertical-margin: 15px;
   --vertical-margin-short: 8px;
+  --border-radius: 3px;
 }
 
 @custom-media --small-height screen and (height <= 800px);
