@@ -58,7 +58,7 @@ export default (config, env, helpers) => {
     description: env.pkg.description,
     url: env.pkg.homepage + (env.pkg.homepage.endsWith('/') ? '' : '/'),
     domain: new URL(env.pkg.homepage).host,
-    logo: 'assets/icon-no-padding.png',
+    logo: 'assets/icons/icon-no-padding.png',
     appleIcon: 'assets/icons/apple-touch-icon.png'
   })
 

@@ -60,11 +60,7 @@ a:visited {
   }
 
   & img {
-    margin-top: -30px;
-  }
-
-  & h1 {
-    margin-top: -20px;
+    width: 150px;
   }
 
   & code {
