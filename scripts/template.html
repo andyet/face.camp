@@ -56,7 +56,7 @@
       window.onerror = function (err) {
         var message = 'An error occurred: <code>' + (err.message || 'Unknown error' ) + '</code>.<br/>This browser might not be supported.';
         document.getElementById('root').innerHTML = document.getElementById('noscript')
-          .innerHTML
+          .innerText
           .replace('Facecamp requires JavaScript.', message);
       };
       </script>
