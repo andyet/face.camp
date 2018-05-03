@@ -81,9 +81,8 @@
   }
 
   @media (--small-height) {
-    margin-top: 0;
+    margin-top: -1px;
     padding: 10px 7px 7px;
-    border-top: none;
     border-radius: 0 0 var(--border-radius) var(--border-radius);
     font-size: 16px;
   }
