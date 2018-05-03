@@ -15,7 +15,7 @@
 
   @media (--small-height) {
     background-size: 18px 9px;
-    margin: var(--vertical-margin) 0;
+    margin: var(--vertical-margin-short) 0;
   }
 }
 
