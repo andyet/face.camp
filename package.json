@@ -1,6 +1,6 @@
 {
   "name": "facecamp",
-  "description": "Send animated gifs from the browser to Slack.",
+  "description": "Facecamp connects to Slack to let you take animated gifs and post them in any channel for your teamies to see.",
   "version": "0.0.0",
   "dependencies": {
     "classnames": "^2.2.5",
@@ -30,8 +30,9 @@
   "eslintIgnore": [
     "build/*"
   ],
+  "homepage": "https://face.camp/",
   "license": "MIT",
-  "main": "preact.config.js",
+  "main": "scripts/preact.config.js",
   "private": true,
   "scripts": {
     "build": "preact build --no-prerender --config scripts/config.js",

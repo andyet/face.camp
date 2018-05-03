@@ -4,20 +4,36 @@
     <meta charset="utf-8">
     <title><%= htmlWebpackPlugin.options.title %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <meta name="slack-app-id" content="AA4PZPLQL">
+    <meta name="description" content="<%= htmlWebpackPlugin.options.description %>" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="<%= htmlWebpackPlugin.options.url %>" />
+    <meta property="og:title" content="<%= htmlWebpackPlugin.options.title %>" />
+    <meta property="og:description" content="<%= htmlWebpackPlugin.options.description %>" />
+    <meta property="og:image" content="<%= htmlWebpackPlugin.options.url %><%= htmlWebpackPlugin.options.logo %>" />
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:domain" value="<%= htmlWebpackPlugin.options.domain %>" />
+    <meta name="twitter:title" value="<%= htmlWebpackPlugin.options.title %>" />
+    <meta name="twitter:description" value="<%= htmlWebpackPlugin.options.description %>" />
+    <meta name="twitter:image" content="<%= htmlWebpackPlugin.options.url %><%= htmlWebpackPlugin.options.logo %>" />
+    <meta name="twitter:url" value="<%= htmlWebpackPlugin.options.url %>" />
+
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="slack-app-id" content="AA4PZPLQL">
-    <link rel="apple-touch-icon" href="<%= htmlWebpackPlugin.files.publicPath %>assets/icons/apple-touch-icon.png">
-    <link rel="manifest" href="<%= htmlWebpackPlugin.files.publicPath %>manifest.json">
+    <meta name="apple-mobile-web-app-status-bar-style" content="white" />
+    <link rel="apple-touch-icon" href="<%= htmlWebpackPlugin.files.publicPath %><%= htmlWebpackPlugin.options.appleIcon %>">
+    <link rel="manifest" test="wpp" href="<%= htmlWebpackPlugin.files.publicPath %>manifest.json">
     <% if (htmlWebpackPlugin.options.manifest.theme_color) { %>
       <meta name="theme-color" content="<%= htmlWebpackPlugin.options.manifest.theme_color %>">
     <% } %>
+
     <% for (var chunk of webpack.chunks) { %>
       <% for (var file of chunk.files) { %>
         <% if (htmlWebpackPlugin.options.preload && file.match(/\.(js|css)$/)) { %>
           <link rel="preload" href="<%= htmlWebpackPlugin.files.publicPath + file %>" as="<%= file.match(/\.css$/)?'style':'script' %>">
-        <% } else if (file.match(/manifest\.json$/)) { %>
-          <link rel="manifest" href="<%= htmlWebpackPlugin.files.publicPath + file %>">
         <% } %>
       <% } %>
     <% } %>
@@ -30,7 +46,7 @@
       <noscript id="noscript">
         <div id="static-message">
           <div>
-            <img src="<%= htmlWebpackPlugin.options.manifest.icons[0].src %>" alt="Facecamp logo" />
+            <img src="<%= htmlWebpackPlugin.files.publicPath %><%= htmlWebpackPlugin.options.logo %>" alt="Facecamp logo" />
             <h1>Facecamp requires JavaScript.</h1>
           </div>
         </div>

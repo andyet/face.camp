@@ -2,6 +2,7 @@ import UglifyJsPlugin from 'uglifyjs-webpack-plugin'
 import path from 'path'
 import cssnext from 'postcss-cssnext'
 import cssimport from 'postcss-import'
+import { URL } from 'url'
 
 // See output from `npm run build:sizes` for the size of all possible builds
 const env = (k, def) => (k in process.env ? process.env[k] !== 'false' : def)
@@ -51,6 +52,15 @@ export default (config, env, helpers) => {
   html.plugin.options.preload = env.production
   // Minify JS in the template since there's an inline onerror handler
   if (env.production) html.plugin.options.minify.minifyJS = true
+
+  // Pass in template data for opengraph and meta tags
+  Object.assign(html.plugin.options, {
+    description: env.pkg.description,
+    url: env.pkg.homepage + (env.pkg.homepage.endsWith('/') ? '' : '/'),
+    domain: new URL(env.pkg.homepage).host,
+    logo: 'assets/icon-no-padding.png',
+    appleIcon: 'assets/icons/apple-touch-icon.png'
+  })
 
   // No polyfills needed for the supported browser list
   delete config.entry.polyfills
