@@ -16,14 +16,14 @@ export default class Home extends Component {
               Facecamp uses technologies that are not supported by this browser.{' '}
               {window.navigator.standalone ? (
                 <span>
+                  {/* Hack to open outside the webapp since the url is a different domain
+                  but this path at the auth server will redirect back to the app */}
                   Try opening it in <a href={`${authUrl}/app`}>Safari</a>.
                 </span>
               ) : (
                 <span>
                   Try using <a href="https://chrome.com">Chrome</a> or{' '}
-                  <a href="http://www.mozilla.org/en-US/firefox/new/">
-                    Firefox
-                  </a>.
+                  <a href="https://firefox.com">Firefox</a>.
                 </span>
               )}
             </p>
