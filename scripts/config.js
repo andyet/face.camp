@@ -78,16 +78,8 @@ export default (config, env, helpers) => {
   const uglify = helpers.getPluginsByName(config, 'UglifyJsPlugin')[0]
 
   // Use cssnext plugin
-  postcss.forEach(({ rule, loader }) => {
-    if (rule.exclude) {
-      rule.exclude.push(path.resolve(process.cwd(), 'src', 'variables.css'))
-    }
+  postcss.forEach(({ loader }) => {
     loader.options.plugins = [cssimport(), cssnext({ browsers: BROWSERS })]
-  })
-
-  config.module.loaders.push({
-    test: /variables\.css$/,
-    loader: 'babel-loader!postcss-variables-loader'
   })
 
   // Remove babel plugin that will transform Object.assign and change options

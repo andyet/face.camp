@@ -1,6 +1,6 @@
 pipeline:
   build:
-    image: andyet/node:8
+    image: node:8.11-alpine
     commands:
       - npm install
       - NODE_ENV=production npm run build

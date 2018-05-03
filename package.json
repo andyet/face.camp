@@ -22,7 +22,6 @@
     "if-env": "^1.0.0",
     "postcss-cssnext": "^3.1.0",
     "postcss-import": "^11.1.0",
-    "postcss-variables-loader": "^5.0.1",
     "preact-cli": "^2.1.0",
     "prettier": "^1.12.1",
     "uglifyjs-webpack-plugin": "^1.2.5"
