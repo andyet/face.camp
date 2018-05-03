@@ -104,7 +104,7 @@ export default class App extends Component {
             <h1>Increase your browser height</h1>
           </div>
         </BodyClass>
-        <button class={styles.btnLogout} onClick={reauth}>
+        <button class={styles.btnLogout} onClick={logout}>
           logout
         </button>
         <div class={styles.team}>
