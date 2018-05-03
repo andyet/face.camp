@@ -24,7 +24,7 @@ export default class Home extends Component {
   }
 
   componentDidMount() {
-    navigator.mediaDevices
+    window.navigator.mediaDevices
       .getUserMedia({
         audio: false,
         video: {

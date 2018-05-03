@@ -2,8 +2,8 @@
   "name": "Facecamp",
   "short_name": "Facecamp",
   "start_url": "/",
-  "display": "browser",
-  "orientation": "portrait",
+  "display": "standalone",
+  "orientation": "portrait-primary",
   "background_color": "#fff",
   "theme_color": "#12abee",
   "icons": [

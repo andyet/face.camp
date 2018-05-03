@@ -1,4 +1,3 @@
 export default () =>
-  window.navigator &&
-  window.navigator.mediaDevices &&
+  'mediaDevices' in window.navigator &&
   typeof window.navigator.mediaDevices.getUserMedia === 'function'
