@@ -1,16 +1,26 @@
 import { h, Component } from 'preact'
+import throttle from '../lib/throttle-event'
 
 export default class SquareVideo extends Component {
   state = {
     ratio: 1
   }
 
-  setDimensions = () => {
+  componentDidMount() {
+    this._removeResize = throttle('resize', this.setDimensions)
+  }
+
+  componentWillUnmount() {
+    if (this._removeResize) this._removeResize()
+  }
+
+  setDimensions = (e) => {
     const { videoHeight, videoWidth } = this._video
 
-    this.setState({
-      ratio: videoWidth / videoHeight
-    })
+    // Exit early if the video isnt loaded yet
+    if (!videoHeight || !videoWidth) return
+
+    this.setState({ ratio: videoWidth / videoHeight })
   }
 
   getVideo = () => this._video
