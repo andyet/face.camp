@@ -14,8 +14,8 @@ export default class SquareVideo extends Component {
     if (this._removeResize) this._removeResize()
   }
 
-  setDimensions = (e) => {
-    const { videoHeight, videoWidth } = this._video
+  setDimensions = () => {
+    const { videoHeight, videoWidth } = this._video || {}
 
     // Exit early if the video isnt loaded yet
     if (!videoHeight || !videoWidth) return

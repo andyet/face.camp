@@ -36,6 +36,8 @@ const createTeamUpdater = (updater) => (team, ...args) => {
 const addTeam = createTeamUpdater((teams, index, team) => {
   if (index > -1) {
     teams[index] = team
+  } else {
+    teams.push(team)
   }
   teams.forEach((t) => {
     t.selected = t === team
@@ -46,8 +48,9 @@ const addTeam = createTeamUpdater((teams, index, team) => {
 const deleteTeam = createTeamUpdater((teams, index, team) => {
   if (index > -1) {
     teams.splice(index, 1)
-    if (team.selected) {
-      teams[index].selected = true
+    if (team.selected && teams.length) {
+      const nextSelected = index < teams.length ? index : teams.length - 1
+      teams[nextSelected].selected = true
     }
   }
   return teams

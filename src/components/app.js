@@ -6,7 +6,7 @@ import Capture from './capture'
 import Channels from './channels'
 import Message from './message'
 import postImage from '../lib/post-image'
-import fetchChannels from '../lib/fetch-channels'
+import fetchChannels, { AbortChannelsError } from '../lib/fetch-channels'
 import { url as authUrl } from '../lib/auth'
 import styles from './app.css'
 
@@ -30,19 +30,25 @@ export default class App extends Component {
   }
 
   componentDidMount() {
-    this.fetchChannels(this.props.team)
+    this.fetchChannels()
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (this.props.team.access_token !== nextProps.team.access_token) {
-      this.fetchChannels(nextProps.team)
+  componentDidUpdate(prevProps) {
+    if (prevProps.team.access_token !== this.props.team.access_token) {
+      this.fetchChannels()
     }
   }
 
-  fetchChannels = (team) => {
-    this.setState({ channelsFetching: true, channels: [], channelsError: null })
+  fetchChannels = () => {
+    this.setState({
+      channelsFetching: true,
+      channels: [],
+      channelsError: null
+    })
 
-    fetchChannels(team)
+    const currentTeam = () => this.props.team
+
+    fetchChannels(currentTeam(), currentTeam)
       .then((channels) => {
         this.setState({
           channels,
@@ -51,10 +57,11 @@ export default class App extends Component {
         })
       })
       .catch((channelsError) => {
+        if (channelsError instanceof AbortChannelsError) return
         this.setState({
-          channelsError,
           channels: [],
-          fetching: false
+          channelsError,
+          channelsFetching: false
         })
       })
   }
