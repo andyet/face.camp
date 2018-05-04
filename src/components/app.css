@@ -130,8 +130,7 @@
 
 html.isMinHeight {
   &,
-  & body,
-  & #root {
+  & body {
     @media (--min-height) {
       overflow: hidden;
       position: relative;

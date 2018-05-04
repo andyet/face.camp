@@ -7,6 +7,8 @@ const sortTeams = (teams) =>
     return 0
   })
 
+const deleteAllTeams = () => localStorage.removeItem(LS_KEY)
+
 const getTeams = () => {
   const teams = JSON.parse(localStorage.getItem(LS_KEY))
   if (teams) {
@@ -23,7 +25,7 @@ const createTeamUpdater = (updater) => (team, ...args) => {
   const teams = getTeams()
   const newTeams = updater(
     teams,
-    teams.findIndex((t) => t.team_id === team.team_id),
+    teams.findIndex(({ team_id }) => team_id === team.team_id),
     team,
     ...args
   )
@@ -33,36 +35,32 @@ const createTeamUpdater = (updater) => (team, ...args) => {
 
 const addTeam = createTeamUpdater((teams, index, team) => {
   if (index > -1) {
-    teams.splice(index, 1)
+    teams[index] = team
   }
-  teams.unshift(team)
+  teams.forEach((t) => {
+    t.selected = t === team
+  })
   return teams
 })
 
-export const deleteTeam = createTeamUpdater((teams, index) => {
+const deleteTeam = createTeamUpdater((teams, index, team) => {
   if (index > -1) {
     teams.splice(index, 1)
+    if (team.selected) {
+      teams[index].selected = true
+    }
   }
   return teams
 })
 
-export const updateTeam = createTeamUpdater((teams, index, team, values) => {
+const updateTeam = createTeamUpdater((teams, index, team, values) => {
   if (index > -1) {
     teams[index] = { ...team, ...values }
   }
   return teams
 })
 
-export const selectTeam = createTeamUpdater((teams, index) =>
-  teams.map((team, teamIndex) => {
-    team.selected = index === teamIndex
-    return team
-  })
-)
-
-export const deleteAllTeams = () => localStorage.removeItem(LS_KEY)
-
-export const readTeams = () => {
+const readTeams = () => {
   const { hash } = window.location
   if (hash && hash.length > 1) {
     try {
@@ -81,7 +79,13 @@ export const readTeams = () => {
   }
 }
 
-export const authUrl =
+const authUrl =
   process.env.NODE_ENV === 'production'
     ? 'https://auth.face.camp'
     : `http://${window.location.hostname}:3000`
+
+export { authUrl as url }
+export { readTeams as read }
+export { updateTeam as update }
+export { deleteTeam as delete }
+export { addTeam as add }

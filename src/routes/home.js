@@ -1,5 +1,5 @@
 import { h, Component } from 'preact'
-import { authUrl } from '../lib/auth'
+import { url as authUrl } from '../lib/auth'
 import Splash from '../components/splash'
 // eslint-disable-next-line import/no-webpack-loader-syntax, import/no-unresolved
 import App from 'async!../components/app'

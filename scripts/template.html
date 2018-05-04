@@ -39,23 +39,19 @@
     <% } %>
   </head>
   <body>
-    <%= htmlWebpackPlugin.options.ssr({
-      url: '/'
-    }) %>
-    <div id="root">
-      <noscript id="noscript">
-        <div id="static-message">
-          <div>
-            <img src="<%= htmlWebpackPlugin.files.publicPath %><%= htmlWebpackPlugin.options.logo %>" alt="Facecamp logo" />
-            <h1>Facecamp requires JavaScript.</h1>
-          </div>
+    <div><!-- template needs a body.firstElementChild --></div>
+    <noscript id="noscript">
+      <div id="static-message">
+        <div>
+          <img src="<%= htmlWebpackPlugin.files.publicPath %><%= htmlWebpackPlugin.options.logo %>" alt="Facecamp logo" />
+          <h1>Facecamp requires JavaScript.</h1>
         </div>
-      </noscript>
-    </div>
+      </div>
+    </noscript>
     <script>
       window.onerror = function (err) {
-        var message = 'An error occurred: <code>' + (err.message || 'Unknown error' ) + '</code>.<br/>This browser might not be supported.';
-        document.getElementById('root').innerHTML = document.getElementById('noscript')
+        var message = 'An error occurred: <code>' + ((err && err.message) || 'Unknown error' ) + '</code>.<br/>This browser might not be supported.';
+        document.body.firstElementChild.innerHTML = document.getElementById('noscript')
           .innerText
           .replace('Facecamp requires JavaScript.', message);
       };

@@ -7,7 +7,7 @@ import Channels from './channels'
 import Message from './message'
 import postImage from '../lib/post-image'
 import fetchChannels from '../lib/fetch-channels'
-import { authUrl } from '../lib/auth'
+import { url as authUrl } from '../lib/auth'
 import styles from './app.css'
 
 export default class App extends Component {

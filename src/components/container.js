@@ -1,28 +1,20 @@
 import { h, Component } from 'preact'
 import { Router } from 'preact-router'
-import {
-  readTeams,
-  deleteTeam,
-  updateTeam,
-  selectTeam,
-  authUrl
-} from '../lib/auth'
+import * as auth from '../lib/auth'
 import Home from '../routes/home'
 import Privacy from '../routes/privacy'
 import browserSupport from '../lib/browser-support'
 import styles from './container.css'
 
-const initialTeams = readTeams()
-const initialIndex = initialTeams.findIndex(({ selected }) => selected)
-
 export default class Container extends Component {
   state = {
-    teams: initialTeams,
-    selectedTeam: initialIndex === -1 ? 0 : initialIndex,
+    teams: auth.read(),
     supported: browserSupport()
   }
 
-  deleteTeam = () => deleteTeam(this.state.teams[this.state.selectedTeam])
+  getSelectedTeam = () => this.state.teams.find(({ selected }) => !!selected)
+
+  deleteTeam = () => auth.delete(this.getSelectedTeam())
 
   logout = () => {
     this.setState({ teams: this.deleteTeam() })
@@ -30,22 +22,21 @@ export default class Container extends Component {
 
   reauth = () => {
     this.deleteTeam()
-    window.location.href = authUrl
+    window.location.href = auth.url
   }
 
   selectTeam = () => {
-    const { teams, selectedTeam } = this.state
-    const nextIndex = selectedTeam + 1 >= teams.length ? 0 : selectedTeam + 1
-    this.setState({
-      selectedTeam: nextIndex,
-      teams: selectTeam(teams[nextIndex])
-    })
+    const { teams } = this.state
+    const index = teams.indexOf(this.getSelectedTeam())
+    const nextIndex = index + 1 >= teams.length ? 0 : index + 1
+    this.setState({ teams: auth.add(teams[nextIndex]) })
   }
 
   selectChannel = (e) => {
-    const { teams, selectedTeam } = this.state
     this.setState({
-      teams: updateTeam(teams[selectedTeam], { last_channel: e.target.value })
+      teams: auth.update(this.getSelectedTeam(), {
+        last_channel: e.target.value
+      })
     })
   }
 
@@ -56,7 +47,7 @@ export default class Container extends Component {
           <Router>
             <Home
               path="/"
-              team={teams[selectedTeam]}
+              team={this.getSelectedTeam()}
               teamCount={teams.length}
               supported={supported}
               selectTeam={this.selectTeam}
