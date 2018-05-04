@@ -12,11 +12,7 @@ import Privacy from '../routes/privacy'
 import browserSupport from '../lib/browser-support'
 import styles from './container.css'
 
-const initialTeams = readTeams().sort(({ team_name: a }, { team_name: b }) => {
-  if (a > b) return 1
-  if (a < b) return -1
-  return 0
-})
+const initialTeams = readTeams()
 const initialIndex = initialTeams.findIndex(({ selected }) => selected)
 
 export default class Container extends Component {

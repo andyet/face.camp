@@ -1,10 +1,17 @@
 const LS_KEY = 'facecamp-data'
 
+const sortTeams = (teams) =>
+  teams.sort(({ team_name: a }, { team_name: b }) => {
+    if (a > b) return 1
+    if (a < b) return -1
+    return 0
+  })
+
 const getTeams = () => {
   const teams = JSON.parse(localStorage.getItem(LS_KEY))
   if (teams) {
     if (Array.isArray(teams)) {
-      return teams
+      return sortTeams(teams)
     } else {
       return [teams]
     }
@@ -21,7 +28,7 @@ const createTeamUpdater = (updater) => (team, ...args) => {
     ...args
   )
   localStorage.setItem(LS_KEY, JSON.stringify(newTeams))
-  return newTeams
+  return sortTeams(newTeams)
 }
 
 const addTeam = createTeamUpdater((teams, index, team) => {

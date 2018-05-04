@@ -25,6 +25,9 @@ export default class Channels extends Component {
   fetchChannels = (props) => {
     const { onChange, onError, token, selected } = props
 
+    // The channel state should be lifted since the selecting of a channel is
+    // handled in container.js, but this works to set internal state and communicate
+    // changes to parent. TODO: refactor this to lift state.
     onChange(null)
     onError(null)
     this.setState({ fetching: true, channels: [], error: null })
