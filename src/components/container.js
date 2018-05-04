@@ -1,29 +1,35 @@
 import { h, Component } from 'preact'
 import { Router } from 'preact-router'
-import { readTeams, deleteTeam, updateTeam, authUrl } from '../lib/auth'
+import {
+  readTeams,
+  deleteTeam,
+  updateTeam,
+  selectTeam,
+  authUrl
+} from '../lib/auth'
 import Home from '../routes/home'
 import Privacy from '../routes/privacy'
 import browserSupport from '../lib/browser-support'
 import styles from './container.css'
 
-const initialTeams = readTeams()
-const getSelected = (teams) => (teams && teams.length ? teams[0] : null)
+const initialTeams = readTeams().sort(({ team_name: a }, { team_name: b }) => {
+  if (a > b) return 1
+  if (a < b) return -1
+  return 0
+})
+const initialIndex = initialTeams.findIndex(({ selected }) => selected)
 
 export default class Container extends Component {
   state = {
     teams: initialTeams,
-    team: getSelected(initialTeams),
+    selectedTeam: initialIndex === -1 ? 0 : initialIndex,
     supported: browserSupport()
   }
 
-  deleteTeam = () => deleteTeam(this.state.team)
+  deleteTeam = () => deleteTeam(this.state.teams[this.state.selectedTeam])
 
   logout = () => {
-    const remainingTeams = this.deleteTeam()
-    this.setState({
-      teams: remainingTeams,
-      team: getSelected(remainingTeams)
-    })
+    this.setState({ teams: this.deleteTeam() })
   }
 
   reauth = () => {
@@ -32,32 +38,31 @@ export default class Container extends Component {
   }
 
   selectTeam = () => {
-    const { teams, team } = this.state
-    const index = teams.indexOf(team)
-    const nextIndex = index + 1 >= teams.length ? 0 : index + 1
-    const nextTeam = teams[nextIndex]
-
-    const nextTeams = updateTeam(nextTeam, { last_used: Date.now() })
-
-    this.setState({ teams: nextTeams, team: nextTeam })
+    const { teams, selectedTeam } = this.state
+    const nextIndex = selectedTeam + 1 >= teams.length ? 0 : selectedTeam + 1
+    this.setState({
+      selectedTeam: nextIndex,
+      teams: selectTeam(teams[nextIndex])
+    })
   }
 
   selectChannel = (channel) => {
-    if (channel) {
-      const { team } = this.state
-      const teams = updateTeam(team, { last_channel: channel.id })
-      this.setState({ teams, team })
-    }
+    const { teams, selectedTeam } = this.state
+    this.setState({
+      teams: updateTeam(teams[selectedTeam], { last_channel: channel.id })
+    })
   }
 
-  render(props, state) {
+  render(props, { teams, selectedTeam, supported }) {
     return (
       <div class={styles.container}>
         <div class={styles.inner}>
           <Router>
             <Home
               path="/"
-              {...state}
+              team={teams[selectedTeam]}
+              teamCount={teams.length}
+              supported={supported}
               selectTeam={this.selectTeam}
               selectChannel={this.selectChannel}
               logout={this.logout}

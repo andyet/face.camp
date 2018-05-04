@@ -1,47 +1,57 @@
 const LS_KEY = 'facecamp-data'
 
-const sortTeams = (teams) => teams.sort((a, b) => b.last_used - a.last_used)
-
 const getTeams = () => {
-  let teams = JSON.parse(localStorage.getItem(LS_KEY))
+  const teams = JSON.parse(localStorage.getItem(LS_KEY))
   if (teams) {
     if (Array.isArray(teams)) {
-      teams = sortTeams(teams)
+      return teams
     } else {
-      teams = [teams]
+      return [teams]
     }
   }
-  return teams
+  return []
 }
 
 const createTeamUpdater = (updater) => (team, ...args) => {
-  let teams = getTeams() || []
-  const index = teams.findIndex((t) => t.team_id === team.team_id)
-  updater(teams, index, team, ...args)
-  localStorage.setItem(LS_KEY, JSON.stringify(teams))
-  return sortTeams(teams)
+  const teams = getTeams()
+  const newTeams = updater(
+    teams,
+    teams.findIndex((t) => t.team_id === team.team_id),
+    team,
+    ...args
+  )
+  localStorage.setItem(LS_KEY, JSON.stringify(newTeams))
+  return newTeams
 }
 
 const addTeam = createTeamUpdater((teams, index, team) => {
   if (index > -1) {
     teams.splice(index, 1)
   }
-  team.last_used = Date.now()
-  team.slack = true
   teams.unshift(team)
+  return teams
 })
 
 export const deleteTeam = createTeamUpdater((teams, index) => {
   if (index > -1) {
     teams.splice(index, 1)
   }
+  return teams
 })
 
 export const updateTeam = createTeamUpdater((teams, index, team, values) => {
   if (index > -1) {
-    teams[index] = Object.assign(team, values)
+    teams[index] = { ...team, ...values }
   }
+  return teams
 })
+
+export const selectTeam = createTeamUpdater((teams, index) =>
+  teams.map((team, teamIndex) => {
+    team.selected = index === teamIndex
+    return team
+  })
+)
 
 export const deleteAllTeams = () => localStorage.removeItem(LS_KEY)
 

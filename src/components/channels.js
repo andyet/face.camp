@@ -73,9 +73,7 @@ export default class Channels extends Component {
             [styles.empty]: !channels.length
           })}
           onChange={(e) =>
-            onChange(channels.find((c) => c.id === e.target.value), {
-              userSelected: true
-            })
+            onChange(channels.find((c) => c.id === e.target.value), e)
           }
         >
           {error ? (

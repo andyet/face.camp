@@ -85,15 +85,15 @@ export default class App extends Component {
     })
   }
 
-  selectChannel = (channel, { userSelected } = {}) => {
+  selectChannel = (channel, e) => {
     this.setState({ channel })
-    if (userSelected) {
+    if (e && e.type === 'change' && channel) {
       this.props.selectChannel(channel)
     }
   }
 
   render(
-    { teams, team, selectTeam, logout, reauth, defaultMessage, maxSize },
+    { teamCount, team, selectTeam, logout, reauth, defaultMessage, maxSize },
     { image, channel, uploading, success, postError, channelsError, message }
   ) {
     const error = postError || channelsError
@@ -109,7 +109,7 @@ export default class App extends Component {
         </button>
         <div class={styles.team}>
           <div class={styles.teamName}>{team.team_name}</div>
-          {teams.length > 1 && (
+          {teamCount > 1 && (
             <button
               onClick={selectTeam}
               class={cx(styles.btnNav, styles.btnSwap)}
