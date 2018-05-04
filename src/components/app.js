@@ -5,20 +5,23 @@ import BodyClass from '../lib/body-class'
 import Capture from './capture'
 import Channels from './channels'
 import Message from './message'
-import slackFetch from '../lib/slack-fetch'
+import postImage from '../lib/post-image'
+import fetchChannels from '../lib/fetch-channels'
 import { authUrl } from '../lib/auth'
-import slug from '../lib/slug'
-import ts from '../lib/timestamp'
 import styles from './app.css'
 
 export default class App extends Component {
   state = {
     image: null,
     message: '',
+    // Posting
     postError: null,
+    postUploading: false,
+    postSuccess: null,
+    // Channels
     channelsError: null,
-    uploading: false,
-    success: null
+    channelsFetching: false,
+    channels: []
   }
 
   static defaultProps = {
@@ -26,19 +29,53 @@ export default class App extends Component {
     maxSize: 2e6
   }
 
-  canPost = () => {
-    const { image, channel, uploading, postError, channelsError } = this.state
-    return !!(image && channel && !uploading && !postError && !channelsError)
+  componentDidMount() {
+    this.fetchChannels(this.props.team)
   }
 
-  handlePost = (e) => {
-    e.preventDefault()
+  componentWillReceiveProps(nextProps) {
+    if (this.props.team.access_token !== nextProps.team.access_token) {
+      this.fetchChannels(nextProps.team)
+    }
+  }
 
-    const { team, defaultMessage, maxSize } = this.props
-    const { image, channel, message } = this.state
+  fetchChannels = (team) => {
+    this.setState({ channelsFetching: true, channels: [], channelsError: null })
 
-    if (!this.canPost()) return
+    fetchChannels(team)
+      .then((channels) => {
+        this.setState({
+          channels,
+          channelsError: null,
+          channelsFetching: false
+        })
+      })
+      .catch((channelsError) => {
+        this.setState({
+          channelsError,
+          channels: [],
+          fetching: false
+        })
+      })
+  }
 
+  getChannel = () => {
+    const { team } = this.props
+    const { channels, channelsFetching, channelsError } = this.state
+
+    if (channelsFetching || channelsError || !channels.length) return null
+
+    return team.last_channel || channels[0].id
+  }
+
+  canPost = () => {
+    const channel = this.getChannel()
+    const { image, postUploading, postError } = this.state
+    return !!(image && channel && !postUploading && !postError)
+  }
+
+  imageTooBig = () => {
+    const { image, maxSize } = this.props
     if (
       image.size > maxSize &&
       // eslint-disable-next-line no-restricted-globals
@@ -48,53 +85,73 @@ export default class App extends Component {
         )} won't show inline previews on mobile Slack clients. Would you like to continue?`
       )
     ) {
-      return
+      return true
     }
+  }
 
-    this.setState({ uploading: true, success: null, postError: null })
+  handlePost = (e) => {
+    e.preventDefault()
 
-    const title = message || defaultMessage
+    const { team, defaultMessage } = this.props
+    const { image, message } = this.state
+    const channel = this.getChannel()
 
-    slackFetch('https://slack.com/api/files.upload', {
-      method: 'POST',
-      body: {
-        token: team.access_token,
-        title,
-        channels: channel.id,
-        filetype: 'gif',
-        filename: `${ts()} ${slug(title).substring(0, 240)}.gif`,
-        file: image
-      }
+    if (!this.canPost()) return
+    if (this.imageTooBig()) return
+
+    this.setState({ postUploading: true, postSuccess: null, postError: null })
+
+    postImage({
+      title: message || defaultMessage,
+      channel,
+      access_token: team.access_token,
+      image
     })
-      .then((success) => {
-        this.setState({ uploading: false, success, postError: null })
+      .then((postSuccess) => {
+        this.setState({ postUploading: false, postSuccess, postError: null })
       })
       .catch((error) =>
-        this.setState({ uploading: false, success: null, postError: error })
+        this.setState({
+          postUploading: false,
+          postSuccess: null,
+          postError: error
+        })
       )
   }
 
-  reset = (e) => {
+  resetPost = (e) => {
     e.preventDefault()
     this.setState({
       image: null,
-      success: null,
+      postSuccess: null,
       postError: null,
-      uploading: false,
+      postUploading: false,
       message: ''
     })
   }
 
-  selectChannel = (channel, e) => {
-    this.setState({ channel })
-    if (e && e.type === 'change' && channel) {
-      this.props.selectChannel(channel)
-    }
-  }
-
   render(
-    { teamCount, team, selectTeam, logout, reauth, defaultMessage, maxSize },
-    { image, channel, uploading, success, postError, channelsError, message }
+    {
+      teamCount,
+      team,
+      selectTeam,
+      selectChannel,
+      logout,
+      reauth,
+      defaultMessage,
+      maxSize
+    },
+    {
+      image,
+      channel,
+      postUploading,
+      postSuccess,
+      postError,
+      channelsError,
+      channelsFetching,
+      channels,
+      message
+    }
   ) {
     const error = postError || channelsError
     return (
@@ -122,15 +179,16 @@ export default class App extends Component {
           </a>
         </div>
         <Channels
-          selected={team.last_channel || null}
-          onError={(error) => this.setState({ channelsError: error })}
-          onChange={this.selectChannel}
-          token={team.access_token}
+          selected={this.getChannel()}
+          error={channelsError}
+          fetching={channelsFetching}
+          channels={channels}
+          onChange={selectChannel}
         />
         <Capture
           maxSize={maxSize}
           image={image}
-          readonly={uploading || success}
+          readonly={postUploading || postSuccess}
           onChange={({ image }) => this.setState({ image, postError: null })}
           error={
             error && (
@@ -150,9 +208,9 @@ export default class App extends Component {
             )
           }
         />
-        <form onSubmit={success ? this.reset : this.handlePost}>
+        <form onSubmit={postSuccess ? this.resetPost : this.handlePost}>
           <Message
-            readonly={uploading || success}
+            readonly={postUploading || postSuccess}
             value={message}
             onInput={(e) => this.setState({ message: e.target.value })}
             placeholder={defaultMessage}
@@ -162,9 +220,9 @@ export default class App extends Component {
             type="submit"
             disabled={!this.canPost()}
           >
-            {uploading
+            {postUploading
               ? 'Uploading...'
-              : success
+              : postSuccess
                 ? 'Success! Post another?'
                 : `Post${image ? ` (${pb(image.size)})` : ''}`}
           </button>

@@ -42,10 +42,10 @@ export default class Container extends Component {
     })
   }
 
-  selectChannel = (channel) => {
+  selectChannel = (e) => {
     const { teams, selectedTeam } = this.state
     this.setState({
-      teams: updateTeam(teams[selectedTeam], { last_channel: channel.id })
+      teams: updateTeam(teams[selectedTeam], { last_channel: e.target.value })
     })
   }
 
