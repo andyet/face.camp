@@ -1,5 +1,4 @@
 import UglifyJsPlugin from 'uglifyjs-webpack-plugin'
-import path from 'path'
 import cssnext from 'postcss-cssnext'
 import cssimport from 'postcss-import'
 import { URL } from 'url'
@@ -64,14 +63,6 @@ export default (config, env, helpers) => {
 
   // No polyfills needed for the supported browser list
   delete config.entry.polyfills
-
-  // Use our own entry point instead of preact-cli-entrypoint
-  const bundleEntry = path.resolve(process.cwd(), 'src', 'index.js')
-  if (Array.isArray(config.entry.bundle)) {
-    config.entry.bundle[0] = bundleEntry
-  } else {
-    config.entry.bundle = bundleEntry
-  }
 
   const postcss = helpers.getLoadersByName(config, 'postcss-loader')
   const babel = helpers.getLoadersByName(config, 'babel-loader')[0]

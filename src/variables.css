@@ -13,5 +13,5 @@
   --border-radius: 3px;
 }
 
-@custom-media --small-height screen and (height <= 800px);
+@custom-media --small-height screen and (height <= 812px);
 @custom-media --min-height screen and (height <= 400px);
