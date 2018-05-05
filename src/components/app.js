@@ -94,7 +94,8 @@ export default class App extends Component {
   }
 
   imageTooBig = () => {
-    const { image, maxSize } = this.props
+    const { image } = this.state
+    const { maxSize } = this.props
     if (
       image.size > maxSize &&
       // eslint-disable-next-line no-restricted-globals
