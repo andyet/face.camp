@@ -12,7 +12,10 @@ export default class Container extends Component {
     supported: browserSupport()
   }
 
-  getSelectedTeam = () => this.state.teams.find(({ selected }) => !!selected)
+  getSelectedTeam = () => {
+    const { teams } = this.state
+    return teams.find((t) => !!t.selected) || teams[0]
+  }
 
   deleteTeam = () => auth.delete(this.getSelectedTeam())
 
@@ -40,7 +43,7 @@ export default class Container extends Component {
     })
   }
 
-  render(props, { teams, selectedTeam, supported }) {
+  render(props, { teams, supported }) {
     return (
       <div class={styles.container}>
         <div class={styles.inner}>
