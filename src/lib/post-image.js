@@ -2,8 +2,9 @@ import slug from './slug'
 import ts from './timestamp'
 import slackFetch from './slack-fetch'
 
-export default ({ access_token, title, channel, image }) =>
+export default ({ access_token, title, channel, image }, options = {}) =>
   slackFetch('https://slack.com/api/files.upload', {
+    ...options,
     method: 'POST',
     body: {
       token: access_token,

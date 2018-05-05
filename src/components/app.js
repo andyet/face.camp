@@ -6,7 +6,7 @@ import Capture from './capture'
 import Channels from './channels'
 import Message from './message'
 import postImage from '../lib/post-image'
-import fetchChannels, { AbortChannelsError } from '../lib/fetch-channels'
+import fetchChannels from '../lib/fetch-channels'
 import { url as authUrl } from '../lib/auth'
 import styles from './app.css'
 
@@ -35,7 +35,19 @@ export default class App extends Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.team.access_token !== this.props.team.access_token) {
+      this.cancelChannels()
       this.fetchChannels()
+    }
+  }
+
+  componentWillUnmount() {
+    this.cancelChannels()
+    this.cancelPost()
+  }
+
+  cancelChannels = () => {
+    if (this.state.channelsFetching && this.channelsController) {
+      this.channelsController.abort()
     }
   }
 
@@ -46,9 +58,9 @@ export default class App extends Component {
       channelsError: null
     })
 
-    const currentTeam = () => this.props.team
+    this.channelsController = new AbortController()
 
-    fetchChannels(currentTeam(), currentTeam)
+    fetchChannels(this.props.team, { signal: this.channelsController.signal })
       .then((channels) => {
         this.setState({
           channels,
@@ -57,7 +69,7 @@ export default class App extends Component {
         })
       })
       .catch((channelsError) => {
-        if (channelsError instanceof AbortChannelsError) return
+        if (channelsError.name === 'AbortError') return
         this.setState({
           channels: [],
           channelsError,
@@ -96,6 +108,12 @@ export default class App extends Component {
     }
   }
 
+  cancelPost = () => {
+    if (this.state.postUploading && this.postController) {
+      this.postController.abort()
+    }
+  }
+
   handlePost = (e) => {
     e.preventDefault()
 
@@ -108,22 +126,28 @@ export default class App extends Component {
 
     this.setState({ postUploading: true, postSuccess: null, postError: null })
 
-    postImage({
-      title: message || defaultMessage,
-      channel,
-      access_token: team.access_token,
-      image
-    })
+    this.postController = new AbortController()
+
+    postImage(
+      {
+        title: message || defaultMessage,
+        channel,
+        access_token: team.access_token,
+        image
+      },
+      { signal: this.postController.signal }
+    )
       .then((postSuccess) => {
         this.setState({ postUploading: false, postSuccess, postError: null })
       })
-      .catch((error) =>
+      .catch((postError) => {
+        if (postError.name === 'AbortError') return
         this.setState({
           postUploading: false,
           postSuccess: null,
-          postError: error
+          postError
         })
-      )
+      })
   }
 
   resetPost = (e) => {

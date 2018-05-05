@@ -8,10 +8,10 @@ export default class BodyClass extends Component {
     this.setBodyClass(this.props)
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.class !== this.props.class) {
-      this.removeBodyClass(this.props)
-      this.setBodyClass(nextProps)
+  componentDidUpdate(prevProps) {
+    if (this.props.class !== prevProps.class) {
+      this.removeBodyClass(prevProps)
+      this.setBodyClass(this.props)
     }
   }
 

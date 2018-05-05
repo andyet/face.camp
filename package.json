@@ -3,6 +3,7 @@
   "description": "Facecamp connects to Slack to let you take animated gifs and post them in any channel for your teamies to see.",
   "version": "0.0.0",
   "dependencies": {
+    "abortcontroller-polyfill": "^1.1.9",
     "classnames": "^2.2.5",
     "gif.js": "^0.2.0",
     "preact": "^8.2.6",
