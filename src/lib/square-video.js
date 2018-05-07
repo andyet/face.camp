@@ -1,31 +1,35 @@
 import { h, Component } from 'preact'
-import throttle from '../lib/throttle-event'
+import debounce from './debounce'
 
 export default class SquareVideo extends Component {
   state = {
-    ratio: 1
+    videoHeight: 0,
+    videoWidth: 0
   }
 
-  componentDidMount() {
-    this._removeResize = throttle('resize', this.setDimensions)
+  // Public API for parent to consume video ref
+  getVideo = () => this._video
+
+  handleVideoLoaded = () => {
+    // On iOS video dimensions need to wait for a bit to be correct
+    this.debouncedDimensions = debounce(this.setDimensions, 100)
+    window.addEventListener('orientationchange', this.debouncedDimensions)
+    this.setDimensions()
   }
 
-  componentWillUnmount() {
-    if (this._removeResize) this._removeResize()
+  componentWillUnmount = () => {
+    if (this.debouncedDimensions) {
+      window.removeEventListener('orientationchange', this.debouncedDimensions)
+    }
   }
 
   setDimensions = () => {
-    const { videoHeight, videoWidth } = this._video || {}
-
-    // Exit early if the video isnt loaded yet
-    if (!videoHeight || !videoWidth) return
-
-    this.setState({ ratio: videoWidth / videoHeight })
+    const { videoHeight, videoWidth } = this._video
+    this.setState({ videoWidth, videoHeight })
   }
 
-  getVideo = () => this._video
-
-  render(props, { ratio }) {
+  render(props, { videoWidth, videoHeight }) {
+    const ratio = videoWidth && videoHeight ? videoWidth / videoHeight : 0
     return (
       <video
         {...props}
@@ -39,7 +43,7 @@ export default class SquareVideo extends Component {
           top: '50%',
           transform: 'translate(-50%, -50%) rotateY(180deg)'
         }}
-        onloadedmetadata={this.setDimensions}
+        onloadedmetadata={this.handleVideoLoaded}
       />
     )
   }
