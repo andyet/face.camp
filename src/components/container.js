@@ -8,12 +8,14 @@ import styles from './container.css'
 
 export default class Container extends Component {
   state = {
-    teams: [],
+    teams: auth.read(),
     supported: browserSupport()
   }
 
   componentDidMount() {
-    this.setState({ teams: auth.read() })
+    window.addEventListener('onhashchange', () => {
+      this.setState({ teams: auth.read() })
+    })
   }
 
   getSelectedTeam = () => {
