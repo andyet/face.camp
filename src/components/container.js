@@ -13,7 +13,7 @@ export default class Container extends Component {
   }
 
   componentDidMount() {
-    window.addEventListener('onhashchange', () => {
+    window.addEventListener('hashchange', () => {
       this.setState({ teams: auth.read() })
     })
   }
