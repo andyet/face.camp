@@ -8,12 +8,6 @@ const combinations = (n) =>
     [...Array(n.length)].map((__, x) => Boolean((y >> x) & 1))
   )
 
-const promiseSerial = (fns) =>
-  fns.reduce(
-    (p, fn) => p.then((r) => fn().then(Array.prototype.concat.bind(r))),
-    Promise.resolve([])
-  )
-
 const exec = (...args) =>
   new Promise((resolve, reject) =>
     cp.exec(...args, (err, stdout) => {
@@ -22,33 +16,36 @@ const exec = (...args) =>
     })
   )
 
-const buildAndSize = (params) => () =>
-  exec(`${params} npm run build`)
-    .then(() => exec('npm run build:size -s'))
-    .then((lines) => {
-      const files = lines
-        .map((line) => line.replace('build/', '').split(' - '))
-        .map(([name, raw]) => ({
-          name,
-          size: pb(+raw),
-          raw: +raw
-        }))
-      const total = files.reduce((m, { raw }) => m + raw, 0)
-      return {
-        params,
-        total: { raw: total, size: pb(total) },
-        files
-      }
-    })
+const buildAndSize = async (params) => {
+  await exec(`${params} npm run build`)
+  const lines = await exec('npm run build:size -s')
 
-const FLAGS = ['USE_ES6', 'USE_OBJ_ASSIGN', 'USE_ASYNC_ROUTES']
+  const files = lines
+    .map((line) => line.replace('build/', '').split(' - '))
+    .map(([name, raw]) => ({
+      name,
+      size: pb(+raw),
+      raw: +raw
+    }))
 
-const builds = combinations(FLAGS)
-  .map((b) => b.map((v, i) => `${FLAGS[i]}=${v}`).join(' '))
-  .map(buildAndSize)
+  const total = files.reduce((m, { raw }) => m + raw, 0)
+  return {
+    params,
+    total: { raw: total, size: pb(total) },
+    files
+  }
+}
 
-promiseSerial(builds).then((r) =>
-  process.stdout.write(
-    JSON.stringify(r.sort((a, b) => a.total.raw - b.total.raw), null, 2)
+const main = async (...flags) => {
+  const builds = combinations(flags).map((b) =>
+    b.map((v, i) => `${flags[i]}=${v}`).join(' ')
   )
-)
+
+  const results = []
+  for (const build of builds) results.push(await buildAndSize(build))
+  results.sort((a, b) => a.total.raw - b.total.raw)
+
+  process.stdout.write(JSON.stringify(results, null, 2))
+}
+
+main('USE_ES6', 'USE_OBJ_ASSIGN', 'USE_ASYNC_ROUTES')
