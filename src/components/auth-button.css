@@ -1,0 +1,58 @@
+@import '../variables.css';
+
+.container {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.btnSlackAuth {
+  width: 100%;
+  padding: 20px;
+  display: block;
+  background: url('../images/logo-slack-full.svg') no-repeat center center;
+  background-size: auto 70px;
+  border-radius: 5px;
+  border: 1px solid var(--blue);
+  box-shadow: 2px 2px 0 var(--blue);
+  text-indent: -9999em;
+  transition: background-color 0.2s;
+  margin-bottom: 10px;
+
+  &:hover {
+    background-color: var(--blue-light);
+  }
+
+  &:active {
+    box-shadow: none;
+    transform: translate(2px, 2px);
+  }
+
+  &.disabled {
+    opacity: 0.5;
+
+    &:hover {
+      cursor: default;
+      background-color: #fff;
+    }
+
+    &:active {
+      box-shadow: 2px 2px 0 var(--blue);
+      transform: none;
+    }
+  }
+}
+
+.authDescription {
+  margin-top: 10px;
+}
+
+.authTitle {
+  text-align: center;
+  font-weight: bold;
+}
+
+.checkbox {
+  margin: 0 7px 0 0;
+}

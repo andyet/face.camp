@@ -1,23 +1,3 @@
-@import '../variables.css';
-
-.btnSlackAuth {
-  width: 100%;
-  padding: 20px;
-  display: block;
-  background: url('../images/logo-slack-full.svg') no-repeat center center;
-  background-size: auto 70px;
-  border-radius: 5px;
-  border: 1px solid var(--blue);
-  box-shadow: 2px 2px 0 var(--blue);
-  text-indent: -9999em;
-  transition: background-color 0.2s;
-
-  &:hover {
-    background-color: var(--blue-light);
-  }
-
-  &:active {
-    box-shadow: none;
-    transform: translate(2px, 2px);
-  }
+.paragraph {
+  margin-bottom: 20px;
 }

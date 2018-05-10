@@ -1,0 +1,182 @@
+@import '../variables.css';
+
+:root {
+  --height: 40px;
+  --small-height: 32px;
+  --logo-width: 50px;
+  --logo-width-small: 40px;
+  --font-size: 16px;
+}
+
+.container {
+  width: 100%;
+  height: var(--height);
+  margin: var(--vertical-margin) 0;
+  font-size: var(--font-size);
+  line-height: var(--height);
+  border: 1px solid var(--blue);
+  border-radius: var(--border-radius);
+  box-shadow: 2px 2px 0 var(--blue);
+
+  @media (--small-height) {
+    height: var(--small-height);
+    line-height: var(--small-height);
+    margin: var(--vertical-margin-short) 0;
+  }
+
+  &.hasSelect {
+    background-repeat: no-repeat;
+    background-image: url('../images/caret.svg');
+    background-size: 22px 12px;
+    background-position: 97% 55%;
+    cursor: pointer;
+
+    @media (--small-height) {
+      background-size: 18px 9px;
+    }
+  }
+
+  &.noSelect {
+    padding-left: var(--logo-width);
+    cursor: default;
+
+    @media (--small-height) {
+      padding-left: var(--logo-width-small);
+    }
+  }
+
+  &.error,
+  &.empty {
+    color: var(--pink);
+  }
+
+  &.fetching {
+    color: var(--gray);
+  }
+}
+
+.slackBackground {
+  background: url('../images/logo-slack.svg') no-repeat 15px 7px;
+  background-size: 24px auto;
+
+  @media (--small-height) {
+    background-size: 16px auto;
+    background-position-y: 6px;
+  }
+}
+
+.input {
+  border: none;
+  font-size: var(--font-size);
+  color: var(--blue);
+
+  &::placeholder {
+    color: var(--blue);
+  }
+}
+
+.autocomplete {
+  width: 100%;
+  height: 100%;
+
+  & :global {
+    & .autocomplete__wrapper {
+      z-index: 100;
+      height: 100%;
+    }
+
+    & .autocomplete__hint,
+    & .autocomplete__input,
+    & .autocomplete__option {
+      font-size: var(--font-size) !important;
+    }
+
+    & .autocomplete__hint,
+    & .autocomplete__input {
+      height: 100%;
+      padding-left: var(--logo-width);
+      background-color: transparent;
+      border: none;
+
+      @media (--small-height) {
+        padding-left: var(--logo-width-small);
+      }
+    }
+
+    & .autocomplete__input {
+      color: var(--blue);
+
+      &::placeholder {
+        color: var(--blue);
+      }
+    }
+
+    & .autocomplete__input--show-all-values {
+      padding-right: 4px;
+    }
+
+    & .autocomplete__hint {
+      color: var(--gray);
+      background-color: transparent;
+    }
+
+    & .autocomplete__input--focused {
+      outline: 0;
+    }
+
+    & .autocomplete__menu {
+      background-color: var(--background-color);
+      border: 1px solid var(--blue);
+      color: var(--text-color);
+      width: calc(100% + 1px);
+      margin-top: calc(var(--border-radius) * -1);
+      margin-left: -1px;
+      border-right: none;
+      border-radius: 0 0 var(--border-radius) var(--border-radius);
+      box-shadow: 3px 2px 0 var(--blue);
+    }
+
+    & .autocomplete__option {
+      border-color: var(--blue);
+      border-width: 1px 0;
+      line-height: 1.25 !important;
+      padding-left: var(--logo-width);
+
+      @media (--small-height) {
+        padding-left: var(--logo-width-small);
+      }
+    }
+
+    & .autocomplete__option:last-of-type {
+      border-bottom-width: 0;
+    }
+
+    & .autocomplete__option--odd {
+      background-color: var(--blue-light);
+    }
+
+    & .autocomplete__option--focused,
+    & .autocomplete__option:hover {
+      background-color: var(--blue);
+      border-color: var(--blue);
+      color: var(--background-color);
+    }
+
+    & .autocomplete__option--no-results {
+      background-color: var(--background-color);
+      color: var(--gray);
+    }
+  }
+}
+
+.select {
+  height: 100%;
+  width: 100%;
+  cursor: pointer;
+  -webkit-appearance: none;
+  padding-left: var(--logo-width);
+
+  @media (--small-height) {
+    padding-left: var(--logo-width-small);
+  }
+}

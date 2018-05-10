@@ -3,11 +3,10 @@ import cx from 'classnames'
 import pb from 'pretty-bytes'
 import BodyClass from '../lib/body-class'
 import Capture from './capture'
-import Channels from './channels'
+import Conversations from './conversations'
 import Message from './message'
 import postImage from '../lib/post-image'
-import fetchChannels from '../lib/fetch-channels'
-import { url as authUrl } from '../lib/auth'
+import fetchConversations from '../lib/fetch-conversations'
 import styles from './app.css'
 
 export default class App extends Component {
@@ -18,10 +17,10 @@ export default class App extends Component {
     postError: null,
     postUploading: false,
     postSuccess: null,
-    // Channels
-    channelsError: null,
-    channelsFetching: false,
-    channels: []
+    // Conversations
+    conversationsError: null,
+    conversationsFetching: false,
+    conversations: null
   }
 
   static defaultProps = {
@@ -30,67 +29,83 @@ export default class App extends Component {
   }
 
   componentDidMount() {
-    this.fetchChannels()
+    this.fetchConversations()
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.team.access_token !== this.props.team.access_token) {
-      this.cancelChannels()
-      this.fetchChannels()
+      this.cancelConversations()
+      this.fetchConversations()
     }
   }
 
   componentWillUnmount() {
-    this.cancelChannels()
+    this.cancelConversations()
     this.cancelPost()
   }
 
-  cancelChannels = () => {
-    if (this.state.channelsFetching && this.channelsController) {
-      this.channelsController.abort()
+  cancelConversations = () => {
+    if (this.state.conversationsFetching && this.conversationsController) {
+      this.conversationsController.abort()
     }
   }
 
-  fetchChannels = () => {
+  fetchConversations = async () => {
     this.setState({
-      channelsFetching: true,
-      channels: [],
-      channelsError: null
+      conversationsFetching: true,
+      conversations: null,
+      conversationsError: null
     })
 
-    this.channelsController = new AbortController()
+    this.conversationsController = new AbortController()
 
-    fetchChannels(this.props.team, { signal: this.channelsController.signal })
-      .then((channels) => {
-        this.setState({
-          channels,
-          channelsError: null,
-          channelsFetching: false
-        })
+    try {
+      const conversations = await fetchConversations(this.props.team, {
+        signal: this.conversationsController.signal
       })
-      .catch((channelsError) => {
-        if (channelsError.name === 'AbortError') return
-        this.setState({
-          channels: [],
-          channelsError,
-          channelsFetching: false
-        })
+
+      this.setState({
+        conversations,
+        conversationsError: null,
+        conversationsFetching: false
       })
+    } catch (conversationsError) {
+      if (conversationsError.name === 'AbortError') {
+        return
+      }
+
+      this.setState({
+        conversations: null,
+        conversationsError,
+        conversationsFetching: false
+      })
+    }
   }
 
-  getChannel = () => {
+  getConversation = () => {
     const { team } = this.props
-    const { channels, channelsFetching, channelsError } = this.state
+    const {
+      conversations,
+      conversationsFetching,
+      conversationsError
+    } = this.state
 
-    if (channelsFetching || channelsError || !channels.length) return null
+    if (conversationsFetching || conversationsError || !conversations)
+      return null
 
-    return team.last_channel || channels[0].id
+    // Dont use the last selected conversation unless it is part of the group of
+    // conversations that is currently fetched in case permissions have changed
+    const selected =
+      team.last_conversation &&
+      conversations.all.find((c) => c.id === team.last_conversation)
+
+    return (selected || conversations.all[0] || {}).id
   }
 
   canPost = () => {
-    const channel = this.getChannel()
+    const conversation = this.getConversation()
     const { image, postUploading, postError } = this.state
-    return !!(image && channel && !postUploading && !postError)
+    return !!(image && conversation && !postUploading && !postError)
   }
 
   imageTooBig = () => {
@@ -115,12 +130,12 @@ export default class App extends Component {
     }
   }
 
-  handlePost = (e) => {
+  handlePost = async (e) => {
     e.preventDefault()
 
     const { team, defaultMessage } = this.props
     const { image, message } = this.state
-    const channel = this.getChannel()
+    const conversation = this.getConversation()
 
     if (!this.canPost()) return
     if (this.imageTooBig()) return
@@ -129,26 +144,29 @@ export default class App extends Component {
 
     this.postController = new AbortController()
 
-    postImage(
-      {
-        title: message || defaultMessage,
-        channel,
-        access_token: team.access_token,
-        image
-      },
-      { signal: this.postController.signal }
-    )
-      .then((postSuccess) => {
-        this.setState({ postUploading: false, postSuccess, postError: null })
+    try {
+      const postSuccess = await postImage(
+        {
+          title: message || defaultMessage,
+          channel: conversation,
+          access_token: team.access_token,
+          image
+        },
+        { signal: this.postController.signal }
+      )
+
+      this.setState({ postUploading: false, postSuccess, postError: null })
+    } catch (postError) {
+      if (postError.name === 'AbortError') {
+        return
+      }
+
+      this.setState({
+        postUploading: false,
+        postSuccess: null,
+        postError
       })
-      .catch((postError) => {
-        if (postError.name === 'AbortError') return
-        this.setState({
-          postUploading: false,
-          postSuccess: null,
-          postError
-        })
-      })
+    }
   }
 
   resetPost = (e) => {
@@ -167,7 +185,7 @@ export default class App extends Component {
       teamCount,
       team,
       selectTeam,
-      selectChannel,
+      selectConversation,
       logout,
       reauth,
       defaultMessage,
@@ -175,17 +193,17 @@ export default class App extends Component {
     },
     {
       image,
-      channel,
+      conversation,
       postUploading,
       postSuccess,
       postError,
-      channelsError,
-      channelsFetching,
-      channels,
+      conversationsError,
+      conversationsFetching,
+      conversations,
       message
     }
   ) {
-    const error = postError || channelsError
+    const error = postError || conversationsError
     return (
       <div>
         <BodyClass class={styles.isMinHeight}>
@@ -206,16 +224,19 @@ export default class App extends Component {
               Swap Team
             </button>
           )}
-          <a href={authUrl} class={cx(styles.btnNav, styles.btnAdd)}>
+          <a href="/auth" class={cx(styles.btnNav, styles.btnAdd)}>
             Add Team
           </a>
         </div>
-        <Channels
-          selected={this.getChannel()}
-          error={channelsError}
-          fetching={channelsFetching}
-          channels={channels}
-          onChange={selectChannel}
+        <Conversations
+          selected={this.getConversation()}
+          error={conversationsError}
+          fetching={conversationsFetching}
+          conversations={conversations}
+          onChange={(id) => {
+            this.setState({ postError: null })
+            selectConversation(id)
+          }}
         />
         <Capture
           maxSize={maxSize}
@@ -244,7 +265,9 @@ export default class App extends Component {
           <Message
             readonly={postUploading || postSuccess}
             value={message}
-            onInput={(e) => this.setState({ message: e.target.value })}
+            onInput={(e) =>
+              this.setState({ message: e.target.value, postError: null })
+            }
             placeholder={defaultMessage}
           />
           <button
