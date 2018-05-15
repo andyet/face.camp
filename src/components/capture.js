@@ -23,46 +23,47 @@ export default class Home extends Component {
     error: null
   }
 
-  componentDidMount() {
-    window.navigator.mediaDevices
-      .getUserMedia({
+  async componentDidMount() {
+    try {
+      const stream = await window.navigator.mediaDevices.getUserMedia({
         audio: false,
         video: {
           facingMode: 'user'
         }
       })
-      .then((stream) => {
-        this.setState({ stream })
 
-        // Wait a tick until the doms refs have been instantiated
-        setTimeout(() => {
-          this._removeCaptureKey = keyBinding(
-            'keypress',
-            ' ',
-            this._postButton,
-            this.startCapture
-          )
-
-          this._gif = gif({
-            maxSize: this.props.maxSize,
-            video: this._video.getVideo(),
-            onStart: ({ time }) => this.setImage({ now: time }),
-            onRender: ({ progress }) =>
-              this.setState({ renderProgress: progress }),
-            onFinished: ({ image }) => this.setImage({ image }),
-            onCapture: ({ current, progress }) =>
-              this.setState({ current, captureProgress: progress })
-          })
-        }, 0)
-      })
-      .catch((error) => {
-        this.setState({ streamError: error.message })
-      })
+      this.setState({ stream })
+    } catch (error) {
+      this.setState({ streamError: error.message })
+    }
   }
 
   componentWillUnmount() {
     if (this._gif) this._gif.cleanUp()
     if (this._removeCaptureKey) this._removeCaptureKey()
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    // If this component has just received a stream then set up handlers for
+    // the space bar to start a capture and for the gif to be created
+    if (!prevState.stream && this.state.stream) {
+      this._removeCaptureKey = keyBinding(
+        'keypress',
+        ' ',
+        this._postButton,
+        this.startCapture
+      )
+
+      this._gif = gif({
+        maxSize: this.props.maxSize,
+        video: this._video.getVideo(),
+        onStart: ({ time }) => this.setImage({ now: time }),
+        onRender: ({ progress }) => this.setState({ renderProgress: progress }),
+        onFinished: ({ image }) => this.setImage({ image }),
+        onCapture: ({ current, progress }) =>
+          this.setState({ current, captureProgress: progress })
+      })
+    }
   }
 
   setImage = ({ image = null, now = 0 } = {}) => {
@@ -84,6 +85,8 @@ export default class Home extends Component {
     const { start } = this.state
     const { image, error } = this.props
 
+    // This comes first because we dont want to prevent default on any of these
+    // events
     if (isAltKey || isAltButton || this._gif.isRunning()) {
       return
     }
@@ -98,13 +101,14 @@ export default class Home extends Component {
     // If there already is an image then starting (via spacebar) should reset
     // the image first instead of immediately starting a new capture
     if (image) {
-      return this.setImage()
+      this.setImage()
+      return
     }
 
     // If the capturing has already started
     if (start) {
       // Then stop hands-free capture mode if the event is the second press
-      if (isKeyPress) return this.stopCapture()
+      if (isKeyPress) this.stopCapture()
       // But dont start another capture
       return
     }

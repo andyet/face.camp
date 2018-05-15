@@ -1,6 +1,7 @@
 import { h, Component } from 'preact'
-import { Router } from 'preact-router'
+import { Router, route } from 'preact-router'
 import * as auth from '../lib/auth'
+import slackFetch from '../lib/slack-fetch'
 import Home from '../routes/home'
 import Privacy from '../routes/privacy'
 import browserSupport from '../lib/browser-support'
@@ -23,15 +24,25 @@ export default class Container extends Component {
     return teams.find((t) => !!t.selected) || teams[0]
   }
 
-  deleteTeam = () => auth.delete(this.getSelectedTeam())
-
-  logout = () => {
-    this.setState({ teams: this.deleteTeam() })
+  deleteTeam = async () => {
+    const team = this.getSelectedTeam()
+    try {
+      await slackFetch(
+        `https://slack.com/api/auth.revoke?token=${team.access_token}`
+      )
+    } catch (error) {
+      // Ignore token revocation errors since it gets deleted from localstorage
+    }
+    return auth.delete(team)
   }
 
-  reauth = () => {
-    this.deleteTeam()
-    window.location.href = auth.url
+  logout = async () => {
+    this.setState({ teams: await this.deleteTeam() })
+  }
+
+  reauth = async () => {
+    await this.deleteTeam()
+    route('/auth')
   }
 
   selectTeam = () => {
@@ -41,10 +52,10 @@ export default class Container extends Component {
     this.setState({ teams: auth.add(teams[nextIndex]) })
   }
 
-  selectChannel = (e) => {
+  selectConversation = (id) => {
     this.setState({
       teams: auth.update(this.getSelectedTeam(), {
-        last_channel: e.target.value
+        last_conversation: id
       })
     })
   }
@@ -60,10 +71,11 @@ export default class Container extends Component {
               teamCount={teams.length}
               supported={supported}
               selectTeam={this.selectTeam}
-              selectChannel={this.selectChannel}
+              selectConversation={this.selectConversation}
               logout={this.logout}
               reauth={this.reauth}
             />
+            <Home path="/auth" team={null} supported={supported} />
             <Privacy path="/privacy" />
           </Router>
         </div>
