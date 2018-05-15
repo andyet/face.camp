@@ -2,6 +2,7 @@ pipeline:
   build:
     image: node:8.11-alpine
     commands:
+      - apk add --no-cache git
       - npm install
       - NODE_ENV=production npm run build
   now_prod:
