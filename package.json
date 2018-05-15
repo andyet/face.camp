@@ -1,6 +1,6 @@
 {
   "name": "facecamp",
-  "description": "Facecamp connects to Slack to let you take animated gifs and post them in any channel for your teamies to see.",
+  "description": "Facecamp connects to Slack to let you take animated gifs and post them for your teamies to see.",
   "version": "0.0.1",
   "dependencies": {
     "abortcontroller-polyfill": "^1.1.9",

@@ -31,7 +31,7 @@ export default ({ supported, team, ...props }) => (
         <div>
           <p class={styles.paragraph}>
             Facecamp connects to Slack to let you take animated gifs and post
-            them in any channel for your teamies to see.
+            them for your teamies to see.
           </p>
           <p class={styles.paragraph}>Sign in with:</p>
           <p>
