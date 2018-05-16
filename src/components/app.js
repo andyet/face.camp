@@ -32,10 +32,21 @@ export default class App extends Component {
     this.fetchConversations()
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     if (prevProps.team.access_token !== this.props.team.access_token) {
       this.cancelConversations()
       this.fetchConversations()
+    }
+
+    // Since conversations are loaded initially, if there is a token_revoked
+    // error then we can immediately revoke the token and route to the auth page
+    const { conversationsError } = this.state
+    if (
+      conversationsError &&
+      conversationsError !== prevState.conversationsError &&
+      conversationsError.reauthError
+    ) {
+      this.props.reauth()
     }
   }
 
@@ -247,7 +258,7 @@ export default class App extends Component {
             error && (
               <span>
                 Error: {error.message}.
-                {error.slackAuth && (
+                {error.authError && (
                   <span>
                     {' '}
                     Try{' '}

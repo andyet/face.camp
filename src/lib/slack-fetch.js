@@ -56,7 +56,7 @@ const slackFetch = async (url, options = {}) => {
 
   if (!data.ok || data.error) {
     const error = new Error(data.error)
-    error.slackAuth = [
+    error.authError = [
       'not_authed',
       'invalid_auth',
       'account_inactive',
@@ -64,6 +64,7 @@ const slackFetch = async (url, options = {}) => {
       'no_permission',
       'org_login_required'
     ].includes(data.error)
+    error.reauthError = data.error === 'token_revoked'
     throw error
   }
 

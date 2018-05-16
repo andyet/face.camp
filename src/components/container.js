@@ -1,7 +1,6 @@
 import { h, Component } from 'preact'
 import { Router, route } from 'preact-router'
 import * as auth from '../lib/auth'
-import slackFetch from '../lib/slack-fetch'
 import Home from '../routes/home'
 import Privacy from '../routes/privacy'
 import browserSupport from '../lib/browser-support'
@@ -24,25 +23,25 @@ export default class Container extends Component {
     return teams.find((t) => !!t.selected) || teams[0]
   }
 
-  deleteTeam = async () => {
+  logout = () => {
     const team = this.getSelectedTeam()
-    try {
-      await slackFetch(
-        `https://slack.com/api/auth.revoke?token=${team.access_token}`
-      )
-    } catch (error) {
-      // Ignore token revocation errors since it gets deleted from localstorage
-    }
-    return auth.delete(team)
+    const remaining = auth.delete(team)
+    this.setState({ teams: remaining })
+    return fetch(
+      `https://slack.com/api/auth.revoke?token=${team.access_token}`
+    ).catch(
+      // Just log this error since there isnt much to do about it and we still
+      // removed the token from local storage and state
+      // eslint-disable-next-line no-console
+      (err) => console.error(err)
+    )
   }
 
-  logout = async () => {
-    this.setState({ teams: await this.deleteTeam() })
-  }
-
-  reauth = async () => {
-    await this.deleteTeam()
+  reauth = () => {
+    // Only difference between reauth and logout is that it first routes to the
+    // auth page to force the user to login again for that team
     route('/auth')
+    return this.logout()
   }
 
   selectTeam = () => {
