@@ -5,6 +5,7 @@ pipeline:
       - apk add --no-cache git
       - npm install
       - NODE_ENV=production npm run build
+      - npm run build:size
   now_prod:
     image: lucap/drone-now:latest
     pull: true
