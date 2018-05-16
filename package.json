@@ -34,6 +34,25 @@
   "engines": {
     "node": "^8.0.0"
   },
+  "eslintConfig": {
+    "extends": [
+      "eslint:recommended",
+      "react-app",
+      "plugin:import/recommended",
+      "plugin:jsx-a11y/recommended",
+      "plugin:prettier/recommended"
+    ],
+    "settings": {
+      "react": {
+        "pragma": "h"
+      }
+    },
+    "rules": {
+      "jsx-a11y/media-has-caption": 0,
+      "jsx-a11y/no-onchange": 0,
+      "react/no-deprecated": 0
+    }
+  },
   "eslintIgnore": [
     "build/*"
   ],
@@ -55,7 +74,12 @@
       "git add"
     ]
   },
-  "main": "scripts/preact.config.js",
+  "main": "scripts/config.js",
+  "prettier": {
+    "semi": false,
+    "singleQuote": true,
+    "arrowParens": "always"
+  },
   "private": true,
   "scripts": {
     "build": "preact build --no-prerender --config scripts/config.js",
@@ -64,7 +88,7 @@
     "dev": "preact watch --https --config scripts/config.js",
     "eslint": "eslint --fix .",
     "lint": "npm run prettier && npm run eslint",
-    "prettier": "prettier --write \"src/**/*.{js,css}\" \"*.js\"",
+    "prettier": "prettier --write '**/*.{js,md,css,json}' '!build/**'",
     "serve": "npm run build && preact serve -p 8081",
     "start": "if-env NODE_ENV=production && npm run -s serve || npm run -s dev"
   }
