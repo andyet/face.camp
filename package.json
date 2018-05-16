@@ -88,7 +88,7 @@
     "dev": "preact watch --https --config scripts/config.js",
     "eslint": "eslint --fix .",
     "lint": "npm run prettier && npm run eslint",
-    "prettier": "prettier --write '**/*.{js,md,css,json}' '!build/**'",
+    "prettier": "prettier --write '**/*.{js,md,css,json}'",
     "serve": "npm run build && preact serve -p 8081",
     "start": "if-env NODE_ENV=production && npm run -s serve || npm run -s dev"
   }

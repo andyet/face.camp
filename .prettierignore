@@ -1,3 +1,4 @@
 # Move to package.json someday https://github.com/prettier/prettier/issues/3460
 package.json
 package-lock.json
+build/
