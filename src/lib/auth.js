@@ -84,7 +84,7 @@ const readTeams = () => {
 
 const authUrl =
   process.env.NODE_ENV === 'production'
-    ? 'https://facecamp-auth-gcdrvkllid.now.sh' // TODO: change this back to auth.face.camp and remove from oauth urls
+    ? 'https://auth.face.camp'
     : `http://${window.location.hostname}:3000`
 
 export { authUrl as url }
