@@ -71,9 +71,7 @@ class Autocomplete extends Component {
   render({ conversations, onChange, selected, displayKey }) {
     const selectedConversation = conversations.find((c) => c.id === selected)
     return (
-      <div
-        class={cx(styles.autocomplete, styles.input, styles.slackBackground)}
-      >
+      <div class={cx(styles.autocomplete, styles.input)}>
         <AccessibleAutocomplete
           id="autocomplete"
           autoselect={true}
@@ -92,7 +90,7 @@ class Autocomplete extends Component {
 
 const Select = ({ onChange, groups, selected }) => (
   <select
-    class={cx(styles.select, styles.input, styles.slackBackground)}
+    class={cx(styles.select, styles.input)}
     onChange={(e) => onChange(e.target.value)}
   >
     {groups.length === 1
@@ -117,12 +115,12 @@ export default ({ onChange, selected, fetching, error, conversations }) => {
 
   return (
     <div
-      class={cx(styles.container, {
+      class={cx(styles.container, styles.slackBackground, {
         [styles.noSelect]: noSelect,
         [styles.error]: error,
         [styles.fetching]: fetching,
         [styles.empty]: !error && !fetching && !hasConversations,
-        // Put the dropdown caret on autocompletes too since they use showAllValues
+        // Put the dropdown caret on autocompletes too since we use showAllValues
         [styles.hasSelect]: select || autocomplete
       })}
     >

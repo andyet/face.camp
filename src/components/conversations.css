@@ -45,6 +45,15 @@
     }
   }
 
+  &.slackBackground {
+    background: url('../images/logo-slack.svg') no-repeat 15px 7px;
+    background-size: 24px auto;
+
+    @media (--small-height) {
+      background-size: 16px auto;
+    }
+  }
+
   &.error,
   &.empty {
     color: var(--pink);
@@ -52,16 +61,6 @@
 
   &.fetching {
     color: var(--gray);
-  }
-}
-
-.slackBackground {
-  background: url('../images/logo-slack.svg') no-repeat 15px 7px;
-  background-size: 24px auto;
-
-  @media (--small-height) {
-    background-size: 16px auto;
-    background-position-y: 6px;
   }
 }
 
@@ -174,6 +173,7 @@
   width: 100%;
   cursor: pointer;
   -webkit-appearance: none;
+  background: transparent;
   padding-left: var(--logo-width);
 
   @media (--small-height) {

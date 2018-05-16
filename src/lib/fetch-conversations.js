@@ -21,14 +21,11 @@ export default async (
   // can match user ids to display names
   const [{ channels }, { members = [] } = {}] = await Promise.all([
     paginate(
-      `https://slack.com/api/conversations.list?exclude_archived=true&types=${types}&token=${access_token}`,
+      `conversations.list?exclude_archived=true&types=${types}&token=${access_token}`,
       options
     ),
     types.includes('im')
-      ? paginate(
-          `https://slack.com/api/users.list?token=${access_token}`,
-          options
-        )
+      ? paginate(`users.list?token=${access_token}`, options)
       : undefined
   ])
 

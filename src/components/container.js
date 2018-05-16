@@ -27,9 +27,7 @@ export default class Container extends Component {
     const team = this.getSelectedTeam()
     const remaining = auth.delete(team)
     this.setState({ teams: remaining })
-    return fetch(
-      `https://slack.com/api/auth.revoke?token=${team.access_token}`
-    ).catch(
+    return auth.revoke(team).catch(
       // Just log this error since there isnt much to do about it and we still
       // removed the token from local storage and state
       // eslint-disable-next-line no-console

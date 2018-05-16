@@ -3,20 +3,21 @@
 // support AbortController. TODO: Update browser list in scripts/config.js when removing this
 import 'abortcontroller-polyfill/dist/polyfill-patch-fetch'
 
-const paginate = async (url, options, { total = 100, items = [] } = {}) => {
-  url = new URL(url)
+const paginate = async (method, options, { total = 200, items = [] } = {}) => {
+  const [pathname, search] = method.split('?')
 
-  const paths = url.pathname.split('/')
   const key = {
     'conversations.list': 'channels',
     'users.list': 'members'
-  }[paths[paths.length - 1]]
+  }[pathname]
+
+  const params = new URLSearchParams(search)
 
   // Slack recommends no more than 200 items at a time
-  url.searchParams.set('limit', Math.min(total, 200))
+  params.set('limit', Math.min(total, 200))
 
   const { [key]: newItems, response_metadata = {}, ...resp } = await slackFetch(
-    url,
+    `${pathname}?${params}`,
     options
   )
 
@@ -24,8 +25,11 @@ const paginate = async (url, options, { total = 100, items = [] } = {}) => {
   const nextCursor = response_metadata.next_cursor
 
   if (allItems.length < total && nextCursor) {
-    url.searchParams.set('cursor', nextCursor)
-    return await paginate(url, options, { total, items: allItems })
+    params.set('cursor', nextCursor)
+    return await paginate(`${pathname}?${params}`, options, {
+      total,
+      items: allItems
+    })
   }
 
   return {
@@ -34,24 +38,20 @@ const paginate = async (url, options, { total = 100, items = [] } = {}) => {
   }
 }
 
+const formData = (data) => {
+  const res = new FormData()
+  Object.keys(data).forEach((key) => res.append(key, data[key]))
+  return res
+}
+
 const slackFetch = async (url, options = {}) => {
   const { body } = options
 
   if (body && !(body instanceof FormData)) {
-    const formData = new FormData()
-
-    Object.keys(body).forEach((key) => {
-      let value = body[key]
-      if (typeof value === 'object' && !(value instanceof Blob)) {
-        value = JSON.stringify(value)
-      }
-      formData.append(key, value)
-    })
-
-    options.body = formData
+    options.body = formData(options.body)
   }
 
-  const res = await fetch(url, options)
+  const res = await fetch(new URL(url, 'https://slack.com/api/'), options)
   const data = await res.json()
 
   if (!data.ok || data.error) {

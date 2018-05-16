@@ -3,7 +3,7 @@ import ts from './timestamp'
 import slackFetch from './slack-fetch'
 
 export default ({ access_token, title, channel, image }, options = {}) =>
-  slackFetch('https://slack.com/api/files.upload', {
+  slackFetch('files.upload', {
     ...options,
     method: 'POST',
     body: {

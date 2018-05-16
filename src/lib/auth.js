@@ -63,6 +63,11 @@ const updateTeam = createTeamUpdater((teams, index, team, values) => {
   return teams
 })
 
+// Dont use lib/slack-fetch here since it polyfills abortcontroller which adds
+// a few kilobytes to the initial bundle and isnt needed here
+const revokeTeam = (team) =>
+  fetch(`https://slack.com/api/auth.revoke?token=${team.access_token}`)
+
 const readTeams = () => {
   const { hash } = window.location
   if (hash && hash.length > 1) {
@@ -91,4 +96,5 @@ export { authUrl as url }
 export { readTeams as read }
 export { updateTeam as update }
 export { deleteTeam as delete }
+export { revokeTeam as revoke }
 export { addTeam as add }
