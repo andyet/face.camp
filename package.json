@@ -21,7 +21,9 @@
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-prettier": "^2.6.0",
     "eslint-plugin-react": "^7.8.2",
+    "husky": "^1.0.0-rc.6",
     "if-env": "^1.0.4",
+    "lint-staged": "^7.1.0",
     "postcss-cssnext": "^3.1.0",
     "postcss-import": "^11.1.0",
     "preact-cli": "^2.2.1",
@@ -35,7 +37,23 @@
     "build/*"
   ],
   "homepage": "https://face.camp/",
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
   "license": "MIT",
+  "lint-staged": {
+    "*.{json,css,md}": [
+      "prettier --write",
+      "git add"
+    ],
+    "*.{js}": [
+      "prettier --write",
+      "eslint --fix",
+      "git add"
+    ]
+  },
   "main": "scripts/preact.config.js",
   "private": true,
   "scripts": {
