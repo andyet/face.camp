@@ -68,7 +68,7 @@
       "prettier --write",
       "git add"
     ],
-    "*.{js}": [
+    "*.js": [
       "prettier --write",
       "eslint --fix",
       "git add"
