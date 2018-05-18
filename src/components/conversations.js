@@ -23,7 +23,9 @@ const Optgroup = ({ conversations, name, ...props }) => (
       }[name]
     }
   >
-    {conversations.map((c) => <Option conversation={c} {...props} />)}
+    {conversations.map((c) => (
+      <Option key={c.id} conversation={c} {...props} />
+    ))}
   </optgroup>
 )
 
@@ -95,10 +97,11 @@ const Select = ({ onChange, groups, selected }) => (
   >
     {groups.length === 1
       ? groups[0].list.map((c) => (
-          <Option conversation={c} selected={selected} />
+          <Option key={c.id} conversation={c} selected={selected} />
         ))
       : groups.map((group) => (
           <Optgroup
+            key={group.name}
             name={group.name}
             conversations={group.list}
             selected={selected}

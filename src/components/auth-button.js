@@ -49,7 +49,7 @@ export default class AuthButton extends Component {
         <div class={styles.authDescription}>
           <p class={styles.authTitle}>Allow posting to</p>
           {types.map(({ name, label }) => (
-            <p>
+            <p key={name}>
               <label htmlFor={name} for={name}>
                 <input
                   class={styles.checkbox}
