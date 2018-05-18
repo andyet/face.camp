@@ -32,8 +32,11 @@
 
     <% for (var chunk of webpack.chunks) { %>
       <% for (var file of chunk.files) { %>
-        <% if (htmlWebpackPlugin.options.preload && file.match(/\.(js|css)$/)) { %>
+        <% if (htmlWebpackPlugin.options.preload && file.match(/^bundle\..*\.(js|css)$/)) { %>
           <link rel="preload" href="<%= htmlWebpackPlugin.files.publicPath + file %>" as="<%= file.match(/\.css$/)?'style':'script' %>">
+        <% } %>
+        <% if (htmlWebpackPlugin.options.prefetch && file.match(/^\d+\.chunk\..*\.(js|css)$/)) { %>
+          <link rel="prefetch" href="<%= htmlWebpackPlugin.files.publicPath + file %>" as="<%= file.match(/\.css$/)?'style':'script' %>">
         <% } %>
       <% } %>
     <% } %>
