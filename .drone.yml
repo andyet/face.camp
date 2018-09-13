@@ -1,9 +1,9 @@
 pipeline:
   build:
-    image: node:8.11-alpine
+    image: node:10-alpine
     commands:
       - apk add --no-cache git
-      - npm install
+      - npm ci
       - NODE_ENV=production npm run build
       - npm run build:size
   now_prod:
@@ -20,7 +20,9 @@ pipeline:
     secrets: [ now_token ]
   slack:
     image: plugins/slack
-    secrets: [ slack_webhook ]
     username: drone
-    channel: alerts
+    channel: io-alerts
+    secrets: [ slack_webhook ]
+    when:
+      status: [ success, failure ]
 branches: master
