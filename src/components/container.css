@@ -15,7 +15,7 @@
   padding: var(--padding);
 
   @media (--small-height) {
-    padding-top: 8px;
+    padding-top: 15px;
     padding-bottom: 10px;
   }
 }
