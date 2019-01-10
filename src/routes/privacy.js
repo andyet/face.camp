@@ -4,9 +4,9 @@ import Splash from '../components/splash'
 export default () => (
   <Splash>
     <p>
-      &yet will never to gather, store, or sell information about you or your
-      team, log your messages or gifs, or engage in any other behavior that
-      would compromise your privacy and security in any way. Facecamp optionally
+      &yet will never gather, store, or sell information about you or your team,
+      log your messages or gifs, or engage in any other behavior that would
+      compromise your privacy and security in any way. Facecamp optionally
       requests access to your team’s public and private channels, direct
       messages, and user information only to display a list of conversations to
       upload gifs to, and this information is only requested through a browser
