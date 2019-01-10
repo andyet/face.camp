@@ -1,6 +1,6 @@
 import { h } from 'preact'
 import Splash from '../components/splash'
-import styles from '../components/splash.css'
+import styles from './privacy.css'
 
 export default () => (
   <Splash>
