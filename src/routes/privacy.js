@@ -1,9 +1,10 @@
 import { h } from 'preact'
 import Splash from '../components/splash'
+import styles from '../components/splash.css'
 
 export default () => (
   <Splash>
-    <p>
+    <p class={styles.content}>
       &yet will never gather, store, or sell information about you or your team,
       log your messages or gifs, or engage in any other behavior that would
       compromise your privacy and security in any way. Facecamp optionally
