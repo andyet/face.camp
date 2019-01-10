@@ -219,7 +219,8 @@ export default class App extends Component {
       <div>
         <BodyClass class={styles.isMinHeight}>
           <div class={styles.minHeight}>
-            <h1>Increase your browser height</h1>
+            <h1>Increase your browser height, please.</h1>
+            <p>Facecamp needs a wee bit more room.</p>
           </div>
         </BodyClass>
         <button class={styles.btnLogout} onClick={logout}>
