@@ -290,8 +290,8 @@ export default class App extends Component {
             {postUploading
               ? 'Uploading...'
               : postSuccess
-                ? 'Success! Post another?'
-                : `Post${image ? ` (${pb(image.size)})` : ''}`}
+              ? 'Success! Post another?'
+              : `Post${image ? ` (${pb(image.size)})` : ''}`}
           </button>
         </form>
       </div>
