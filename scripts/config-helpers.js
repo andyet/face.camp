@@ -10,7 +10,7 @@ const moreHelpers = {
   },
   setBabelOptions(config, type, getOptions) {
     const names = Object.keys(getOptions)
-    const fullKeys = names.map((name) => `babel-${type.slice(0, -1)}-${name}`)
+    const fullKeys = names.map((name) => `@babel/${type.slice(0, -1)}-${name}`)
 
     this.getLoadersByName('babel-loader').forEach(
       (babel) =>
@@ -58,14 +58,14 @@ const moreHelpers = {
     jsRules.forEach(({ rule, index }) => {
       if (
         typeof rule.loader === 'string' &&
-        rule.loader.endsWith('async-component-loader')
+        rule.loader.includes('@preact/async-loader')
       ) {
         this.removeRule({ index })
       }
     })
   },
-  setUglifyOptions(config, options) {
-    this.getMinimizersByName('UglifyJsPlugin').forEach(({ minimizer }) => {
+  setTerserOptions(config, options) {
+    this.getMinimizersByName('TerserPlugin').forEach(({ minimizer }) => {
       merge(minimizer.options, options)
     })
   },

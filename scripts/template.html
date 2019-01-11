@@ -22,10 +22,9 @@
     <meta name="twitter:url" value="<%= htmlWebpackPlugin.options.url %>" />
 
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="white" />
     <link rel="apple-touch-icon" href="<%= htmlWebpackPlugin.files.publicPath %><%= htmlWebpackPlugin.options.appleIcon %>">
-    <link rel="manifest" test="wpp" href="<%= htmlWebpackPlugin.files.publicPath %>manifest.json">
+    <link id="the-manifest" rel="manifest" href="<%= htmlWebpackPlugin.files.publicPath %>manifest.json">
     <% if (htmlWebpackPlugin.options.manifest.theme_color) { %>
       <meta name="theme-color" content="<%= htmlWebpackPlugin.options.manifest.theme_color %>">
     <% } %>
@@ -42,6 +41,12 @@
     <% } %>
   </head>
   <body>
+    <script>
+      if (/iP(?:hone|ad|od)/.test(navigator.userAgent)) {
+        alert('here')
+        document.head.removeChild(document.getElementById('the-manifest'));
+      }
+    </script>
     <div><!-- template needs a body.firstElementChild --></div>
     <noscript id="noscript">
       <div id="static-message">

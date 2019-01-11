@@ -41,22 +41,18 @@ export default (config, env, helpers) => {
   h.removeEntry('polyfills')
 
   // Use cssnext plugin, this overrides preact-cli's autoprefixer plugin which is
-  // ok because that is includes in cssnext
+  // ok because that is included in cssnext
   h.setPostCssOptions({ plugins: [cssimport(), cssnext({ browsers })] })
 
   // Set browsers which are assigned above based on USE_ES6 flag
   h.setBabelOptions('presets', { env: { targets: { browsers } } })
-
-  // TODO: remove once this issue is fixed
-  // https://github.com/developit/preact-cli/pull/573
-  h.setUglifyOptions({ uglifyOptions: { compress: { reduce_vars: false } } })
 
   // Remove babel plugin that will transform Object.assign and change options
   // for other plugins to use Object.assign instead of a custom inline helper
   if (USE_OBJ_ASSIGN) {
     h.setBabelOptions('plugins', {
       'transform-object-assign': null,
-      'transform-object-rest-spread': { useBuiltIns: true },
+      'proposal-object-rest-spread': { useBuiltIns: true },
       'transform-react-jsx': { useBuiltIns: true }
     })
   }

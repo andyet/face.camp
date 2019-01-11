@@ -36,7 +36,7 @@
     "lodash": "^4.17.11",
     "postcss-cssnext": "^3.1.0",
     "postcss-import": "^12.0.1",
-    "preact-cli": "^3.0.0-next.5",
+    "preact-cli": "^3.0.0-next.14",
     "prettier": "^1.15.3",
     "serve": "^6.5.8"
   },

@@ -1,2 +1,4 @@
 import './index.css'
-export default from './components/container'
+import Container from './components/container'
+
+export default Container
