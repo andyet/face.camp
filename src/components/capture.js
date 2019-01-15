@@ -14,7 +14,8 @@ export default class Home extends Component {
     current: 0,
     captureProgress: null,
     renderProgress: null,
-    imageLoaded: false
+    imageLoaded: false,
+    canReset: false
   }
 
   static defaultProps = {
@@ -127,7 +128,8 @@ export default class Home extends Component {
       start,
       current,
       captureProgress,
-      imageLoaded
+      imageLoaded,
+      canReset
     }
   ) {
     const isRendering = typeof renderProgress === 'number'
@@ -206,7 +208,16 @@ export default class Home extends Component {
                 Rendering
               </button>
             ) : (
-              <button class={styles.btnCapture} onClick={() => this.setImage()}>
+              <button
+                class={styles.btnCapture}
+                onMouseUp={() => {
+                  if (canReset) {
+                    this.setImage()
+                    this.setState({ canReset: false })
+                  }
+                }}
+                onMouseDown={() => this.setState({ canReset: true })}
+              >
                 Reset gif
               </button>
             )}
