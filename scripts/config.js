@@ -13,8 +13,6 @@ const USE_SW = env('USE_SW', true)
 export default (config, env, helpers) => {
   const h = mergeHelpers(config, helpers)
 
-  h.removeInlineCss()
-
   // Set the supported browsers based on a flag. By default the browserslist in
   // package.json is set to recent versions of major browsers that also support
   // navigator.mediaDevices. Last updated 2018-04-24 from https://caniuse.com/#feat=stream
