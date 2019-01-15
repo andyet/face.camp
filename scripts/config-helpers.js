@@ -43,6 +43,10 @@ const moreHelpers = {
   removeMinimizers(config) {
     config.optimization.minimizer = []
   },
+  removeInlineCss(config) {
+    this.getPluginsByName('Critters').forEach((p) => this.removePlugin(p))
+    this.setHtmlOptions({ inlineCss: false })
+  },
   removeServiceWorker(config) {
     this.getPluginsByName('SWPrecacheWebpackPlugin').forEach((p) =>
       this.removePlugin(p)
