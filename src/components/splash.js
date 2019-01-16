@@ -16,7 +16,9 @@ export default ({ children }) => (
           &yet
         </a>
         <br />
-        <a href="/privacy">privacy policy</a>
+        <a href="/privacy">privacy policy</a> -{' '}
+        <a href="https://github.com/andyet/face.camp">fork on GitHub</a> -{' '}
+        <a href="https://twitter.com/andyet">@andyet</a>
       </p>
     </div>
   </div>
