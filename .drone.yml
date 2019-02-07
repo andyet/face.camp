@@ -17,13 +17,12 @@ pipeline:
     directory: build
     when:
       event: deployment
-    secrets: [ now_token ]
+    secrets: [now_token]
   slack:
-    image: andyet/drone-slack:stable
+    image: plugins/slack
     username: drone
-    pull: true
     channel: io-alerts
-    secrets: [ slack_webhook, github_access_token, github_slack_lookup ]
+    secrets: [slack_webhook]
     when:
-      status: [ success, failure ]
+      status: [success, failure]
 branches: master
