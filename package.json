@@ -91,7 +91,7 @@
   },
   "private": true,
   "scripts": {
-    "build": "preact build --no-prerender --inline-css false --config scripts/config.js",
+    "build": "preact build --no-prerender --inline-css false --config scripts/config.js && cp now.json build/now.json",
     "build:size": "find build -type f -name '*.js' -exec printf '%s - ' {} \\; -exec gzip-size --raw {} \\; | sort",
     "build:sizes": "node scripts/build-sizes",
     "dev": "preact watch --https --config scripts/config.js --port 8080",
