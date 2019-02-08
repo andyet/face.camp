@@ -2,9 +2,7 @@
   "name": "face.camp",
   "version": 1,
   "type": "static",
-  "files": ["./"],
   "static": {
-    "public": ".",
     "rewrites": [
       {
         "source": "**",
