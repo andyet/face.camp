@@ -3,6 +3,7 @@ import { Router, route } from 'preact-router'
 import * as auth from '../lib/auth'
 import Home from '../routes/home'
 import Privacy from '../routes/privacy'
+import FourOhFour from '../routes/404'
 import browserSupport from '../lib/browser-support'
 import styles from './container.css'
 
@@ -74,6 +75,7 @@ export default class Container extends Component {
             />
             <Home path="/auth" team={null} supported={supported} />
             <Privacy path="/privacy" />
+            <FourOhFour default />
           </Router>
         </div>
       </div>
