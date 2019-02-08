@@ -7,7 +7,7 @@ pipeline:
       - NODE_ENV=production npm run build
       - npm run build:size
   now_prod:
-    image: lucap/drone-now:latest
+    image: andyet/drone-now:latest
     pull: true
     deploy_name: face.camp
     type: static
