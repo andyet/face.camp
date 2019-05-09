@@ -45,15 +45,19 @@ export default (config, env, helpers) => {
   h.setPostCssOptions({ plugins: [cssimport(), cssnext({ browsers })] })
 
   // Set browsers which are assigned above based on USE_ES6 flag
-  h.setBabelOptions('presets', { env: { targets: { browsers } } })
+  h.setBabelOptions('presets', {
+    '@babel/preset-env': { targets: { browsers } }
+  })
 
-  // Remove babel plugin that will transform Object.assign and change options
-  // for other plugins to use Object.assign instead of a custom inline helper
   if (USE_OBJ_ASSIGN) {
     h.setBabelOptions('plugins', {
-      'transform-object-assign': null,
-      'proposal-object-rest-spread': { useBuiltIns: true },
-      'transform-react-jsx': { useBuiltIns: true }
+      // Remove babel plugin that will transform Object.assign and change options
+      // for other plugins to use Object.assign instead of a custom inline helper
+      '@babel/plugin-transform-object-assign': null,
+      '@babel/plugin-proposal-object-rest-spread': { useBuiltIns: true },
+      '@babel/plugin-transform-react-jsx': { useBuiltIns: true },
+      // Remove fast-async because our browserslist all support native async/await
+      'fast-async': null
     })
   }
 

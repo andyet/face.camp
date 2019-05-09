@@ -10,14 +10,13 @@ const moreHelpers = {
   },
   setBabelOptions(config, type, getOptions) {
     const names = Object.keys(getOptions)
-    const fullKeys = names.map((name) => `@babel/${type.slice(0, -1)}-${name}`)
 
     this.getLoadersByName('babel-loader').forEach(
       (babel) =>
         (babel.rule.options[type] = babel.rule.options[type]
           .map((p) => {
             const [name, options] = typeof p === 'string' ? [p, {}] : p
-            const nameIndex = fullKeys.findIndex((key) => name.includes(key))
+            const nameIndex = names.findIndex((key) => name.includes(key))
 
             if (nameIndex > -1) {
               const newOptions = getOptions[names[nameIndex]]
