@@ -72,7 +72,7 @@
   "homepage": "https://face.camp/",
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged && npm run build"
+      "pre-commit": "lint-staged && npm test"
     }
   },
   "license": "MIT",
@@ -102,6 +102,7 @@
     "lint": "npm run prettier && npm run eslint",
     "prettier": "prettier --write '**/*.{js,md,css,json}'",
     "serve": "serve build --port 8080 --clipless --treeless --single --ssl",
-    "start": "preact watch --https --esm false --config scripts/config.js --port 8080"
+    "start": "preact watch --https --esm false --config scripts/config.js --port 8080",
+    "test": "npm run build > /dev/null"
   }
 }
