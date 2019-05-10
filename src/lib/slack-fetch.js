@@ -1,8 +1,3 @@
-// https://developer.mozilla.org/en-US/docs/Web/API/AbortController/abort#Browser_compatibility
-// This polyfill can probably be removed once the last two versions of major browsers
-// support AbortController. TODO: Update browser list in scripts/config.js when removing this
-import 'abortcontroller-polyfill/dist/polyfill-patch-fetch'
-
 const paginate = async (method, options, { total = 200, items = [] } = {}) => {
   const [pathname, search] = method.split('?')
 

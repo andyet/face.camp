@@ -3,15 +3,14 @@
   "description": "Facecamp connects to Slack to let you take animated gifs and post them for your teamies to see.",
   "version": "0.0.1",
   "browserslist": [
-    "chrome 63",
-    "edge 15",
+    "chrome 66",
+    "edge 16",
     "firefox 58",
-    "ios 11.2",
-    "safari 11",
-    "opera 50"
+    "ios 11.3",
+    "safari 12.1",
+    "opera 53"
   ],
   "dependencies": {
-    "abortcontroller-polyfill": "^1.3.0",
     "accessible-autocomplete": "github:lukekarrys/accessible-autocomplete#229/confirm-on-blur-undefined",
     "classnames": "^2.2.6",
     "gif.js": "^0.2.0",
@@ -99,11 +98,10 @@
     "build": "preact build --no-prerender --inline-css false --esm false --config scripts/config.js && cp now.json build/now.json",
     "build:size": "find build -type f -name '*.js' -exec printf '%s - ' {} \\; -exec gzip-size --raw {} \\; | sort",
     "build:sizes": "node scripts/build-sizes",
-    "dev": "preact watch --https --config scripts/config.js --port 8080",
     "eslint": "eslint --fix .",
     "lint": "npm run prettier && npm run eslint",
     "prettier": "prettier --write '**/*.{js,md,css,json}'",
     "serve": "serve build --port 8080 --clipless --treeless --single --ssl",
-    "start": "if-env NODE_ENV=production && npm run -s serve || npm run -s dev"
+    "start": "preact watch --https --esm false --config scripts/config.js --port 8080"
   }
 }

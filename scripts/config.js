@@ -15,7 +15,8 @@ export default (config, env, helpers) => {
 
   // Set the supported browsers based on a flag. By default the browserslist in
   // package.json is set to recent versions of major browsers that also support
-  // navigator.mediaDevices. Last updated 2018-04-24 from https://caniuse.com/#feat=stream
+  // navigator.mediaDevices and abort controller. Last updated 2019-05-09
+  // from https://caniuse.com/#feat=stream and https://caniuse.com/#feat=abortcontroller
   // Unsupported browsers are handled by the onerror handler in template.html
   // which will catch any syntax errors.
   const browsers = USE_ES6 ? env.pkg.browserslist : ['> 0.25%', 'IE >= 9']
