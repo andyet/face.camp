@@ -1,4 +1,4 @@
-import cssnext from 'postcss-cssnext'
+import cssPresetEnv from 'postcss-preset-env'
 import cssimport from 'postcss-import'
 import { URL } from 'url'
 import mergeHelpers, { env } from './config-helpers'
@@ -41,9 +41,9 @@ export default (config, env, helpers) => {
   // No polyfills needed for the supported browser list
   h.removeEntry('polyfills')
 
-  // Use cssnext plugin, this overrides preact-cli's autoprefixer plugin which is
+  // Use preset env plugin, this overrides preact-cli's autoprefixer plugin which is
   // ok because that is included in cssnext
-  h.setPostCssOptions({ plugins: [cssimport(), cssnext({ browsers })] })
+  h.setPostCssOptions({ plugins: [cssimport(), cssPresetEnv({ browsers })] })
 
   // Set browsers which are assigned above based on USE_ES6 flag
   h.setBabelOptions('presets', {
@@ -68,7 +68,7 @@ export default (config, env, helpers) => {
   if (!USE_ASYNC_ROUTES) h.removeAsyncRoutes()
 
   // Sometimes it is helpful when building a production version that we want
-  // to test locally to disable minification or service workers or both
+  // to test locally to disable minification and/or service workers
   if (!USE_MINIFY) h.removeMinimizers()
   if (!USE_SW) h.removeServiceWorker()
 
