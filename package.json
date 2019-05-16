@@ -97,7 +97,7 @@
   },
   "private": true,
   "scripts": {
-    "build": "preact build --clean --no-prerender --inline-css false --esm true --config scripts/config.js && cp now.json build/now.json",
+    "build": "preact build --no-prerender --inline-css false --esm true --config scripts/config.js && cp now.json build/now.json",
     "build:size": "find build -type f -name '*.js' -exec printf '%s - ' {} \\; -exec gzip-size --raw {} \\; | sort",
     "build:sizes": "node scripts/build-sizes",
     "eslint": "eslint --fix .",
