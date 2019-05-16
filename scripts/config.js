@@ -8,7 +8,7 @@ const USE_ES6 = env('USE_ES6', true)
 const USE_OBJ_ASSIGN = env('USE_OBJ_ASSIGN', true)
 const USE_ASYNC_ROUTES = env('USE_ASYNC_ROUTES', false)
 const USE_MINIFY = env('USE_MINIFY', true)
-const USE_SW = env('USE_SW', false)
+const USE_SW = env('USE_SW', true)
 const LEGACY_TOKEN = env('LEGACY_TOKEN', '')
 
 export default (config, env, helpers) => {
@@ -22,7 +22,7 @@ export default (config, env, helpers) => {
   // which will catch any syntax errors.
   const browsers = USE_ES6 ? env.pkg.browserslist : ['> 0.25%', 'IE >= 9']
 
-  h.setEnvDefinition('LEGACY_TOKEN', LEGACY_TOKEN)
+  h.setEnvDefinition('LEGACY_TOKEN', env.production ? '' : LEGACY_TOKEN)
 
   // Change html plugin to use our own template from the root of the project
   h.setHtmlTemplate('scripts/template.html')
@@ -87,7 +87,7 @@ export default (config, env, helpers) => {
   // Sometimes it is helpful when building a production version that we want
   // to test locally to disable minification and/or service workers
   if (!USE_MINIFY) h.removeMinimizers()
-  if (!USE_SW) h.removeServiceWorker()
+  if (!USE_SW || !env.production) h.removeServiceWorker()
 
   // Turn this on to see all the relevant config items that have been changed
   // h.debug()

@@ -43,22 +43,30 @@ const moreHelpers = {
     config.optimization.minimizer = []
   },
   removeServiceWorker(config) {
-    this.getPluginsByName('SWPrecacheWebpackPlugin').forEach((p) =>
-      this.removePlugin(p)
-    )
-    this.removeEnvDefinition(config, 'ADD_SW')
-  },
-  removeEnvDefinition(config, key) {
-    this.getPluginsByName('DefinePlugin').forEach(({ plugin }) => {
-      const envKey = `process.env.${key}`
-      if (plugin.definitions.hasOwnProperty(envKey)) {
-        delete plugin.definitions[envKey]
-      }
-    })
+    ;[
+      ...this.getPluginsByName('InjectManifest'),
+      ...this.getPluginsByName('SWBuilderPlugin')
+    ].forEach((p) => this.removePlugin(p))
+
+    this.setEnvDefinition('ADD_SW', false)
   },
   setEnvDefinition(config, key, value) {
-    const [{ plugin }] = this.getPluginsByName('DefinePlugin')
-    plugin.definitions[`process.env.${key}`] = JSON.stringify(value)
+    const envKey = `process.env.${key}`
+    const plugins = this.getPluginsByName('DefinePlugin')
+
+    // Get all define plugins that have a definition for that key
+    const pluginsWithDefinition = plugins.filter(({ plugin }) =>
+      plugin.definitions.hasOwnProperty(envKey)
+    )
+
+    // If there are none found, then just alter the first plugin found
+    const alterPlugins = pluginsWithDefinition.length
+      ? pluginsWithDefinition
+      : plugins.slice(0, 1)
+
+    alterPlugins.forEach(({ plugin }) => {
+      plugin.definitions[envKey] = JSON.stringify(value)
+    })
   },
   removeAsyncRoutes(config) {
     const jsRules = this.getRulesByMatchingFile('src/routes/home.js')
