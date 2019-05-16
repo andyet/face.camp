@@ -7,107 +7,63 @@
 
     <meta name="slack-app-id" content="AA4PZPLQL" />
     <meta name="author" content="<%= htmlWebpackPlugin.options.author %>" />
-    <meta
-      name="description"
-      content="<%= htmlWebpackPlugin.options.description %>"
-    />
+    <meta name="description" content="<%= htmlWebpackPlugin.options.description %>" />
 
     <meta property="og:type" content="website" />
     <meta property="og:url" content="<%= htmlWebpackPlugin.options.url %>" />
-    <meta
-      property="og:title"
-      content="<%= htmlWebpackPlugin.options.title %>"
-    />
-    <meta
-      property="og:description"
-      content="<%= htmlWebpackPlugin.options.description %>"
-    />
-    <meta
-      property="og:image"
-      content="<%= htmlWebpackPlugin.options.url %><%= htmlWebpackPlugin.options.logo %>"
-    />
+    <meta property="og:title" content="<%= htmlWebpackPlugin.options.title %>" />
+    <meta property="og:description" content="<%= htmlWebpackPlugin.options.description %>" />
+    <meta property="og:image" content="<%= htmlWebpackPlugin.options.url %><%= htmlWebpackPlugin.options.logo %>" />
 
     <meta name="twitter:card" content="summary" />
-    <meta
-      name="twitter:domain"
-      value="<%= htmlWebpackPlugin.options.domain %>"
-    />
+    <meta name="twitter:domain" value="<%= htmlWebpackPlugin.options.domain %>" />
     <meta name="twitter:title" value="<%= htmlWebpackPlugin.options.title %>" />
-    <meta
-      name="twitter:description"
-      value="<%= htmlWebpackPlugin.options.description %>"
-    />
-    <meta
-      name="twitter:image"
-      content="<%= htmlWebpackPlugin.options.url %><%= htmlWebpackPlugin.options.logo %>"
-    />
+    <meta name="twitter:description" value="<%= htmlWebpackPlugin.options.description %>" />
+    <meta name="twitter:image" content="<%= htmlWebpackPlugin.options.url %><%= htmlWebpackPlugin.options.logo %>" />
     <meta name="twitter:url" value="<%= htmlWebpackPlugin.options.url %>" />
 
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="white" />
-    <link
-      rel="apple-touch-icon"
-      href="<%= htmlWebpackPlugin.files.publicPath %><%= htmlWebpackPlugin.options.appleIcon %>"
-    />
-    <link
-      id="the-manifest"
-      rel="manifest"
-      href="<%= htmlWebpackPlugin.files.publicPath %>manifest.json"
-    />
+    <link rel="apple-touch-icon" href="<%= htmlWebpackPlugin.files.publicPath %><%= htmlWebpackPlugin.options.appleIcon %>" />
+    <link id="the-manifest" rel="manifest" href="<%= htmlWebpackPlugin.files.publicPath %>manifest.json" />
     <% if (htmlWebpackPlugin.options.manifest.theme_color) { %>
-    <meta
-      name="theme-color"
-      content="<%= htmlWebpackPlugin.options.manifest.theme_color %>"
-    />
-    <% } %> <% for (var chunk of webpack.chunks) { %> <% for (var file of
-    chunk.files) { %> <% if (htmlWebpackPlugin.options.preload &&
-    file.match(/^bundle\..*\.(js|css)$/)) { %>
-    <link
-      rel="preload"
-      href="<%= htmlWebpackPlugin.files.publicPath + file %>"
-      as="<%= file.match(/\.css$/)?'style':'script' %>"
-    />
-    <% } %> <% if (htmlWebpackPlugin.options.prefetch &&
-    file.match(/^\d+\.chunk\..*\.(js|css)$/)) { %>
-    <link
-      rel="prefetch"
-      href="<%= htmlWebpackPlugin.files.publicPath + file %>"
-      as="<%= file.match(/\.css$/)?'style':'script' %>"
-    />
-    <% } %> <% } %> <% } %>
+      <meta name="theme-color" content="<%= htmlWebpackPlugin.options.manifest.theme_color %>" />
+    <% } %>
+    <% const loadManifest = htmlWebpackPlugin.options.createLoadManifest(compilation.assets, webpack.namedChunkGroups); %>
+    <% const filesRegexp = htmlWebpackPlugin.options.inlineCss ? /\.(chunk\.\w{5}\.css|js)$/ : /\.(css|js)$/; %>
+    <% for (const file in loadManifest[htmlWebpackPlugin.options.url]) { %>
+      <% if (htmlWebpackPlugin.options.preload && file && file.match(filesRegexp)) { %>
+        <link
+          rel="preload"
+          href="<%= htmlWebpackPlugin.files.publicPath + file %>"
+          as="<%= file.match(/\.css$/)?'style':'script' %>"
+          <%= file.match(/bundle\.\w{5}\.esm\.js$/)?'crossorigin="anonymous"':'' %>
+        />
+      <% } %>
+    <% } %>
   </head>
   <body>
     <script>
       if (/iP(?:hone|ad|od)/.test(navigator.userAgent)) {
-        document.head.removeChild(document.getElementById('the-manifest'))
+        document.head.removeChild(document.getElementById('the-manifest'));
       }
     </script>
     <div><!-- template needs a body.firstElementChild --></div>
     <noscript id="noscript">
       <div id="static-message">
         <div>
-          <img
-            src="<%= htmlWebpackPlugin.files.publicPath %><%= htmlWebpackPlugin.options.logo %>"
-            alt="Facecamp logo"
-          />
+          <img src="<%= htmlWebpackPlugin.files.publicPath %><%= htmlWebpackPlugin.options.logo %>" alt="Facecamp logo" />
           <h1>Facecamp requires JavaScript.</h1>
         </div>
       </div>
     </noscript>
     <script>
-      window.onerror = function(err) {
-        var message =
-          'An error occurred: <code>' +
-          ((err && err.message) || 'Unknown error') +
-          '</code>.<br/>This browser might not be supported.'
-        document.body.firstElementChild.innerHTML = document
-          .getElementById('noscript')
-          .innerText.replace('Facecamp requires JavaScript.', message)
-      }
+      window.onerror = function (err) {
+        var message = 'An error occurred: <code>' + ((err && err.message) || 'Unknown error' ) + '</code>.<br/>This browser might not be supported.';
+        document.body.firstElementChild.innerHTML = document.getElementById('noscript').innerText.replace('Facecamp requires JavaScript.', message);
+      };
     </script>
-    <script
-      defer
-      src="<%= htmlWebpackPlugin.files.chunks['bundle'].entry %>"
-    ></script>
+    <script crossorigin="anonymous" src="<%= htmlWebpackPlugin.files.publicPath %><%= webpack.assets.filter(entry => entry.name.match(/bundle(\.\w{5})?.esm.js$/))[0].name %>" type="module"></script>
+    <script nomodule defer src="<%= htmlWebpackPlugin.files.chunks['bundle'].entry %>"></script>
   </body>
 </html>

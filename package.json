@@ -97,14 +97,14 @@
   },
   "private": true,
   "scripts": {
-    "build": "preact build --clean --no-prerender --inline-css false --esm false --config scripts/config.js && cp now.json build/now.json",
+    "build": "preact build --clean --no-prerender --inline-css false --esm true --config scripts/config.js && cp now.json build/now.json",
     "build:size": "find build -type f -name '*.js' -exec printf '%s - ' {} \\; -exec gzip-size --raw {} \\; | sort",
     "build:sizes": "node scripts/build-sizes",
     "eslint": "eslint --fix .",
     "lint": "npm run prettier && npm run eslint",
     "prettier": "prettier --write '**/*.{js,md,css,json}'",
     "serve": "serve build --port 8080 --clipless --treeless --single --ssl",
-    "start": "preact watch --https --esm false --config scripts/config.js --port 8080",
+    "start": "preact watch --https --esm true --config scripts/config.js --port 8080",
     "test": "npm run build > /dev/null"
   }
 }
