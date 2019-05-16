@@ -29,7 +29,9 @@ export default (config, env, helpers) => {
 
   // Pass in template data for opengraph and meta tags
   h.setHtmlOptions({
+    title: 'Facecamp by &yet',
     description: env.pkg.description,
+    author: env.pkg.author,
     url: env.pkg.homepage + (env.pkg.homepage.endsWith('/') ? '' : '/'),
     domain: new URL(env.pkg.homepage).host,
     logo: 'assets/icons/icon-no-padding.png',

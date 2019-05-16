@@ -1,7 +1,8 @@
 {
   "name": "facecamp",
-  "description": "Facecamp connects to Slack to let you take animated gifs and post them for your teamies to see.",
+  "description": "Facecamp: chat your mug! Take animated gifs of your face and share with your fave Slack channel. Made by your friends at &yet.",
   "version": "0.0.1",
+  "author": "&yet",
   "browserslist": [
     "chrome 66",
     "edge 16",
@@ -78,7 +79,7 @@
   },
   "license": "MIT",
   "lint-staged": {
-    "*.{json,css,md}": [
+    "*.{json,css,md,html}": [
       "prettier --write",
       "git add"
     ],
