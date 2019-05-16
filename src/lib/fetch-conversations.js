@@ -1,4 +1,6 @@
+import delve from 'dlv'
 import { paginate } from './slack-fetch'
+import { conversation as conversationScopes } from './scopes'
 
 export default async (
   { access_token, team_name, team_id, scope, user_id },
@@ -7,7 +9,7 @@ export default async (
   const scopes = scope.split(',')
 
   // Process our scopes into a list of types of conversations to fetch
-  const types = ['channels:read', 'groups:read', 'im:read', 'mpim:read']
+  const types = conversationScopes
     .filter((type) => scopes.includes(type))
     .map((type) => {
       type = type.split(':')[0]
@@ -79,7 +81,8 @@ const alphaSort = (a, b) => {
   return 0
 }
 
-const getUserName = (user) => user.profile.display_name_normalized || user.name
+const getUserName = (user) =>
+  delve(user, 'profile.display_name_normalized') || delve(user, 'name')
 
 const filterConversation = (conversation, membersById) => {
   // Remove anything that is archived or referencing a deleted user or

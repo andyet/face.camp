@@ -46,11 +46,19 @@ const moreHelpers = {
     this.getPluginsByName('SWPrecacheWebpackPlugin').forEach((p) =>
       this.removePlugin(p)
     )
+    this.removeEnvDefinition(config, 'ADD_SW')
+  },
+  removeEnvDefinition(config, key) {
     this.getPluginsByName('DefinePlugin').forEach(({ plugin }) => {
-      if (plugin.definitions['process.env.ADD_SW']) {
-        plugin.definitions['process.env.ADD_SW'] = false
+      const envKey = `process.env.${key}`
+      if (plugin.definitions.hasOwnProperty(envKey)) {
+        delete plugin.definitions[envKey]
       }
     })
+  },
+  setEnvDefinition(config, key, value) {
+    const [{ plugin }] = this.getPluginsByName('DefinePlugin')
+    plugin.definitions[`process.env.${key}`] = JSON.stringify(value)
   },
   removeAsyncRoutes(config) {
     const jsRules = this.getRulesByMatchingFile('src/routes/home.js')
@@ -127,4 +135,8 @@ export default (config, helpers) => {
 }
 
 export const env = (k, def) =>
-  k in process.env ? process.env[k] !== 'false' : def
+  k in process.env
+    ? def === true || def === false
+      ? process.env[k] !== 'false'
+      : process.env[k]
+    : def

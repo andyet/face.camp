@@ -8,7 +8,8 @@ const USE_ES6 = env('USE_ES6', true)
 const USE_OBJ_ASSIGN = env('USE_OBJ_ASSIGN', true)
 const USE_ASYNC_ROUTES = env('USE_ASYNC_ROUTES', false)
 const USE_MINIFY = env('USE_MINIFY', true)
-const USE_SW = env('USE_SW', true)
+const USE_SW = env('USE_SW', false)
+const LEGACY_TOKEN = env('LEGACY_TOKEN', '')
 
 export default (config, env, helpers) => {
   const h = mergeHelpers(config, helpers)
@@ -20,6 +21,8 @@ export default (config, env, helpers) => {
   // Unsupported browsers are handled by the onerror handler in template.html
   // which will catch any syntax errors.
   const browsers = USE_ES6 ? env.pkg.browserslist : ['> 0.25%', 'IE >= 9']
+
+  h.setEnvDefinition('LEGACY_TOKEN', LEGACY_TOKEN)
 
   // Change html plugin to use our own template from the root of the project
   h.setHtmlTemplate('scripts/template.html')
@@ -43,7 +46,19 @@ export default (config, env, helpers) => {
 
   // Use preset env plugin, this overrides preact-cli's autoprefixer plugin which is
   // ok because that is included in cssnext
-  h.setPostCssOptions({ plugins: [cssimport(), cssPresetEnv({ browsers })] })
+  h.setPostCssOptions({
+    plugins: [
+      cssimport(),
+      cssPresetEnv({
+        browsers,
+        stage: 3,
+        features: {
+          'nesting-rules': true,
+          'custom-media-queries': true
+        }
+      })
+    ]
+  })
 
   // Set browsers which are assigned above based on USE_ES6 flag
   h.setBabelOptions('presets', {

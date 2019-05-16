@@ -13,6 +13,7 @@
   "dependencies": {
     "accessible-autocomplete": "github:lukekarrys/accessible-autocomplete#229/confirm-on-blur-undefined",
     "classnames": "^2.2.6",
+    "dlv": "^1.1.2",
     "gif.js": "^0.2.0",
     "preact": "^8.4.2",
     "preact-router": "^2.6.1",

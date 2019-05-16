@@ -6,24 +6,41 @@
 
 Facecamp lets you take an animated gif from desktop or mobile by connecting the app to Slack and then visiting [face.camp](https://face.camp) to post yourself to Slack for your teamies to see.
 
-## Developing
+## Developing Locally
+
+First run `npm install` in the project root.
+
+### Using a Legacy Token
+
+The easiest way to get up and running with this locally is to use a legacy token. [Follow the instructions on this page](https://api.slack.com/custom-integrations/legacy-tokens) to obtain a legacy token for your user and team. Note that you should only use a legacy token for playing around with this project locally, not for deploying a version for yourself. See the next section for instructions on how to do that.
+
+Once you have a legacy token you can use it to start the app:
 
 ```sh
-npm install
-# serve with hot reload at localhost:8080
-npm start
+LEGACY_TOKEN=<TOKEN> npm start
 ```
 
-## Production
+### Using a Slack app
+
+If you'd like to use your own Slack app to run this project, that's possible too. [Go to your Slack app's page](https://api.slack.com/apps) to get or create your app. Then use the configuration values for that app to setup and run [the authentication server](https://github.com/andyet/auth.face.camp).
+
+## Building for Production
+
+This app gets built as static files that can be hosted anywhere. Run the following commands to build a production ready version to the `build/` directory.
 
 ```sh
-# build for production with minification
 npm run build
-# test the production build locally
+```
+
+If you'd like to test the production version locally, you can run the following command which will serve whatever files are in the `build/` directory.
+
+```sh
 npm run serve
 ```
 
-For detailed explanation on how things work, checkout the [CLI Readme](https://github.com/developit/preact-cli/blob/master/README.md).
+## Contributing
+
+Follow the guidelines in the [contribution docs](./docs/CONTRIBUTING.md).
 
 ## Credit
 
