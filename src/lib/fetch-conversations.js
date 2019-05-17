@@ -32,14 +32,16 @@ export default async (
   ])
 
   // Make it easier to look up users by ID
-  const membersById = members.reduce((acc, member) => {
-    acc[member.id] = member
-    return acc
-  }, {})
+  const membersById = {}
+  const membersByName = {}
+  members.forEach((member) => {
+    membersById[member.id] = member
+    membersByName[member.name] = member
+  })
 
   const me = membersById[user_id]
   const filtered = channels.filter((conversation) =>
-    filterConversation(conversation, membersById)
+    filterConversation(conversation, membersById, membersByName)
   )
 
   const groups = groupConversationsByType(filtered, {
@@ -84,7 +86,7 @@ const alphaSort = (a, b) => {
 const getUserName = (user) =>
   delve(user, 'profile.display_name_normalized') || delve(user, 'name')
 
-const filterConversation = (conversation, membersById) => {
+const filterConversation = (conversation, membersById, membersByName) => {
   // Remove anything that is archived or referencing a deleted user or
   // that the current user is not a member of. All these are explicit boolean
   // checks to protect against removing items where the keys are not present
@@ -104,7 +106,19 @@ const filterConversation = (conversation, membersById) => {
     const lastReadDays =
       (Date.now() - new Date(conversation.last_read.split('.')[0] * 1000)) /
       (1000 * 60 * 60 * 24)
-    return lastReadDays < 60
+    if (lastReadDays > 60) {
+      return false
+    }
+  }
+
+  // Remove multiparty messages where any users have been deleted
+  if (conversation.is_mpim) {
+    const deletedMpimMembers = getMpimMembers(conversation)
+      .map((name) => membersByName[name])
+      .filter((user) => user && user.deleted)
+    if (deletedMpimMembers.length) {
+      return false
+    }
   }
 
   // Remove direct messages that dont reference a current real person user
@@ -138,6 +152,14 @@ const groupConversationsByType = (items, checks) => {
   return grouped.filter(({ list }) => list.length)
 }
 
+const getMpimMembers = (conversation) =>
+  conversation.name_normalized
+    .toLowerCase()
+    .replace('mpdm-', '')
+    .replace(/-\d+$/, '')
+    .split('--')
+    .sort(alphaSort)
+
 const getDisplayName = (key, conversation, me) => {
   // Add a display name for each conversation based on type
   switch (key) {
@@ -147,12 +169,7 @@ const getDisplayName = (key, conversation, me) => {
     case 'im':
       return `@${getUserName(conversation.user).toLowerCase()}`
     case 'mpim':
-      return `@${conversation.name_normalized
-        .toLowerCase()
-        .replace('mpdm-', '')
-        .replace(/-\d+$/, '')
-        .split('--')
-        .sort(alphaSort)
+      return `@${getMpimMembers(conversation)
         .filter((name) => name !== getUserName(me))
         .join(' @')}`
     default:
