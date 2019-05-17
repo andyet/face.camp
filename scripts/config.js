@@ -6,7 +6,7 @@ import mergeHelpers, { env } from './config-helpers'
 // See output from `npm run build:sizes` for the size of all possible builds
 const USE_ES6 = env('USE_ES6', true)
 const USE_OBJ_ASSIGN = env('USE_OBJ_ASSIGN', true)
-const USE_ASYNC_ROUTES = env('USE_ASYNC_ROUTES', false)
+const USE_ASYNC_ROUTES = env('USE_ASYNC_ROUTES', true)
 const USE_MINIFY = env('USE_MINIFY', true)
 const USE_SW = env('USE_SW', true)
 const LEGACY_TOKEN = env('LEGACY_TOKEN', '')
@@ -36,8 +36,6 @@ export default (config, env, helpers) => {
     domain: new URL(env.pkg.homepage).host,
     logo: 'assets/icons/icon-no-padding.png',
     appleIcon: 'assets/icons/apple-touch-icon.png',
-    // This preloads the main bundles and prefetches the gif capture chunk
-    prefetch: env.production,
     preload: env.production,
     // Minify JS in the template since there's an inline onerror handler
     minify: USE_MINIFY ? { minifyJS: env.production } : false
