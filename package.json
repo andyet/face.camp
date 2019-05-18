@@ -4,12 +4,12 @@
   "version": "0.0.1",
   "author": "&yet",
   "browserslist": [
-    "chrome 66",
     "edge 16",
     "firefox 58",
-    "ios 11.3",
+    "chrome 66",
     "safari 12.1",
-    "opera 53"
+    "opera 53",
+    "ios 11.3"
   ],
   "dependencies": {
     "accessible-autocomplete": "github:lukekarrys/accessible-autocomplete#229/confirm-on-blur-undefined",

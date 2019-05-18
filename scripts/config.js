@@ -6,6 +6,7 @@ import mergeHelpers, { env } from './config-helpers'
 // See output from `npm run build:sizes` for the size of all possible builds
 const USE_ES6 = env('USE_ES6', true)
 const USE_OBJ_ASSIGN = env('USE_OBJ_ASSIGN', true)
+const USE_ASYNC_AWAIT = env('USE_ASYNC_AWAIT', true)
 const USE_ASYNC_ROUTES = env('USE_ASYNC_ROUTES', true)
 const USE_MINIFY = env('USE_MINIFY', true)
 const USE_SW = env('USE_SW', true)
@@ -71,7 +72,12 @@ export default (config, env, helpers) => {
       // for other plugins to use Object.assign instead of a custom inline helper
       '@babel/plugin-transform-object-assign': null,
       '@babel/plugin-proposal-object-rest-spread': { useBuiltIns: true },
-      '@babel/plugin-transform-react-jsx': { useBuiltIns: true },
+      '@babel/plugin-transform-react-jsx': { useBuiltIns: true }
+    })
+  }
+
+  if (USE_ASYNC_AWAIT) {
+    h.setBabelOptions('plugins', {
       // Remove fast-async because our browserslist all support native async/await
       'fast-async': null
     })
