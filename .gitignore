@@ -65,3 +65,7 @@ build/
 
 # MacOS hidden files
 .DS_Store
+
+# Key/cert for simplehttp2server
+cert.pem
+key.pem

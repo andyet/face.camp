@@ -24,6 +24,7 @@
     "@typescript-eslint/eslint-plugin": "^1.9.0",
     "@typescript-eslint/parser": "^1.9.0",
     "babel-eslint": "^10.0.1",
+    "create-file-webpack": "^1.0.2",
     "eslint": "^5.16.0",
     "eslint-config-prettier": "^4.3.0",
     "eslint-config-react-app": "^4.0.1",
@@ -43,7 +44,7 @@
     "preact-cli": "^3.0.0-rc.1",
     "preact-render-to-string": "^4.1.0",
     "prettier": "^1.17.1",
-    "serve": "^6.5.8"
+    "simplehttp2server": "^2.0.1"
   },
   "engines": {
     "node": "^8.0.0"
@@ -97,13 +98,13 @@
   },
   "private": true,
   "scripts": {
-    "build": "preact build --no-prerender --inline-css false --esm true --config scripts/config.js && cp now.json build/now.json",
+    "build": "preact build --no-prerender --inline-css false --esm true --config scripts/config.js",
     "build:size": "find build -type f -name '*.js' -exec printf '%s - ' {} \\; -exec gzip-size --raw {} \\; | sort",
     "build:sizes": "node scripts/build-sizes",
     "eslint": "eslint --fix .",
     "lint": "npm run prettier && npm run eslint",
     "prettier": "prettier --write '**/*.{js,md,css,json}'",
-    "serve": "serve build --port 8080 --clipless --treeless --single --ssl",
+    "serve": "simplehttp2server -config serve.json",
     "start": "preact watch --https --esm true --config scripts/config.js --port 8080",
     "test": "npm run build > /dev/null"
   }

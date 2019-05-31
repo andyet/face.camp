@@ -36,6 +36,9 @@ const moreHelpers = {
   removePlugin(config, plugin) {
     plugin && config.plugins.splice(plugin.index, 1)
   },
+  addPlugin(config, plugin) {
+    config.plugins.push(plugin)
+  },
   removeEntry(config, entry) {
     delete config.entry[entry]
   },
