@@ -4,6 +4,8 @@
 
 # [face.camp](https://face.camp)
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/andyet/face.camp.svg)](https://greenkeeper.io/)
+
 Facecamp lets you take an animated gif from desktop or mobile by connecting the app to Slack and then visiting [face.camp](https://face.camp) to post yourself to Slack for your teamies to see.
 
 ## Developing Locally
