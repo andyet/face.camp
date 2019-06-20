@@ -106,6 +106,6 @@
     "prettier": "prettier --write '**/*.{js,md,css,json}'",
     "serve": "simplehttp2server -config serve.json",
     "start": "preact watch --https --esm true --config scripts/config.js --port 8080",
-    "test": "npm run build > /dev/null"
+    "test": "npm run build >& /dev/null && if [ ! -f ./build/index.html ]; then echo 'Build failed'; exit 1; fi"
   }
 }
