@@ -30,4 +30,3 @@ pipeline:
     secrets: [slack_webhook, github_access_token, github_slack_lookup]
     when:
       status: [success, failure]
-branches: master
