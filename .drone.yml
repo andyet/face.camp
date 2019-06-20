@@ -4,8 +4,12 @@ pipeline:
     commands:
       - apk add --no-cache git
       - npm ci
+      - npm run lint
+      - npm test
       - NODE_ENV=production npm run build
       - npm run build:size
+    when:
+      event: [push, pull_request]
   now_prod:
     image: andyet/drone-now:latest
     pull: true
@@ -23,7 +27,7 @@ pipeline:
     username: drone
     pull: true
     channel: io-alerts
-    secrets: [ slack_webhook, github_access_token, github_slack_lookup ]
+    secrets: [slack_webhook, github_access_token, github_slack_lookup]
     when:
-      status: [ success, failure ]
+      status: [success, failure]
 branches: master
