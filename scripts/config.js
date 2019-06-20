@@ -112,5 +112,5 @@ export default (config, env, helpers) => {
   }
 
   // Turn this on to see all the relevant config items that have been changed
-  h.debug()
+  // h.debug()
 }
