@@ -17,7 +17,9 @@ pipeline:
     directory: build
     when:
       event: deployment
-    secrets: [ now_token ]
+    secrets:
+    - source: now_andyet_token
+      target: now_token
   slack:
     image: plugins/slack
     username: drone
