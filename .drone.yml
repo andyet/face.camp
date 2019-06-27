@@ -18,8 +18,8 @@ pipeline:
     when:
       event: deployment
     secrets:
-    - source: now_andyet_token
-      target: now_token
+      - source: now_andyet_token
+        target: now_token
   slack:
     image: plugins/slack
     username: drone
