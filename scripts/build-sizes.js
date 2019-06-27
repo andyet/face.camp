@@ -22,30 +22,56 @@ const buildAndSize = async (params) => {
 
   const files = lines
     .map((line) => line.replace('build/', '').split(' - '))
+    .filter(
+      ([name]) =>
+        !name.startsWith('precache-manifest') && !name.startsWith('sw')
+    )
     .map(([name, raw]) => ({
       name,
+      isJs:
+        !name.endsWith('.esm.js') &&
+        !!(
+          name.startsWith('route-') ||
+          name.startsWith('bundle.') ||
+          name.match(/^\d+\.chunk/)
+        ),
+      isEsm: name.endsWith('.esm.js'),
       size: pb(+raw),
       raw: +raw
     }))
 
-  const total = files.reduce((m, { raw }) => m + raw, 0)
+  const [js, esm, other] = files.reduce(
+    (acc, file) => {
+      acc[file.isJs ? 0 : file.isEsm ? 1 : 2].push(file)
+      return acc
+    },
+    [[], [], []]
+  )
+
+  const totalJs = js.reduce((m, { raw }) => m + raw, 0)
+  const totalEsm = esm.reduce((m, { raw }) => m + raw, 0)
+  const totalOther = other.reduce((m, { raw }) => m + raw, 0)
   return {
     params,
-    total: { raw: total, size: pb(total) },
+    totalJs: { raw: totalJs + totalOther, size: pb(totalJs + totalOther) },
+    totalEsm: { raw: totalEsm + totalOther, size: pb(totalEsm + totalOther) },
     files
   }
 }
 
-const main = async (...flags) => {
+const main = async (flags) => {
   const builds = combinations(flags).map((b) =>
     b.map((v, i) => `${flags[i]}=${v}`).join(' ')
   )
 
   const results = []
   for (const build of builds) results.push(await buildAndSize(build))
-  results.sort((a, b) => a.total.raw - b.total.raw)
+  results.sort((a, b) => a.totalJs.raw - b.totalJs.raw)
 
   process.stdout.write(JSON.stringify(results, null, 2))
 }
 
-main('USE_ES6', 'USE_OBJ_ASSIGN', 'USE_ASYNC_ROUTES')
+const argv = process.argv.slice(2)
+const defaultFlags = ['USE_ES6', 'USE_OBJ_ASSIGN', 'USE_ASYNC_AWAIT']
+
+main(argv.length ? argv : defaultFlags)

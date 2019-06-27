@@ -1,44 +1,50 @@
 {
   "name": "facecamp",
-  "description": "Facecamp connects to Slack to let you take animated gifs and post them for your teamies to see.",
+  "description": "Facecamp: chat your mug! Take animated gifs of your face and share with your fave Slack channel. Made by your friends at &yet.",
   "version": "0.0.1",
+  "author": "&yet",
   "browserslist": [
-    "chrome 63",
-    "edge 15",
+    "edge 16",
     "firefox 58",
-    "ios 11.2",
-    "safari 11",
-    "opera 50"
+    "chrome 66",
+    "safari 12.1",
+    "opera 53",
+    "ios 11.3"
   ],
   "dependencies": {
-    "abortcontroller-polyfill": "^1.2.1",
     "accessible-autocomplete": "github:lukekarrys/accessible-autocomplete#229/confirm-on-blur-undefined",
     "classnames": "^2.2.6",
+    "dlv": "^1.1.3",
     "gif.js": "^0.2.0",
     "preact": "^8.4.2",
     "preact-router": "^2.6.1",
-    "pretty-bytes": "^5.1.0"
+    "pretty-bytes": "^5.2.0"
   },
   "devDependencies": {
-    "babel-eslint": "^9.0.0",
-    "eslint": "^5.12.0",
-    "eslint-config-prettier": "^3.3.0",
-    "eslint-config-react-app": "^3.0.6",
-    "eslint-plugin-flowtype": "^2.50.3",
-    "eslint-plugin-import": "^2.14.0",
-    "eslint-plugin-jsx-a11y": "^6.1.2",
-    "eslint-plugin-prettier": "^3.0.1",
-    "eslint-plugin-react": "^7.12.3",
+    "@typescript-eslint/eslint-plugin": "^1.9.0",
+    "@typescript-eslint/parser": "^1.9.0",
+    "babel-eslint": "^10.0.1",
+    "create-file-webpack": "^1.0.2",
+    "eslint": "^5.16.0",
+    "eslint-config-prettier": "^5.0.0",
+    "eslint-config-react-app": "^4.0.1",
+    "eslint-plugin-flowtype": "^3.10.3",
+    "eslint-plugin-import": "^2.17.2",
+    "eslint-plugin-jsx-a11y": "^6.2.1",
+    "eslint-plugin-prettier": "^3.1.0",
+    "eslint-plugin-react": "^7.13.0",
+    "eslint-plugin-react-hooks": "^1.6.0",
     "gzip-size-cli": "^3.0.0",
-    "husky": "^1.3.1",
+    "husky": "^2.3.0",
     "if-env": "^1.0.4",
-    "lint-staged": "^8.1.0",
+    "lint-staged": "^8.1.7",
     "lodash": "^4.17.11",
-    "postcss-cssnext": "^3.1.0",
     "postcss-import": "^12.0.1",
-    "preact-cli": "^3.0.0-next.14",
-    "prettier": "^1.15.3",
-    "serve": "^6.5.8"
+    "postcss-preset-env": "^6.6.0",
+    "preact-cli": "^3.0.0-rc.2",
+    "preact-render-to-string": "^4.1.0",
+    "prettier": "^1.17.1",
+    "simplehttp2server": "^2.0.1"
   },
   "engines": {
     "node": "^8.0.0"
@@ -53,7 +59,8 @@
     ],
     "settings": {
       "react": {
-        "pragma": "h"
+        "pragma": "h",
+        "version": "999.999.999"
       }
     },
     "rules": {
@@ -68,12 +75,12 @@
   "homepage": "https://face.camp/",
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "lint-staged && npm test"
     }
   },
   "license": "MIT",
   "lint-staged": {
-    "*.{json,css,md}": [
+    "*.{json,css,md,html}": [
       "prettier --write",
       "git add"
     ],
@@ -91,14 +98,17 @@
   },
   "private": true,
   "scripts": {
-    "build": "preact build --no-prerender --inline-css false --config scripts/config.js",
+    "build": "preact build --no-prerender --inline-css false --esm true --config scripts/config.js",
     "build:size": "find build -type f -name '*.js' -exec printf '%s - ' {} \\; -exec gzip-size --raw {} \\; | sort",
     "build:sizes": "node scripts/build-sizes",
-    "dev": "preact watch --https --config scripts/config.js --port 8080",
     "eslint": "eslint --fix .",
+    "eslint:ci": "eslint .",
     "lint": "npm run prettier && npm run eslint",
+    "lint:ci": "npm run prettier:ci && npm run eslint:ci",
     "prettier": "prettier --write '**/*.{js,md,css,json}'",
-    "serve": "serve build --port 8080 --clipless --treeless --single --ssl",
-    "start": "if-env NODE_ENV=production && npm run -s serve || npm run -s dev"
+    "prettier:ci": "prettier --list-different '**/*.{js,md,css,json}'",
+    "serve": "simplehttp2server -config serve.json",
+    "start": "preact watch --https --esm true --config scripts/config.js --port 8080",
+    "test": "npm run build >& /dev/null && if [ ! -f ./build/index.html ]; then echo 'Build failed'; exit 1; fi"
   }
 }

@@ -4,10 +4,14 @@ pipeline:
     commands:
       - apk add --no-cache git
       - npm ci
+      - npm run lint:ci
+      - npm test
       - NODE_ENV=production npm run build
       - npm run build:size
+    when:
+      event: [push, pull_request]
   now_prod:
-    image: lucap/drone-now:latest
+    image: andyet/drone-now:latest
     pull: true
     deploy_name: face.camp
     type: static
@@ -21,10 +25,10 @@ pipeline:
       - source: now_andyet_token
         target: now_token
   slack:
-    image: plugins/slack
+    image: andyet/drone-slack:stable
     username: drone
+    pull: true
     channel: io-alerts
-    secrets: [ slack_webhook ]
+    secrets: [slack_webhook, github_access_token, github_slack_lookup]
     when:
-      status: [ success, failure ]
-branches: master
+      status: [success, failure]

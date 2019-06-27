@@ -10,14 +10,13 @@ const moreHelpers = {
   },
   setBabelOptions(config, type, getOptions) {
     const names = Object.keys(getOptions)
-    const fullKeys = names.map((name) => `@babel/${type.slice(0, -1)}-${name}`)
 
     this.getLoadersByName('babel-loader').forEach(
       (babel) =>
         (babel.rule.options[type] = babel.rule.options[type]
           .map((p) => {
             const [name, options] = typeof p === 'string' ? [p, {}] : p
-            const nameIndex = fullKeys.findIndex((key) => name.includes(key))
+            const nameIndex = names.findIndex((key) => name.includes(key))
 
             if (nameIndex > -1) {
               const newOptions = getOptions[names[nameIndex]]
@@ -37,6 +36,9 @@ const moreHelpers = {
   removePlugin(config, plugin) {
     plugin && config.plugins.splice(plugin.index, 1)
   },
+  addPlugin(config, plugin) {
+    config.plugins.push(plugin)
+  },
   removeEntry(config, entry) {
     delete config.entry[entry]
   },
@@ -44,13 +46,29 @@ const moreHelpers = {
     config.optimization.minimizer = []
   },
   removeServiceWorker(config) {
-    this.getPluginsByName('SWPrecacheWebpackPlugin').forEach((p) =>
-      this.removePlugin(p)
+    ;[
+      ...this.getPluginsByName('InjectManifest'),
+      ...this.getPluginsByName('SWBuilderPlugin')
+    ].forEach((p) => this.removePlugin(p))
+
+    this.setEnvDefinition('ADD_SW', false)
+  },
+  setEnvDefinition(config, key, value) {
+    const envKey = `process.env.${key}`
+    const plugins = this.getPluginsByName('DefinePlugin')
+
+    // Get all define plugins that have a definition for that key
+    const pluginsWithDefinition = plugins.filter(({ plugin }) =>
+      plugin.definitions.hasOwnProperty(envKey)
     )
-    this.getPluginsByName('DefinePlugin').forEach(({ plugin }) => {
-      if (plugin.definitions['process.env.ADD_SW']) {
-        plugin.definitions['process.env.ADD_SW'] = false
-      }
+
+    // If there are none found, then just alter the first plugin found
+    const alterPlugins = pluginsWithDefinition.length
+      ? pluginsWithDefinition
+      : plugins.slice(0, 1)
+
+    alterPlugins.forEach(({ plugin }) => {
+      plugin.definitions[envKey] = JSON.stringify(value)
     })
   },
   removeAsyncRoutes(config) {
@@ -128,4 +146,8 @@ export default (config, helpers) => {
 }
 
 export const env = (k, def) =>
-  k in process.env ? process.env[k] !== 'false' : def
+  k in process.env
+    ? def === true || def === false
+      ? process.env[k] !== 'false'
+      : process.env[k]
+    : def
