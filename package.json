@@ -37,7 +37,7 @@
     "gzip-size-cli": "^3.0.0",
     "husky": "^2.3.0",
     "if-env": "^1.0.4",
-    "lint-staged": "^8.1.7",
+    "lint-staged": "^9.2.1",
     "lodash": "^4.17.11",
     "postcss-import": "^12.0.1",
     "postcss-preset-env": "^6.6.0",
