@@ -59,7 +59,7 @@ const moreHelpers = {
 
     // Get all define plugins that have a definition for that key
     const pluginsWithDefinition = plugins.filter(({ plugin }) =>
-      plugin.definitions.hasOwnProperty(envKey)
+      Object.prototype.hasOwnProperty.call(plugin, envKey)
     )
 
     // If there are none found, then just alter the first plugin found
