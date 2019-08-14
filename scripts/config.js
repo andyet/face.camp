@@ -57,6 +57,7 @@ export default (config, env, helpers) => {
         stage: 3,
         features: {
           'nesting-rules': true,
+          'color-mod-function': true,
           'custom-media-queries': true
         }
       })

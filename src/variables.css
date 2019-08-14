@@ -2,9 +2,9 @@
   --background-color: #fff;
   --text-color: #000;
   --pink: #e90090;
-  --pink-light: color(var(--pink) alpha(8%));
+  --pink-light: color-mod(var(--pink) alpha(8%));
   --blue: #12abee;
-  --blue-light: color(var(--blue) alpha(8%));
+  --blue-light: color-mod(var(--blue) alpha(8%));
   --gray: #ccc;
   --max-width: 550px;
   --padding: 20px;

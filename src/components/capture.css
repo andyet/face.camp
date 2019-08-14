@@ -42,7 +42,7 @@
 }
 
 .captureProgress {
-  background: color(var(--pink) alpha(65%));
+  background: color-mod(var(--pink) alpha(65%));
   height: 10px;
   position: absolute;
   bottom: 0;
