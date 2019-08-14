@@ -57,6 +57,8 @@ export default (config, env, helpers) => {
         stage: 3,
         features: {
           'nesting-rules': true,
+          // TODO: remove this and use something else besides color-mod
+          // https://github.com/jonathantneal/postcss-color-mod-function
           'color-mod-function': true,
           'custom-media-queries': true
         }
