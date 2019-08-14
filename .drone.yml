@@ -9,7 +9,7 @@ pipeline:
       - NODE_ENV=production npm run build
       - npm run build:size
     when:
-      event: [push, pull_request]
+      event: [push, pull_request, deployment]
   now_prod:
     image: andyet/drone-now:latest
     pull: true
