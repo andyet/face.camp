@@ -44,7 +44,7 @@
     "preact-cli": "^3.0.0-rc.2",
     "preact-render-to-string": "^4.1.0",
     "prettier": "^1.18.2",
-    "simplehttp2server": "^2.0.1"
+    "simplehttp2server": "^3.0.0"
   },
   "engines": {
     "node": "^8.0.0"
