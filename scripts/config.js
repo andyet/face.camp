@@ -1,6 +1,5 @@
 import cssPresetEnv from 'postcss-preset-env'
 import cssimport from 'postcss-import'
-import { pick } from 'lodash'
 import { URL } from 'url'
 import mergeHelpers, { env } from './config-helpers'
 

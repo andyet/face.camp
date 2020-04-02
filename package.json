@@ -114,7 +114,8 @@
     "prettier": "prettier --write '**/*.{js,md,css,json}'",
     "prettier:ci": "prettier --list-different '**/*.{js,md,css,json}'",
     "start": "preact watch --https --esm true --config scripts/config.js --port 8080",
-    "test": "npm run build >& /dev/null && if [ ! -f ./build/index.html ]; then echo 'Build failed'; exit 1; fi",
-    "test:functions": "NODE_ENV=test  npm run ava"
+    "test:site": "npm run build >& /dev/null && if [ ! -f ./build/index.html ]; then echo 'Build failed'; exit 1; fi",
+    "test:functions": "NODE_ENV=test  npm run ava",
+    "test": "npm run test:site && echo 'TODO: test:functions'"
   }
 }
