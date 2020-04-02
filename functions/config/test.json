@@ -1,0 +1,6 @@
+{
+  "authHost": "https://authhost.test",
+  "appUrl": "https://appurl.test",
+  "clientId": "1",
+  "clientSecret": "2"
+}

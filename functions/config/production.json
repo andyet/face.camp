@@ -1,0 +1,6 @@
+{
+  "authHost": "https://auth.face.camp",
+  "appUrl": "https://face.camp",
+  "clientId": "$CLIENT_ID",
+  "clientSecret": "$CLIENT_SECRET"
+}

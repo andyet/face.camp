@@ -1,6 +1,5 @@
 import cssPresetEnv from 'postcss-preset-env'
 import cssimport from 'postcss-import'
-import CreateFile from 'create-file-webpack'
 import { pick } from 'lodash'
 import { URL } from 'url'
 import mergeHelpers, { env } from './config-helpers'
@@ -97,22 +96,6 @@ export default (config, env, helpers) => {
   // to test locally to disable minification and/or service workers
   if (!USE_MINIFY) h.removeMinimizers()
   if (!USE_SW || !env.production) h.removeServiceWorker()
-
-  // In production mode create a now.json file so the CI server can deploy it properly
-  // Parts of the now config are taken from the serve.json file which is used to
-  // configure the simplehttp2server for local production build testing
-  if (env.production) {
-    h.addPlugin(
-      new CreateFile({
-        path: './build',
-        fileName: 'now.json',
-        content: JSON.stringify({
-          version: 1,
-          static: pick(require('../serve.json'), 'rewrites')
-        })
-      })
-    )
-  }
 
   // Turn this on to see all the relevant config items that have been changed
   // h.debug()

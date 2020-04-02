@@ -4,8 +4,6 @@
 
 # [face.camp](https://face.camp)
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/andyet/face.camp.svg)](https://greenkeeper.io/)
-
 Facecamp lets you take an animated gif from desktop or mobile by connecting the app to Slack and then visiting [face.camp](https://face.camp) to post yourself to Slack for your teamies to see.
 
 ## Developing Locally
@@ -24,7 +22,7 @@ LEGACY_TOKEN=<TOKEN> npm start
 
 ### Using a Slack app
 
-If you'd like to use your own Slack app to run this project, that's possible too. [Go to your Slack app's page](https://api.slack.com/apps) to get or create your app. Then use the configuration values for that app to setup and run [the authentication server](https://github.com/andyet/auth.face.camp).
+If you'd like to use your own Slack app to run this project, that's possible too. [Go to your Slack app's page](https://api.slack.com/apps) to get or create your app. Then use the configuration values for that app to setup and run [the authentication server](./functions).
 
 ## Building for Production
 
