@@ -62,6 +62,7 @@ typings/
 
 # preact cli build output
 build/
+functions-build/
 
 # MacOS hidden files
 .DS_Store
