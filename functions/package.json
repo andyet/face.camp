@@ -1,0 +1,28 @@
+{
+  "name": "facecamp-auth",
+  "description": "Facecamp Auth Server",
+  "version": "1.0.0",
+  "dependencies": {
+    "getconfig": "^4.5.0",
+    "qs": "^6.7.0",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.4"
+  },
+  "devDependencies": {
+    "ava": "^2.1.0",
+    "nock": "^10.0.6",
+    "test-listen": "^1.1.0"
+  },
+  "engines": {
+    "node": "^8.0.0"
+  },
+  "keywords": [],
+  "license": "ISC",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "ava": "NODE_ENV=test ava",
+    "test_fixme": "npm run ava",
+    "test": "exit 0"
+  }
+}
