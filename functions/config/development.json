@@ -1,0 +1,6 @@
+{
+  "authHost": "http://localhost:3000",
+  "appUrl": "https://localhost:8080",
+  "clientId": "$$CLIENT_ID",
+  "clientSecret": "$$CLIENT_SECRET"
+}
