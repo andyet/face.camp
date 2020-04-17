@@ -101,7 +101,7 @@ const readTeams = () => {
 
 const authUrl =
   process.env.NODE_ENV === 'production'
-    ? 'https://auth.face.camp'
+    ? `https://${window.location.hostname}/_api/auth`
     : `http://${window.location.hostname}:3000`
 
 export { authUrl as url }
