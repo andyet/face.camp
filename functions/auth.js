@@ -1,9 +1,9 @@
 const qs = require('qs')
-const config = require('getconfig')
+const config = require('./config')
 
-const { clientId, clientSecret, authHost } = config
+const { clientId, authHost } = config
 
-exports.handler = async (event, context) => {
+exports.handler = async (event) => {
   // App can always post files
   const scope = ['files:write:user']
 
@@ -27,7 +27,6 @@ exports.handler = async (event, context) => {
 
   const redirectUrl = `https://slack.com/oauth/authorize?${qs.stringify({
     client_id: clientId,
-    client_secret: clientSecret,
     redirect_uri: authHost + '/token',
     scope: scope.join(' ')
   })}`

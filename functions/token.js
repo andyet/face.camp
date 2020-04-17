@@ -1,9 +1,9 @@
 const rp = require('request-promise')
-const config = require('getconfig')
+const config = require('./config')
 
-const { clientId, clientSecret, authHost, appUrl, getconfig } = config
+const { clientId, clientSecret, authHost, appUrl } = config
 
-exports.handler = async (event, context) => {
+exports.handler = async (event) => {
   const { error, code } = event.queryStringParameters
 
   if (error) {
@@ -35,7 +35,7 @@ exports.handler = async (event, context) => {
         // This makes it easier to test that we are redirecting with the proper
         // information since we cant access the url hash from the request. This
         // is a good thing as far as the app is concerned, but makes it impossible to test/
-        getconfig.env === 'test' ? '?query=' : '#'
+        process.env.NODE_ENV === 'test' ? '?query=' : '#'
       }${encodeURIComponent(JSON.stringify(access))}`
     }
   }
