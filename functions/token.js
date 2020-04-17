@@ -29,7 +29,7 @@ exports.handler = async (event) => {
   }
 
   return {
-    statuCode: 302,
+    statusCode: 302,
     headers: {
       Location: `${appUrl}${
         // This makes it easier to test that we are redirecting with the proper
