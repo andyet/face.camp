@@ -51,7 +51,7 @@ const moreHelpers = {
       ...this.getPluginsByName('SWBuilderPlugin')
     ].forEach((p) => this.removePlugin(p))
 
-    this.setEnvDefinition('ADD_SW', false)
+    this.setEnvDefinition('ADD_SW', JSON.stringify(false))
   },
   setEnvDefinition(config, key, value) {
     const envKey = `process.env.${key}`
@@ -68,7 +68,7 @@ const moreHelpers = {
       : plugins.slice(0, 1)
 
     alterPlugins.forEach(({ plugin }) => {
-      plugin.definitions[envKey] = JSON.stringify(value)
+      plugin.definitions[envKey] = value
     })
   },
   removeAsyncRoutes(config) {

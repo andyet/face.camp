@@ -40,11 +40,13 @@
     "lint-staged": "^9.2.1",
     "lodash": "^4.17.15",
     "netlify-lambda": "^1.6.3",
+    "patch-package": "^6.2.2",
     "postcss-import": "^12.0.1",
     "postcss-preset-env": "^6.7.0",
     "preact-cli": "^3.0.0-rc.2",
     "preact-render-to-string": "^4.1.0",
-    "prettier": "^1.18.2"
+    "prettier": "^1.18.2",
+    "serve": "^11.3.0"
   },
   "engines": {
     "node": "^8.0.0"
@@ -98,15 +100,18 @@
   },
   "private": true,
   "scripts": {
-    "build": "preact build --no-prerender --inline-css false --esm true --config scripts/config.js",
+    "build": "npm run build:functions && npm run build:client",
+    "build:client": "preact build --no-prerender --inline-css false --esm true --config scripts/config.js",
+    "build:functions": "netlify-lambda build functions",
     "build:size": "find build -type f -name '*.js' -exec printf '%s - ' {} \\; -exec gzip-size --raw {} \\; | sort",
     "build:sizes": "node scripts/build-sizes",
     "eslint": "eslint --fix .",
     "eslint:ci": "eslint .",
     "lint": "npm run prettier && npm run eslint",
     "lint:ci": "npm run prettier:ci && npm run eslint:ci",
-    "postinstall": "netlify-lambda install functions",
-    "prebuild": "npm run postinstall && netlify-lambda build functions",
+    "postinstall": "patch-package && netlify-lambda install functions",
+    "prebuild": "npm run postinstall",
+    "prebuild//": "Mirror postinstall to prebuild for now since netlify doesnt run postinstall when installing from cache https://github.com/netlify/netlify-lambda/issues/227",
     "prettier": "prettier --write '**/*.{js,md,css,json}'",
     "prettier:ci": "prettier --list-different '**/*.{js,md,css,json}'",
     "start": "preact watch --host localhost --esm true --config scripts/config.js --port 8080",
