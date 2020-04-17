@@ -24,6 +24,10 @@ export default (config, env, helpers) => {
     }
   }
 
+  // This env var is only added via a patch-package patch but is required otherwise
+  // the service worker prevents routing to our _api routes
+  h.setEnvDefinition('SW_PATH_BLACKLIST', /\/_api\//)
+
   // Set the supported browsers based on a flag. By default the browserslist in
   // package.json is set to recent versions of major browsers that also support
   // navigator.mediaDevices and abort controller. Last updated 2019-05-09
@@ -32,7 +36,10 @@ export default (config, env, helpers) => {
   // which will catch any syntax errors.
   const browsers = USE_ES6 ? env.pkg.browserslist : ['> 0.25%', 'IE >= 9']
 
-  h.setEnvDefinition('LEGACY_TOKEN', env.production ? '' : LEGACY_TOKEN)
+  h.setEnvDefinition(
+    'LEGACY_TOKEN',
+    JSON.stringify(env.production ? '' : LEGACY_TOKEN)
+  )
 
   // Change html plugin to use our own template from the root of the project
   h.setHtmlTemplate('scripts/template.html')

@@ -1,0 +1,13 @@
+diff --git a/node_modules/preact-cli/lib/lib/sw.js b/node_modules/preact-cli/lib/lib/sw.js
+index 79d278c..6e48104 100644
+--- a/node_modules/preact-cli/lib/lib/sw.js
++++ b/node_modules/preact-cli/lib/lib/sw.js
+@@ -42,5 +42,7 @@ if (process.env.ENABLE_BROTLI) {
+ 
+ workbox.precaching.precacheAndRoute(self.__precacheManifest, precacheOptions);
+ workbox.routing.registerNavigationRoute(
+-	workbox.precaching.getCacheKeyForURL('/index.html')
++	workbox.precaching.getCacheKeyForURL('/index.html'), {
++		blacklist: process.env.SW_PATH_BLACKLIST ? [process.env.SW_PATH_BLACKLIST] : []
++	}
+ );
