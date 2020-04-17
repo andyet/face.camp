@@ -43,6 +43,7 @@ export default class AuthButton extends Component {
             [styles.disabled]: !this.getHref()
           })}
           href={this.getHref()}
+          native
         >
           Login with Slack
         </a>

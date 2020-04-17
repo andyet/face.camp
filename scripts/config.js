@@ -15,6 +15,15 @@ const LEGACY_TOKEN = env('LEGACY_TOKEN', '')
 export default (config, env, helpers) => {
   const h = mergeHelpers(config, helpers)
 
+  if (config.devServer) {
+    config.devServer.proxy = {
+      '/_api': {
+        target: 'http://localhost:9000',
+        pathRewrite: { '^/_api': '' }
+      }
+    }
+  }
+
   // Set the supported browsers based on a flag. By default the browserslist in
   // package.json is set to recent versions of major browsers that also support
   // navigator.mediaDevices and abort controller. Last updated 2019-05-09

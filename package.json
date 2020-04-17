@@ -109,7 +109,8 @@
     "prebuild": "npm run postinstall && netlify-lambda build functions",
     "prettier": "prettier --write '**/*.{js,md,css,json}'",
     "prettier:ci": "prettier --list-different '**/*.{js,md,css,json}'",
-    "start": "preact watch --https --esm true --config scripts/config.js --port 8080",
+    "start": "preact watch --host localhost --esm true --config scripts/config.js --port 8080",
+    "start:functions": "netlify-lambda serve functions",
     "test": "echo 'FIX_ME' && exit 0",
     "test:site": "npm run build >& /dev/null && if [ ! -f ./build/index.html ]; then echo 'Build failed'; exit 1; fi"
   }
