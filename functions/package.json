@@ -17,7 +17,6 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "ava": "NODE_ENV=test ava",
-    "test": "echo 'FIX_ME' && exit 0"
+    "test": "NODE_ENV=test ava"
   }
 }
