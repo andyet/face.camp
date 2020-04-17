@@ -106,7 +106,7 @@
     "lint": "npm run prettier && npm run eslint",
     "lint:ci": "npm run prettier:ci && npm run eslint:ci",
     "postinstall": "netlify-lambda install functions",
-    "prebuild": "netlify-lambda build functions",
+    "prebuild": "npm run postinstall && netlify-lambda build functions",
     "prettier": "prettier --write '**/*.{js,md,css,json}'",
     "prettier:ci": "prettier --list-different '**/*.{js,md,css,json}'",
     "start": "preact watch --https --esm true --config scripts/config.js --port 8080",

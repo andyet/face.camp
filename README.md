@@ -22,7 +22,7 @@ LEGACY_TOKEN=<TOKEN> npm start
 
 ### Using a Slack app
 
-If you'd like to use your own Slack app to run this project, that's possible too. [Go to your Slack app's page](https://api.slack.com/apps) to get or create your app. Then use the configuration values for that app to setup and run [the authentication server](./functions).
+If you'd like to use your own Slack app to run this project, that's possible too. [Go to your Slack app's page](https://api.slack.com/apps) to get or create your app. Then use the configuration values for that app to setup and run [the authentication lambda functions](./functions).
 
 ## Building for Production
 

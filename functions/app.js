@@ -1,4 +1,4 @@
-const config = require('getconfig')
+const config = require('./config')
 
 const { appUrl } = config
 
