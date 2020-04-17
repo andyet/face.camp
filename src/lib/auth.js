@@ -99,7 +99,7 @@ const readTeams = () => {
   }
 }
 
-const authUrl = `${window.location.origin}/_api/auth`
+const authUrl = `https://auth.face.camp`
 
 export { authUrl as url }
 export { readTeams as read }
