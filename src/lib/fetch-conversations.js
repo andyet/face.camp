@@ -98,15 +98,15 @@ const filterConversation = (conversation, membersById, membersByName) => {
     return false
   }
 
-  // Remove anything that has a last_read property and hasnt been read
+  // Remove anything that has a latest property and hasnt been read
   // in a certain number of days. Hopefully removes some items from large lists
   // and makes it less likely that you'll revive an old MP DM with a bunch of
   // coworkers with a gif of you making a weird face
-  if (conversation.last_read) {
+  if (conversation.latest) {
     const lastReadDays =
-      (Date.now() - new Date(conversation.last_read.split('.')[0] * 1000)) /
+      (Date.now() - new Date(conversation.latest.split('.')[0] * 1000)) /
       (1000 * 60 * 60 * 24)
-    if (lastReadDays > 60) {
+    if (lastReadDays > 365) {
       return false
     }
   }
