@@ -44,14 +44,21 @@ export default async (
     filterConversation(conversation, membersById, membersByName)
   )
 
+  // https://api.slack.com/types/conversation#the_conversational_booleans
   const groups = groupConversationsByType(filtered, {
-    public: ({ is_channel }) => is_channel,
-    private: ({ is_group, is_mpim }) => is_group && !is_mpim,
+    public: ({ is_channel, is_private }) => is_channel && !is_private,
+    // I've seen channels that should be is_group (indicating a private channel)
+    // but are not so private channels are grouped by is_private and not any sort of DM
+    private: ({ is_private, is_mpim, is_im }) =>
+      is_private && !is_im && !is_mpim,
     im: ({ is_im }) => is_im,
     mpim: ({ is_mpim }) => is_mpim
   })
 
-  const all = []
+  const sortedConversations = {
+    channels: [],
+    dms: []
+  }
 
   groups.forEach(({ list, name }) => {
     // Add a display name for each conversation
@@ -59,16 +66,20 @@ export default async (
       conversation.display_name = getDisplayName(name, conversation, me)
     })
 
-    // Sort each type of conversation individually
-    list.sort(conversationSort)
-
-    // Create an array of all conversations
-    all.push(...list)
+    if (name === 'public' || name === 'private') {
+      sortedConversations.channels.push(...list)
+    } else {
+      sortedConversations.dms.push(...list)
+    }
   })
+
+  // Channels at the top and dms at the bottom, each sorted by alpha
+  sortedConversations.channels.sort(conversationSort)
+  sortedConversations.dms.sort(conversationSort)
 
   return {
     groups,
-    all
+    all: [...sortedConversations.channels, ...sortedConversations.dms]
   }
 }
 

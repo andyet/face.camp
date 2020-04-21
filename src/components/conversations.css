@@ -74,6 +74,27 @@
   }
 }
 
+.conversation {
+  padding-left: 20px;
+}
+
+.conversationLock {
+  background: red;
+}
+
+.conversationIm {
+  background: blue;
+}
+
+.conversationMpim {
+  background: green;
+}
+
+.conversationMpimCount {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
 .autocomplete {
   width: 100%;
   height: 100%;
