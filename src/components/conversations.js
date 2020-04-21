@@ -168,7 +168,7 @@ const Select = ({ onChange, groups, selected }) => (
 export default ({ onChange, selected, fetching, error, conversations }) => {
   const hasConversations = conversations && conversations.all.length
   const noSelect = error || fetching || !hasConversations
-  const autocomplete = hasConversations && conversations.all.length > 100
+  const autocomplete = hasConversations && conversations.all.length > 20
   const select = hasConversations && !autocomplete
 
   return (
