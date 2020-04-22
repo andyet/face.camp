@@ -176,13 +176,13 @@ const getDisplayName = (key, conversation, me) => {
   switch (key) {
     case 'public':
     case 'private':
-      return `#${conversation.name_normalized.toLowerCase()}`
+      return `${conversation.name_normalized.toLowerCase()}`
     case 'im':
-      return `@${getUserName(conversation.user).toLowerCase()}`
+      return `${getUserName(conversation.user).toLowerCase()}`
     case 'mpim':
-      return `@${getMpimMembers(conversation)
+      return `${getMpimMembers(conversation)
         .filter((name) => name !== getUserName(me))
-        .join(' @')}`
+        .join(' ')}`
     default:
       return ''
   }
