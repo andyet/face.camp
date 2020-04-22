@@ -2,6 +2,7 @@ import cssPresetEnv from 'postcss-preset-env'
 import cssimport from 'postcss-import'
 import { URL } from 'url'
 import mergeHelpers, { env } from './config-helpers'
+import { apiPath } from '../functions/config'
 
 // See output from `npm run build:sizes` for the size of all possible builds
 const USE_ES6 = env('USE_ES6', true)
@@ -17,16 +18,16 @@ export default (config, env, helpers) => {
 
   if (config.devServer) {
     config.devServer.proxy = {
-      '/_api': {
+      [apiPath]: {
         target: 'http://localhost:9000',
-        pathRewrite: { '^/_api': '' }
+        pathRewrite: { [`^${apiPath}`]: '' }
       }
     }
   }
 
   // This env var is only added via a patch-package patch but is required otherwise
-  // the service worker prevents routing to our _api routes
-  h.setEnvDefinition('SW_PATH_BLACKLIST', /\/_api\//)
+  // the service worker prevents routing to our api routes
+  h.setEnvDefinition('SW_PATH_BLACKLIST', new RegExp(`${apiPath}/`))
 
   // Set the supported browsers based on a flag. By default the browserslist in
   // package.json is set to recent versions of major browsers that also support

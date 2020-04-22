@@ -1,12 +1,14 @@
+const netlifyUrl = require('./config/netlifyUrl')
 const config = require('./config')
 
-const { appUrl } = config
+const { appPath } = config
 
-exports.handler = async () => {
+exports.handler = async (event, context) => {
+  const siteUrl = netlifyUrl(context)
   return {
     statusCode: 302,
     headers: {
-      Location: appUrl
+      Location: `${siteUrl}${appPath}`
     }
   }
 }

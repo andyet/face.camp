@@ -1,10 +1,12 @@
 const rp = require('request-promise')
 const config = require('./config')
+const netlifyUrl = require('./config/netlifyUrl')
 
-const { clientId, clientSecret, authHost, appUrl } = config
+const { clientId, clientSecret, apiPath, appPath } = config
 
-exports.handler = async (event) => {
+exports.handler = async (event, context) => {
   const { error, code } = event.queryStringParameters
+  const siteUrl = netlifyUrl(context)
 
   if (error) {
     return { statusCode: 403, body: 'Error' }
@@ -17,7 +19,7 @@ exports.handler = async (event) => {
       code,
       client_id: clientId,
       client_secret: clientSecret,
-      redirect_uri: authHost + '/token'
+      redirect_uri: `${siteUrl}${apiPath}/token`
     }
   })
 
@@ -31,7 +33,7 @@ exports.handler = async (event) => {
   return {
     statusCode: 302,
     headers: {
-      Location: `${appUrl}${
+      Location: `${siteUrl}${appPath}${
         // This makes it easier to test that we are redirecting with the proper
         // information since we cant access the url hash from the request. This
         // is a good thing as far as the app is concerned, but makes it impossible to test/
