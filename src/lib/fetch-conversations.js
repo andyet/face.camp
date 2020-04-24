@@ -55,10 +55,8 @@ export default async (
     mpim: ({ is_mpim }) => is_mpim
   })
 
-  const sortedConversations = {
-    channels: [],
-    dms: []
-  }
+  const sortedChannels = { name: 'channels', list: [] }
+  const sortedPeople = { name: 'people', list: [] }
 
   groups.forEach(({ list, name }) => {
     // Add a display name for each conversation
@@ -66,20 +64,21 @@ export default async (
       conversation.display_name = getDisplayName(name, conversation, me)
     })
 
+    // Group channel-like things and people like things
     if (name === 'public' || name === 'private') {
-      sortedConversations.channels.push(...list)
+      sortedChannels.list.push(...list)
     } else {
-      sortedConversations.dms.push(...list)
+      sortedPeople.list.push(...list)
     }
   })
 
-  // Channels at the top and dms at the bottom, each sorted by alpha
-  sortedConversations.channels.sort(conversationSort)
-  sortedConversations.dms.sort(conversationSort)
+  // Resort channels and people so private/public channels and multi/individual DMS are mixed
+  sortedChannels.list.sort(conversationSort)
+  sortedPeople.list.sort(conversationSort)
 
   return {
-    groups,
-    all: [...sortedConversations.channels, ...sortedConversations.dms]
+    groups: [sortedChannels, sortedPeople].filter(({ list }) => list.length),
+    all: [...sortedChannels.list, ...sortedPeople.list]
   }
 }
 
@@ -182,7 +181,7 @@ const getDisplayName = (key, conversation, me) => {
     case 'mpim':
       return `${getMpimMembers(conversation)
         .filter((name) => name !== getUserName(me))
-        .join(' ')}`
+        .join(', ')}`
     default:
       return ''
   }

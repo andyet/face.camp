@@ -46,12 +46,22 @@
   }
 
   &.slackBackground {
-    background: url('../images/logo-slack.svg') no-repeat 15px 7px;
+    background-repeat: no-repeat;
+    background-image: url('../images/logo-slack.svg');
     background-size: 24px auto;
+    background-position: 15px 7px;
 
     @media (--small-height) {
       background-size: 16px auto;
     }
+  }
+
+  &.hasSelect.slackBackground {
+    background-repeat: no-repeat;
+    background-image: url('../images/logo-slack.svg'),
+      url('../images/caret.svg');
+    background-size: 24px auto, 22px 12px;
+    background-position: 15px 7px, 97% 55%;
   }
 
   &.error,
@@ -75,24 +85,18 @@
 }
 
 .conversation {
-  padding-left: 20px;
+  display: flex;
 }
 
-.conversationLock {
-  background: red;
-}
-
-.conversationIm {
-  background: blue;
-}
-
-.conversationMpim {
-  background: green;
-}
-
-.conversationMpimCount {
-  font-weight: bold;
-  margin-right: 10px;
+.conversationIcon {
+  display: flex;
+  width: var(--logo-width);
+  justify-content: flex-end;
+  align-items: center;
+  padding-right: 3px;
+  @media (--small-height) {
+    width: var(--logo-width-small);
+  }
 }
 
 .autocomplete {
@@ -160,11 +164,7 @@
       border-color: var(--blue);
       border-width: 1px 0;
       line-height: 1.25 !important;
-      padding-left: var(--logo-width);
-
-      @media (--small-height) {
-        padding-left: var(--logo-width-small);
-      }
+      padding-left: 0;
     }
 
     & .autocomplete__option:last-of-type {
@@ -180,6 +180,9 @@
       background-color: var(--blue);
       border-color: var(--blue);
       color: var(--background-color);
+      & svg > * {
+        stroke: var(--background-color);
+      }
     }
 
     & .autocomplete__option--no-results {

@@ -1,6 +1,7 @@
 const qs = require('qs')
-const config = require('./config')
-const netlifyUrl = require('./config/netlifyUrl')
+const config = require('./lib/config')
+const netlifyUrl = require('./lib/netlifyUrl')
+const redirect = require('./lib/redirect')
 
 const { clientId, apiPath } = config
 
@@ -26,7 +27,7 @@ exports.handler = async (event, context) => {
     scope.push('channels:read')
   }
 
-  const siteUrl = netlifyUrl(context)
+  const siteUrl = netlifyUrl(event, context)
 
   const redirectUrl = `https://slack.com/oauth/authorize?${qs.stringify({
     client_id: clientId,
@@ -34,10 +35,5 @@ exports.handler = async (event, context) => {
     scope: scope.join(' ')
   })}`
 
-  return {
-    statusCode: 302,
-    headers: {
-      Location: redirectUrl
-    }
-  }
+  return redirect(redirectUrl)
 }

@@ -14,9 +14,17 @@ export default class Container extends Component {
   }
 
   componentDidMount() {
-    window.addEventListener('hashchange', () => {
-      this.setState({ teams: auth.read() })
-    })
+    window.addEventListener('hashchange', this.setTeamsFromAuth)
+    window.addEventListener('storage', this.setTeamsFromAuth)
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('hashchange', this.setTeamsFromAuth)
+    window.removeEventListener('storage', this.setTeamsFromAuth)
+  }
+
+  setTeamsFromAuth = () => {
+    this.setState({ teams: auth.read() })
   }
 
   getSelectedTeam = () => {

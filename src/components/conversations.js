@@ -1,20 +1,26 @@
-/* eslint-disable jsx-a11y/no-onchange */
-
+/* eslint-disable import/no-webpack-loader-syntax, import/no-unresolved */
+import personIcon from '!raw-loader!../images/person.svg'
+import hashIcon from '!raw-loader!../images/hash.svg'
+import lockIcon from '!raw-loader!../images/lock.svg'
+import multiIcon from '!raw-loader!../images/multi.svg'
+/* eslint-enable import/no-webpack-loader-syntax, import/no-unresolved */
 import 'accessible-autocomplete/dist/accessible-autocomplete.min.css'
 import { h, Component } from 'preact'
 import cx from 'classnames'
 import AccessibleAutocomplete from 'accessible-autocomplete/preact'
 import styles from './conversations.css'
 
+const USE_AUTOCOMPLETE_ON_CONVERSATION_LENGTH_OVER = 100
+
 const conversationTypes = {
-  LOCK: 'lock',
+  PRIVATE: 'private',
   IM: 'im',
   MPIM: 'mpim',
   CHANNEL: 'channel'
 }
 
 const conversationType = (c) => {
-  if (c.is_channel && c.is_private) return conversationTypes.LOCK
+  if (c.is_channel && c.is_private) return conversationTypes.PRIVATE
   if (c.is_im) return conversationTypes.IM
   if (c.is_mpim) return conversationTypes.MPIM
   return conversationTypes.CHANNEL
@@ -23,38 +29,51 @@ const conversationType = (c) => {
 const conversationName = (c) => (c && c.display_name) || ''
 const conversationCount = (c) =>
   conversationType(c) === conversationTypes.MPIM
-    ? (conversationName(c).match(/@/g) || []).length
+    ? (conversationName(c).match(/\s/g) || []).length + 1
     : 0
 
 const conversationDisplay = (conversation) => {
   if (!conversation) return ''
 
   const type = conversationType(conversation)
-  const className = {
-    [conversationTypes.LOCK]: styles.conversationLock,
-    [conversationTypes.IM]: styles.conversationIm,
-    [conversationTypes.MPIM]: styles.conversationMpim
-  }[type]
   const count = conversationCount(conversation)
-  const prefix = count
-    ? `<span class="${styles.conversationMpimCount}">${count}</span>`
-    : ''
+  const name = conversationName(conversation) + (count ? ` (${count})` : '')
+  const { className, icon } = {
+    [conversationTypes.CHANNEL]: {
+      className: styles.conversationChannel,
+      icon: hashIcon
+    },
+    [conversationTypes.PRIVATE]: {
+      className: styles.conversationPrivate,
+      icon: lockIcon
+    },
+    [conversationTypes.IM]: {
+      className: styles.conversationIm,
+      icon: personIcon
+    },
+    [conversationTypes.MPIM]: {
+      className: styles.conversationMpim,
+      icon: multiIcon
+    }
+  }[type]
 
-  return `<span class="${cx(
-    styles.conversation,
-    className
-  )}">${prefix}${conversationName(conversation)}</span>`
+  return `<span class="${cx(styles.conversation, className)}">
+    <span class="${cx(styles.conversationIcon)}">${icon}</span>
+    <span class="${cx(styles.conversationName)}">${name}</span>
+  </span>`
 }
 
 const conversationPlainText = (conversation) => {
   if (!conversation) return ''
-  const label = {
-    [conversationTypes.LOCK]: '🔒',
-    [conversationTypes.IM]: '👤',
-    [conversationTypes.MPIM]: `(${conversationCount(conversation)})`
-  }[conversationType(conversation)]
+  const label =
+    {
+      [conversationTypes.CHANNEL]: '#',
+      [conversationTypes.PRIVATE]: '🔒 ',
+      [conversationTypes.IM]: '👤 ',
+      [conversationTypes.MPIM]: `👥 (${conversationCount(conversation)}) `
+    }[conversationType(conversation)] || ''
 
-  return `${label ? `${label} ` : ''}${conversationName(conversation)}`
+  return `${label}${conversationName(conversation)}`
 }
 
 const Option = ({ conversation, selected }) => (
@@ -71,10 +90,8 @@ const Optgroup = ({ conversations, name, ...props }) => (
   <optgroup
     label={
       {
-        public: 'Public Channels',
-        private: 'Private Channels',
-        im: 'Direct Messages',
-        mpim: 'Multiparty Direct Messages'
+        channels: 'Channels',
+        people: 'Direct Messages'
       }[name]
     }
   >
@@ -168,7 +185,9 @@ const Select = ({ onChange, groups, selected }) => (
 export default ({ onChange, selected, fetching, error, conversations }) => {
   const hasConversations = conversations && conversations.all.length
   const noSelect = error || fetching || !hasConversations
-  const autocomplete = hasConversations && conversations.all.length > 20
+  const autocomplete =
+    hasConversations &&
+    conversations.all.length > USE_AUTOCOMPLETE_ON_CONVERSATION_LENGTH_OVER
   const select = hasConversations && !autocomplete
 
   return (

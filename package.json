@@ -72,7 +72,9 @@
     }
   },
   "eslintIgnore": [
-    "build/*"
+    "build/*",
+    "functions/",
+    "functions-build/*"
   ],
   "homepage": "https://face.camp/",
   "husky": {
@@ -114,7 +116,7 @@
     "prebuild//": "Mirror postinstall to prebuild for now since netlify doesnt run postinstall when installing from cache https://github.com/netlify/netlify-lambda/issues/227",
     "prettier": "prettier --write '**/*.{js,md,css,json}'",
     "prettier:ci": "prettier --list-different '**/*.{js,md,css,json}'",
-    "start": "preact watch --host localhost --esm true --config scripts/config.js --port 8080",
+    "start": "preact watch --host localhost --esm true --config scripts/config.js",
     "start:functions": "netlify-lambda serve functions",
     "test": "echo 'FIX_ME' && exit 0",
     "test:site": "npm run build >& /dev/null && if [ ! -f ./build/index.html ]; then echo 'Build failed'; exit 1; fi"
