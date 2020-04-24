@@ -1,5 +1,3 @@
-import scopes from './scopes'
-
 const LS_KEY = 'facecamp-data'
 
 const sortTeams = (teams) =>
@@ -72,18 +70,9 @@ const revokeTeam = (team) =>
 
 const readTeams = () => {
   const { hash } = window.location
-  const legacyToken = process.env.LEGACY_TOKEN
-  if ((hash && hash.length > 1) || legacyToken) {
+  if (hash && hash.length > 1) {
     try {
-      const team = legacyToken
-        ? {
-            access_token: legacyToken,
-            scope: scopes.join(','),
-            user_id: null,
-            team_name: 'Legacy Token Team',
-            team_id: 'legacy_token_team'
-          }
-        : JSON.parse(decodeURIComponent(hash.slice(1)))
+      const team = JSON.parse(decodeURIComponent(hash.slice(1)))
       const teams = addTeam(team)
       window.location.hash = ''
       return teams

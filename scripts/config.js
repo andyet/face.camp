@@ -2,6 +2,7 @@ import cssPresetEnv from 'postcss-preset-env'
 import cssimport from 'postcss-import'
 import { URL } from 'url'
 import mergeHelpers, { env } from './config-helpers'
+import { apiPath } from '../functions/lib/config'
 
 // See output from `npm run build:sizes` for the size of all possible builds
 const USE_ES6 = env('USE_ES6', true)
@@ -10,23 +11,23 @@ const USE_ASYNC_AWAIT = env('USE_ASYNC_AWAIT', true)
 const USE_ASYNC_ROUTES = env('USE_ASYNC_ROUTES', true)
 const USE_MINIFY = env('USE_MINIFY', true)
 const USE_SW = env('USE_SW', true)
-const LEGACY_TOKEN = env('LEGACY_TOKEN', '')
 
 export default (config, env, helpers) => {
   const h = mergeHelpers(config, helpers)
 
   if (config.devServer) {
+    config.devServer.port = 8080
     config.devServer.proxy = {
-      '/_api': {
+      [apiPath]: {
         target: 'http://localhost:9000',
-        pathRewrite: { '^/_api': '' }
+        pathRewrite: { [`^${apiPath}`]: '' }
       }
     }
   }
 
   // This env var is only added via a patch-package patch but is required otherwise
-  // the service worker prevents routing to our _api routes
-  h.setEnvDefinition('SW_PATH_BLACKLIST', /\/_api\//)
+  // the service worker prevents routing to our api routes
+  h.setEnvDefinition('SW_PATH_BLACKLIST', new RegExp(`${apiPath}/`))
 
   // Set the supported browsers based on a flag. By default the browserslist in
   // package.json is set to recent versions of major browsers that also support
@@ -35,11 +36,6 @@ export default (config, env, helpers) => {
   // Unsupported browsers are handled by the onerror handler in template.html
   // which will catch any syntax errors.
   const browsers = USE_ES6 ? env.pkg.browserslist : ['> 0.25%', 'IE >= 9']
-
-  h.setEnvDefinition(
-    'LEGACY_TOKEN',
-    JSON.stringify(env.production ? '' : LEGACY_TOKEN)
-  )
 
   // Change html plugin to use our own template from the root of the project
   h.setHtmlTemplate('scripts/template.html')

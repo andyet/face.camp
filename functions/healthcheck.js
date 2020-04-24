@@ -1,15 +1,18 @@
-const config = require('./config')
+const config = require('./lib/config')
 const { version } = require('./package.json')
+const netlifyUrl = require('./lib/netlifyUrl')
 
-const { authHost, appUrl, clientId, clientSecret } = config
+const { apiPath, appPath, clientId, clientSecret } = config
 
-exports.handler = async () => {
+exports.handler = async (event, context) => {
+  const siteUrl = netlifyUrl(event, context)
   return {
     statusCode: 200,
     body: JSON.stringify({
       version,
-      authHost,
-      appUrl,
+      apiPath,
+      appPath,
+      siteUrl,
       clientId: !!clientId,
       clientSecret: !!clientSecret
     })

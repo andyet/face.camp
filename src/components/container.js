@@ -14,9 +14,19 @@ export default class Container extends Component {
   }
 
   componentDidMount() {
-    window.addEventListener('hashchange', () => {
-      this.setState({ teams: auth.read() })
-    })
+    // This makes it work in Android PWAs
+    window.addEventListener('hashchange', this.setTeamsFromAuth)
+    // This is so the app will respond to localStorage changes from the dev console
+    window.addEventListener('storage', this.setTeamsFromAuth)
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('hashchange', this.setTeamsFromAuth)
+    window.removeEventListener('storage', this.setTeamsFromAuth)
+  }
+
+  setTeamsFromAuth = () => {
+    this.setState({ teams: auth.read() })
   }
 
   getSelectedTeam = () => {

@@ -1,14 +1,94 @@
-/* eslint-disable jsx-a11y/no-onchange */
-
+/* eslint-disable import/no-webpack-loader-syntax, import/no-unresolved */
+import personIcon from '!raw-loader!../images/person.svg'
+import hashIcon from '!raw-loader!../images/hash.svg'
+import lockIcon from '!raw-loader!../images/lock.svg'
+import multiIcon from '!raw-loader!../images/multi.svg'
+/* eslint-enable import/no-webpack-loader-syntax, import/no-unresolved */
 import 'accessible-autocomplete/dist/accessible-autocomplete.min.css'
 import { h, Component } from 'preact'
 import cx from 'classnames'
+import groupConversation from '../lib/group-conversation'
 import AccessibleAutocomplete from 'accessible-autocomplete/preact'
 import styles from './conversations.css'
 
-const Option = ({ conversation: { id, display_name }, selected }) => (
-  <option key={id} value={id} selected={id === selected}>
-    {display_name}
+const USE_AUTOCOMPLETE_ON_CONVERSATIONS_OVER = 20
+
+const conversationTypes = {
+  PRIVATE: 'private',
+  IM: 'im',
+  MPIM: 'mpim',
+  CHANNEL: 'channel'
+}
+
+const conversationType = (c) => {
+  if (groupConversation.public(c)) return conversationTypes.CHANNEL
+  if (groupConversation.private(c)) return conversationTypes.PRIVATE
+  if (groupConversation.im(c)) return conversationTypes.IM
+  if (groupConversation.mpim(c)) return conversationTypes.MPIM
+  console.error(`Could not group conversation ${JSON.stringify(c)}`)
+  return conversationTypes.CHANNEL
+}
+
+const conversationName = (c) => (c && c.display_name) || ''
+const conversationCount = (c) =>
+  conversationType(c) === conversationTypes.MPIM
+    ? (conversationName(c).match(/\s/g) || []).length + 1
+    : 0
+
+const conversationDisplay = (conversation) => {
+  if (!conversation) return ''
+  if (typeof conversation === 'string') return conversation
+
+  const type = conversationType(conversation)
+  const count = conversationCount(conversation)
+  const name = conversationName(conversation) + (count ? ` (${count})` : '')
+  const { className, icon } = {
+    [conversationTypes.CHANNEL]: {
+      className: styles.conversationChannel,
+      icon: hashIcon
+    },
+    [conversationTypes.PRIVATE]: {
+      className: styles.conversationPrivate,
+      icon: lockIcon
+    },
+    [conversationTypes.IM]: {
+      className: styles.conversationIm,
+      icon: personIcon
+    },
+    [conversationTypes.MPIM]: {
+      className: styles.conversationMpim,
+      icon: multiIcon
+    }
+  }[type]
+
+  return `<span class="${cx(styles.conversation, className)}">
+    <span class="${cx(styles.conversationIcon)}">${icon}</span>
+    <span class="${cx(styles.conversationName)}">${name}</span>
+  </span>`
+}
+
+const conversationPlainText = (conversation) => {
+  if (!conversation) return ''
+  const prefix =
+    {
+      [conversationTypes.CHANNEL]: '#',
+      [conversationTypes.PRIVATE]: '🔒 ',
+      [conversationTypes.IM]: '👤 ',
+      [conversationTypes.MPIM]: `👥 `
+    }[conversationType(conversation)] || ''
+  const count = conversationCount(conversation)
+  const suffix = count ? ` (${conversationCount(conversation)})` : ''
+
+  return `${prefix}${conversationName(conversation)}${suffix}`
+}
+
+const Option = ({ conversation, selected }) => (
+  <option
+    key={conversation.id}
+    value={conversation.id}
+    selected={conversation.id === selected}
+  >
+    {conversationPlainText(conversation)}
   </option>
 )
 
@@ -16,10 +96,8 @@ const Optgroup = ({ conversations, name, ...props }) => (
   <optgroup
     label={
       {
-        public: 'Public Channels',
-        private: 'Private Channels',
-        im: 'Direct Messages',
-        mpim: 'Multiparty Direct Messages'
+        channels: 'Channels',
+        people: 'Direct Messages'
       }[name]
     }
   >
@@ -44,7 +122,7 @@ class Autocomplete extends Component {
   }
 
   getSource = (query, populate) => {
-    const { conversations, displayKey } = this.props
+    const { conversations } = this.props
     const { initialSelected } = this.state
 
     // display_name is already lowercase
@@ -52,7 +130,7 @@ class Autocomplete extends Component {
 
     const [filtered, other] = conversations.reduce(
       (acc, c) => {
-        acc[displayKey(c).includes(query) ? 0 : 1].push(c)
+        acc[conversationName(c).includes(query) ? 0 : 1].push(c)
         return acc
       },
       [[], []]
@@ -64,13 +142,13 @@ class Autocomplete extends Component {
     // only show the one default item
     const exact =
       filtered.length === 1 &&
-      displayKey(filtered[0]) === query &&
+      conversationName(filtered[0]) === query &&
       filtered[0].id === initialSelected
 
     populate(exact ? [...filtered, ...other] : filtered)
   }
 
-  render({ conversations, onChange, selected, displayKey }) {
+  render({ conversations, onChange, selected, templates }) {
     const selectedConversation = conversations.find((c) => c.id === selected)
     return (
       <div class={cx(styles.autocomplete, styles.input)}>
@@ -81,9 +159,9 @@ class Autocomplete extends Component {
           confirmOnBlur={true}
           dropdownArrow={() => ''}
           onConfirm={(c) => onChange(c ? c.id : null)}
-          defaultValue={displayKey(selectedConversation)}
+          defaultValue={templates.inputValue(selectedConversation)}
           source={this.getSource}
-          templates={{ suggestion: displayKey, inputValue: displayKey }}
+          templates={templates}
         />
       </div>
     )
@@ -113,7 +191,9 @@ const Select = ({ onChange, groups, selected }) => (
 export default ({ onChange, selected, fetching, error, conversations }) => {
   const hasConversations = conversations && conversations.all.length
   const noSelect = error || fetching || !hasConversations
-  const autocomplete = hasConversations && conversations.all.length > 20
+  const autocomplete =
+    hasConversations &&
+    conversations.all.length > USE_AUTOCOMPLETE_ON_CONVERSATIONS_OVER
   const select = hasConversations && !autocomplete
 
   return (
@@ -144,7 +224,10 @@ export default ({ onChange, selected, fetching, error, conversations }) => {
           selected={selected}
           // This needs to guard against undefined and always return a string
           // to not error when used with accessible-autocomplete's templates
-          displayKey={({ display_name = '' } = {}) => display_name}
+          templates={{
+            suggestion: (c) => conversationDisplay(c),
+            inputValue: (c) => conversationName(c)
+          }}
         />
       ) : select ? (
         <Select

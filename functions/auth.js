@@ -1,9 +1,11 @@
 const qs = require('qs')
-const config = require('./config')
+const config = require('./lib/config')
+const netlifyUrl = require('./lib/netlifyUrl')
+const redirect = require('./lib/redirect')
 
-const { clientId, authHost } = config
+const { clientId, apiPath } = config
 
-exports.handler = async (event) => {
+exports.handler = async (event, context) => {
   // App can always post files
   const scope = ['files:write:user']
 
@@ -25,16 +27,13 @@ exports.handler = async (event) => {
     scope.push('channels:read')
   }
 
+  const siteUrl = netlifyUrl(event, context)
+
   const redirectUrl = `https://slack.com/oauth/authorize?${qs.stringify({
     client_id: clientId,
-    redirect_uri: authHost + '/token',
+    redirect_uri: `${siteUrl}${apiPath}/token`,
     scope: scope.join(' ')
   })}`
 
-  return {
-    statusCode: 302,
-    headers: {
-      Location: redirectUrl
-    }
-  }
+  return redirect(redirectUrl)
 }

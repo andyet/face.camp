@@ -1,6 +1,7 @@
 import delve from 'dlv'
 import { paginate } from './slack-fetch'
 import { conversation as conversationScopes } from './scopes'
+import groupConversation from './group-conversation'
 
 export default async (
   { access_token, team_name, team_id, scope, user_id },
@@ -44,14 +45,10 @@ export default async (
     filterConversation(conversation, membersById, membersByName)
   )
 
-  const groups = groupConversationsByType(filtered, {
-    public: ({ is_channel }) => is_channel,
-    private: ({ is_group, is_mpim }) => is_group && !is_mpim,
-    im: ({ is_im }) => is_im,
-    mpim: ({ is_mpim }) => is_mpim
-  })
+  const groups = groupConversationsByType(filtered, groupConversation)
 
-  const all = []
+  const sortedChannels = { name: 'channels', list: [] }
+  const sortedPeople = { name: 'people', list: [] }
 
   groups.forEach(({ list, name }) => {
     // Add a display name for each conversation
@@ -59,16 +56,21 @@ export default async (
       conversation.display_name = getDisplayName(name, conversation, me)
     })
 
-    // Sort each type of conversation individually
-    list.sort(conversationSort)
-
-    // Create an array of all conversations
-    all.push(...list)
+    // Group channel-like things and people like things
+    if (name === 'public' || name === 'private') {
+      sortedChannels.list.push(...list)
+    } else {
+      sortedPeople.list.push(...list)
+    }
   })
 
+  // Resort channels and people so private/public channels and multi/individual DMS are mixed
+  sortedChannels.list.sort(conversationSort)
+  sortedPeople.list.sort(conversationSort)
+
   return {
-    groups,
-    all
+    groups: [sortedChannels, sortedPeople].filter(({ list }) => list.length),
+    all: [...sortedChannels.list, ...sortedPeople.list]
   }
 }
 
@@ -98,15 +100,15 @@ const filterConversation = (conversation, membersById, membersByName) => {
     return false
   }
 
-  // Remove anything that has a last_read property and hasnt been read
+  // Remove anything that has a latest property and hasnt been read
   // in a certain number of days. Hopefully removes some items from large lists
   // and makes it less likely that you'll revive an old MP DM with a bunch of
   // coworkers with a gif of you making a weird face
-  if (conversation.last_read) {
+  if (conversation.latest) {
     const lastReadDays =
-      (Date.now() - new Date(conversation.last_read.split('.')[0] * 1000)) /
+      (Date.now() - new Date(conversation.latest.split('.')[0] * 1000)) /
       (1000 * 60 * 60 * 24)
-    if (lastReadDays > 60) {
+    if (lastReadDays > 365) {
       return false
     }
   }
@@ -165,13 +167,13 @@ const getDisplayName = (key, conversation, me) => {
   switch (key) {
     case 'public':
     case 'private':
-      return `#${conversation.name_normalized.toLowerCase()}`
+      return `${conversation.name_normalized.toLowerCase()}`
     case 'im':
-      return `@${getUserName(conversation.user).toLowerCase()}`
+      return `${getUserName(conversation.user).toLowerCase()}`
     case 'mpim':
-      return `@${getMpimMembers(conversation)
+      return `${getMpimMembers(conversation)
         .filter((name) => name !== getUserName(me))
-        .join(' @')}`
+        .join(', ')}`
     default:
       return ''
   }
