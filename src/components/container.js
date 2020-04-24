@@ -14,7 +14,9 @@ export default class Container extends Component {
   }
 
   componentDidMount() {
+    // This makes it work in Android PWAs
     window.addEventListener('hashchange', this.setTeamsFromAuth)
+    // This is so the app will respond to localStorage changes from the dev console
     window.addEventListener('storage', this.setTeamsFromAuth)
   }
 

@@ -27,8 +27,6 @@ If you only want to develop the UI (and not any of the server functions), the ea
 5. Paste the contents of your clipboard and press Enter
 6. Your local app should now show you as authenticated
 
-TODO: Legacy Tokens are going away on May 5th. I think a solution involving `ngrok` is now the easiest way to get setup locally.
-
 ### Using the server functions
 
 You'll need a Slack app with a client id and secret to run the server functions. [Go to your Slack app's page](https://api.slack.com/apps) to get or create your app. Then use the configuration values for that app to setup and run [the authentication lambda functions](./functions). Once you have your client id and secret:
@@ -39,6 +37,10 @@ You'll need a Slack app with a client id and secret to run the server functions.
 1. Find your development server URL (it should be [http://localhost:8080])
 1. Go to your Slack app's "OAuth & Permissions" settings and add your development server as a redirect url
 1. **(This should work but it doesn't. Slack will tell you that you have `redirect_uri did not match any configured URIs`. I think this should work but maybe `localhost` isn't a valid redirect uri. I also tried this with `ngrok` but I couldn't get that to work either.)**
+
+### So you want to test on your mobile device
+
+I'm not totally sure if this works but you'll need to run `npm start -- --https` as well as `CLIENT_ID=1 CLIENT_SECRET=2 npm run functions:start`. If the above issue with `redirect_uri` is fixed, then you should be able to go to `https://YOUR_COMPUTER_IP:8080` (you can find this in the output from `npm start`) and everything should work. Does it? I'm not sure, I have to check on the Slack `redirect_uri` thing first.
 
 ## Building for Production
 
