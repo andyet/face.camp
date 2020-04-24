@@ -19,7 +19,7 @@ If you only want to develop the UI (and not any of the server functions), the ea
 1. Open the developer console and paste the following and press Enter:
 
 ```
-   ((k)=>copy(`localStorage.setItem('${k}',${JSON.stringify(localStorage.getItem(k))})`))('facecamp-data')
+((k)=>copy(`localStorage.setItem('${k}',${JSON.stringify(localStorage.getItem(k))})`))('facecamp-data')
 ```
 
 3. This will copy your local Slack token to your clipboard

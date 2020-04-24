@@ -1,6 +1,7 @@
 import delve from 'dlv'
 import { paginate } from './slack-fetch'
 import { conversation as conversationScopes } from './scopes'
+import groupConversation from './group-conversation'
 
 export default async (
   { access_token, team_name, team_id, scope, user_id },
@@ -44,16 +45,7 @@ export default async (
     filterConversation(conversation, membersById, membersByName)
   )
 
-  // https://api.slack.com/types/conversation#the_conversational_booleans
-  const groups = groupConversationsByType(filtered, {
-    public: ({ is_channel, is_private }) => is_channel && !is_private,
-    // I've seen channels that should be is_group (indicating a private channel)
-    // but are not so private channels are grouped by is_private and not any sort of DM
-    private: ({ is_private, is_mpim, is_im }) =>
-      is_private && !is_im && !is_mpim,
-    im: ({ is_im }) => is_im,
-    mpim: ({ is_mpim }) => is_mpim
-  })
+  const groups = groupConversationsByType(filtered, groupConversation)
 
   const sortedChannels = { name: 'channels', list: [] }
   const sortedPeople = { name: 'people', list: [] }

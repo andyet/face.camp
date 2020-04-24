@@ -7,6 +7,7 @@ import multiIcon from '!raw-loader!../images/multi.svg'
 import 'accessible-autocomplete/dist/accessible-autocomplete.min.css'
 import { h, Component } from 'preact'
 import cx from 'classnames'
+import groupConversation from '../lib/group-conversation'
 import AccessibleAutocomplete from 'accessible-autocomplete/preact'
 import styles from './conversations.css'
 
@@ -20,9 +21,11 @@ const conversationTypes = {
 }
 
 const conversationType = (c) => {
-  if (c.is_channel && c.is_private) return conversationTypes.PRIVATE
-  if (c.is_im) return conversationTypes.IM
-  if (c.is_mpim) return conversationTypes.MPIM
+  if (groupConversation.public(c)) return conversationTypes.CHANNEL
+  if (groupConversation.private(c)) return conversationTypes.PRIVATE
+  if (groupConversation.im(c)) return conversationTypes.IM
+  if (groupConversation.mpim(c)) return conversationTypes.MPIM
+  console.error(`Could not group conversation ${JSON.stringify(c)}`)
   return conversationTypes.CHANNEL
 }
 
@@ -34,6 +37,7 @@ const conversationCount = (c) =>
 
 const conversationDisplay = (conversation) => {
   if (!conversation) return ''
+  if (typeof conversation === 'string') return conversation
 
   const type = conversationType(conversation)
   const count = conversationCount(conversation)
@@ -65,15 +69,17 @@ const conversationDisplay = (conversation) => {
 
 const conversationPlainText = (conversation) => {
   if (!conversation) return ''
-  const label =
+  const prefix =
     {
       [conversationTypes.CHANNEL]: '#',
       [conversationTypes.PRIVATE]: '🔒 ',
       [conversationTypes.IM]: '👤 ',
-      [conversationTypes.MPIM]: `👥 (${conversationCount(conversation)}) `
+      [conversationTypes.MPIM]: `👥 `
     }[conversationType(conversation)] || ''
+  const count = conversationCount(conversation)
+  const suffix = count ? ` (${conversationCount(conversation)})` : ''
 
-  return `${label}${conversationName(conversation)}`
+  return `${prefix}${conversationName(conversation)}${suffix}`
 }
 
 const Option = ({ conversation, selected }) => (
