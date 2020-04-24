@@ -10,7 +10,7 @@ import cx from 'classnames'
 import AccessibleAutocomplete from 'accessible-autocomplete/preact'
 import styles from './conversations.css'
 
-const USE_AUTOCOMPLETE_ON_CONVERSATION_LENGTH_OVER = 100
+const USE_AUTOCOMPLETE_ON_CONVERSATIONS_OVER = 20
 
 const conversationTypes = {
   PRIVATE: 'private',
@@ -187,7 +187,7 @@ export default ({ onChange, selected, fetching, error, conversations }) => {
   const noSelect = error || fetching || !hasConversations
   const autocomplete =
     hasConversations &&
-    conversations.all.length > USE_AUTOCOMPLETE_ON_CONVERSATION_LENGTH_OVER
+    conversations.all.length > USE_AUTOCOMPLETE_ON_CONVERSATIONS_OVER
   const select = hasConversations && !autocomplete
 
   return (
