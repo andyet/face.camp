@@ -32,7 +32,7 @@ If you only want to develop the UI (and not any of the server functions), the ea
 You'll need a Slack app with a client id and secret to run the server functions. [Go to your Slack app's page](https://api.slack.com/apps) to get or create your app. Then use the configuration values for that app to setup and run [the authentication lambda functions](./functions). Once you have your client id and secret:
 
 1. Start the local app with `npm start`
-1. Put `CLIENT_ID=YOUR_CLIENT_ID` and `CLIENT_SECRET=YOUR_CLIENT_SECRET` in `.env`
+1. Put `DEV_CLIENT_ID=YOUR_CLIENT_ID` and `DEV_CLIENT_SECRET=YOUR_CLIENT_SECRET` in `.env`
 1. Start the functions server with `npm run functions:start`
 1. The app will proxy all the API requests to the locally running functions server
 1. Find your development server URL from the output of `npm start` (it should be [http://localhost:8080])
