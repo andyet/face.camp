@@ -1,7 +1,7 @@
 {
   "name": "facecamp",
   "description": "Facecamp: chat your mug! Take animated gifs of your face and share with your fave Slack channel. Made by your friends at &yet.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "&yet",
   "browserslist": [
     "edge 16",
