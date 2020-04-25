@@ -17,6 +17,7 @@ export default (config, env, helpers) => {
 
   if (config.devServer) {
     config.devServer.port = 8080
+    config.devServer.https = true
     config.devServer.proxy = {
       [apiPath]: {
         target: 'http://localhost:9000',
