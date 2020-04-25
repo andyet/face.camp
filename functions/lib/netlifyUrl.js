@@ -1,3 +1,5 @@
+const { productionUrl } = require('./config')
+
 module.exports = (event, context) => {
   const { custom } = context.clientContext
 
@@ -6,9 +8,17 @@ module.exports = (event, context) => {
     const parsedData = JSON.parse(
       Buffer.from(custom.netlify, 'base64').toString('utf-8')
     )
-    return parsedData.site_url
+    const siteUrl = parsedData.site_url
+    return {
+      siteUrl,
+      production:
+        new URL(siteUrl).toString() === new URL(productionUrl).toString()
+    }
   }
 
   // This is only available when running netlify-lambda serve
-  return `https://${event.headers.host}`
+  return {
+    siteUrl: `https://${event.headers.host}`,
+    production: false
+  }
 }

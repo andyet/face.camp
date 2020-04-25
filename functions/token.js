@@ -3,11 +3,18 @@ const config = require('./lib/config')
 const netlifyUrl = require('./lib/netlifyUrl')
 const redirect = require('./lib/redirect')
 
-const { clientId, clientSecret, apiPath, appPath } = config
+const {
+  clientId,
+  devClientId,
+  clientSecret,
+  devClientSecret,
+  apiPath,
+  appPath
+} = config
 
 exports.handler = async (event, context) => {
   const { error, code } = event.queryStringParameters
-  const siteUrl = netlifyUrl(event, context)
+  const { siteUrl, production } = netlifyUrl(event, context)
 
   if (error) {
     return { statusCode: 403, body: 'Error' }
@@ -18,8 +25,8 @@ exports.handler = async (event, context) => {
     json: true,
     qs: {
       code,
-      client_id: clientId,
-      client_secret: clientSecret,
+      client_id: production ? clientId : devClientId,
+      client_secret: production ? clientSecret : devClientSecret,
       redirect_uri: `${siteUrl}${apiPath}/token`
     }
   })

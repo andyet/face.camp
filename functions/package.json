@@ -3,6 +3,7 @@
   "description": "Facecamp Auth Server",
   "version": "1.0.0",
   "dependencies": {
+    "dotenv": "^8.2.0",
     "qs": "^6.7.0",
     "request": "^2.88.0",
     "request-promise": "^4.2.4"
