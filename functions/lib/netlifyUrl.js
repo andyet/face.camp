@@ -12,6 +12,7 @@ module.exports = (event, context) => {
     return {
       siteUrl,
       production:
+        false &&
         new URL(siteUrl).toString() === new URL(productionUrl).toString()
     }
   }
