@@ -48,8 +48,8 @@
   &.slackBackground {
     background-repeat: no-repeat;
     background-image: url('../images/logo-slack.svg');
-    background-size: 24px auto;
-    background-position: 15px 7px;
+    background-size: 48px;
+    background-position: 2px 50%;
 
     @media (--small-height) {
       background-size: 16px auto;
@@ -60,8 +60,8 @@
     background-repeat: no-repeat;
     background-image: url('../images/logo-slack.svg'),
       url('../images/caret.svg');
-    background-size: 22px auto, 22px 12px;
-    background-position: 15px 50%, 97% 55%;
+    background-size: 48px, 22px 12px;
+    background-position: 2px 50%, 97% 55%;
 
     @media (--small-height) {
       background-size: 18px auto, 22px 12px;
