@@ -22,10 +22,10 @@ If you only want to develop the UI (and not any of the server functions), the ea
 ((k)=>copy(`localStorage.setItem('${k}',${JSON.stringify(localStorage.getItem(k))})`))('facecamp-data')
 ```
 
-3. This will copy your local Slack token to your clipboard
-4. Go to your local app at [http://localhost:8080] and open the developer console
-5. Paste the contents of your clipboard and press Enter
-6. Your local app should now show you as authenticated
+4. This will copy your local Slack token to your clipboard
+5. Go to your local app at [http://localhost:8080] and open the developer console
+6. Paste the contents of your clipboard and press Enter
+7. Your local app should now show you as authenticated
 
 ### Using the server functions
 
@@ -36,7 +36,7 @@ You'll need a Slack app with a client id and secret to run the server functions.
 1. Start the functions server with `npm run functions:start`
 1. The app will proxy all the API requests to the locally running functions server
 1. Find your development server URL from the output of `npm start` (it should be [http://localhost:8080])
-1. Go to your Slack app's "OAuth & Permissions" settings and add your development server as a redirect url
+1. Go to your Slack app's "OAuth & Permissions" settings and add your development server as a redirect url. Note that this url will only affect instances of the server running with the `DEV_CLIENT_ID` and `DEV_CLIENT_SECRET`. Any changes to production OAuth redirect URLs need to be reviewed by Slack.
 
 ### So you want to test on your mobile device
 
